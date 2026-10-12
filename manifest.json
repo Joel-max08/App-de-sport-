@@ -1,6 +1,6 @@
 {
-  "name": "Mon App Sport",
-  "short_name": "Sport",
+  "name": "Kinetra",
+  "short_name": "Kinetra",
   "description": "Suivi de séances, progression et repas. Gratuit, sans pub, données sur ton téléphone.",
   "start_url": "./index.html",
   "scope": "./",

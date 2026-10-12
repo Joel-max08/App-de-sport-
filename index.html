@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111418">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
-<title>Mon App Sport</title>
+<title>Kinetra</title>
 <style>
 :root{--bg:#111418;--card:#1c2128;--line:#2d333b;--txt:#e6edf3;--mut:#8b949e;--acc:#3fb950;--acc2:#58a6ff;--red:#f85149}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -105,6 +105,10 @@ canvas{width:100%;height:180px}
 
 <section id="v-data" class="hide">
   <div class="card">
+    <h3>Compte</h3>
+    <div id="acctBody" class="mut">Chargement…</div>
+  </div>
+  <div class="card">
     <h3>Mes données</h3>
     <p class="mut">Tout reste sur ton téléphone. Fais une sauvegarde de temps en temps.</p>
     <div class="row"><button onclick="exportData()">Exporter (sauvegarde)</button></div>
@@ -119,20 +123,31 @@ canvas{width:100%;height:180px}
   <button data-v="histo">Historique</button>
   <button data-v="prog">Progrès</button>
   <button data-v="repas">Repas</button>
-  <button data-v="data">Données</button>
+  <button data-v="data">Compte</button>
 </nav>
 
 <script>
 const KEY='sportapp.v1';
 let D;
+// MERGE-START
+function norm(x){x=x||{};return{sets:x.sets||[],bw:x.bw||[],meals:x.meals||[],goals:x.goals||{k:2200,p:120},goalsT:x.goalsT||0,del:x.del||[]}}
+function mergeData(a,b){
+  a=norm(a);b=norm(b);
+  const del=new Set([...a.del,...b.del]);
+  const uni=(x,y)=>{const m=new Map();[...x,...y].forEach(i=>{if(!del.has(i.id))m.set(i.id,i)});return[...m.values()].sort((p,q)=>p.id-q.id)};
+  const bw=new Map();[...a.bw,...b.bw].forEach(i=>{const o=bw.get(i.d);if(!o||(i.t||0)>=(o.t||0))bw.set(i.d,i)});
+  const g=(b.goalsT||0)>(a.goalsT||0)?b:a;
+  return{sets:uni(a.sets,b.sets),meals:uni(a.meals,b.meals),bw:[...bw.values()],goals:g.goals,goalsT:g.goalsT,del:[...del]};
+}
+// MERGE-END
 try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-D=D||{sets:[],bw:[],meals:[],goals:{k:2200,p:120}};
-const save=()=>localStorage.setItem(KEY,JSON.stringify(D));
+D=norm(D);
+const save=()=>{localStorage.setItem(KEY,JSON.stringify(D));if(window.onLocalChange)window.onLocalChange()};
 const $=id=>document.getElementById(id);
 const day=(t=Date.now())=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmt=s=>new Date(s+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const titles={seance:'Séance',histo:'Historique',prog:'Progrès',repas:'Repas',data:'Données'};
+const titles={seance:'Séance',histo:'Historique',prog:'Progrès',repas:'Repas',data:'Compte'};
 
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
@@ -147,7 +162,7 @@ function addSet(){
   if(!ex||isNaN(kg)||isNaN(reps)){alert('Remplis exercice, kg et reps.');return}
   D.sets.push({id:Date.now(),d:day(),ex,kg,reps});save();$('reps').value='';render();rest(90);
 }
-function delSet(id){D.sets=D.sets.filter(s=>s.id!==id);save();render()}
+function delSet(id){D.sets=D.sets.filter(s=>s.id!==id);D.del.push(id);save();render()}
 function lastInfo(){
   const ex=$('ex').value.trim();if(!ex){$('last').textContent='';return}
   const prev=D.sets.filter(s=>s.ex===ex&&s.d!==day()).slice(-1)[0];
@@ -201,7 +216,7 @@ function drawProg(){
   line($('cv1'),Object.keys(by).sort().map(d=>({x:d,y:by[d]})),' kg');
   line($('cv2'),[...D.bw].sort((a,b)=>a.d<b.d?-1:1).map(b=>({x:b.d,y:b.kg})),' kg');
 }
-function addBW(){const v=parseFloat($('bw').value);if(isNaN(v))return;D.bw=D.bw.filter(b=>b.d!==day());D.bw.push({d:day(),kg:v});save();$('bw').value='';drawProg()}
+function addBW(){const v=parseFloat($('bw').value);if(isNaN(v))return;D.bw=D.bw.filter(b=>b.d!==day());D.bw.push({d:day(),kg:v,t:Date.now()});save();$('bw').value='';drawProg()}
 
 // Repas
 function addMeal(){
@@ -209,8 +224,8 @@ function addMeal(){
   if(!n){return}D.meals.push({id:Date.now(),d:day(),n,k,p});save();
   ['mn','mk','mp'].forEach(i=>$(i).value='');renderMeals();
 }
-function delMeal(id){D.meals=D.meals.filter(m=>m.id!==id);save();renderMeals()}
-function saveGoals(){D.goals={k:parseInt($('gk').value)||0,p:parseInt($('gp').value)||0};save();renderMeals()}
+function delMeal(id){D.meals=D.meals.filter(m=>m.id!==id);D.del.push(id);save();renderMeals()}
+function saveGoals(){D.goals={k:parseInt($('gk').value)||0,p:parseInt($('gp').value)||0};D.goalsT=Date.now();save();renderMeals()}
 function renderMeals(){
   const t=D.meals.filter(m=>m.d===day()),K=t.reduce((a,m)=>a+m.k,0),P=t.reduce((a,m)=>a+m.p,0);
   $('mealT').textContent=`Aujourd'hui · ${K}/${D.goals.k} kcal · ${P}/${D.goals.p} g prot.`;
@@ -225,7 +240,7 @@ function exportData(){
 }
 function importData(e){
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.sets)throw 0;D=x;save();render();alert('Import réussi.')}catch(_){alert('Fichier invalide.')}};
+  r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.sets)throw 0;D=norm(x);save();render();alert('Import réussi.')}catch(_){alert('Fichier invalide.')}};
   r.readAsText(f);
 }
 
@@ -233,9 +248,141 @@ function render(){
   $('exlist').innerHTML=exercises().map(e=>`<option value="${esc(e)}">`).join('');
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
   renderToday();renderHisto();renderMeals();drawProg();
+  if(window.renderAccount)window.renderAccount();
 }
 render();
+window.getData=()=>D;
+window.setData=x=>{D=norm(x);localStorage.setItem(KEY,JSON.stringify(D));render()};
+window.mergeData=mergeData;
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+<script type="module">
+const $=id=>document.getElementById(id);
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ERR={
+  'auth/invalid-credential':'E-mail ou mot de passe incorrect.',
+  'auth/wrong-password':'E-mail ou mot de passe incorrect.',
+  'auth/user-not-found':'E-mail ou mot de passe incorrect.',
+  'auth/invalid-email':'Adresse e-mail invalide.',
+  'auth/missing-email':'Entre ton adresse e-mail.',
+  'auth/email-already-in-use':'Un compte existe déjà avec cet e-mail.',
+  'auth/weak-password':'Mot de passe trop court (6 caractères minimum).',
+  'auth/missing-password':'Entre ton mot de passe.',
+  'auth/too-many-requests':"Trop d'essais. Réessaie dans quelques minutes.",
+  'auth/network-request-failed':'Pas de connexion internet.',
+  'auth/requires-recent-login':'Reconnecte-toi puis réessaie.'
+};
+const msg=e=>ERR[e.code]||('Erreur : '+(e.code||e.message));
+const setMsg=t=>{const m=$('acctMsg');if(m)m.textContent=t};
+
+let mode='none',fb=null,user=null,status='',lastKey='',tmr=null;
+try{
+  const cfg=(await import('./firebase-config.js')).default;
+  if(cfg&&cfg.apiKey&&!String(cfg.apiKey).startsWith('COLLE')){
+    mode='offline';
+    const B='https://www.gstatic.com/firebasejs/11.0.2/';
+    const [A,Au,F]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
+    const app=A.initializeApp(cfg);
+    fb={Au,F,auth:Au.getAuth(app),db:F.getFirestore(app)};
+    mode='ready';
+  }
+}catch(e){console.warn('Firebase indisponible',e)}
+
+async function sync(){
+  if(!fb||!user)return;
+  status='Synchronisation…';window.renderAccount();
+  try{
+    try{await user.reload()}catch(_){}
+    const ref=fb.F.doc(fb.db,'users',user.uid);
+    const snap=await fb.F.getDoc(ref);
+    const local=window.getData();
+    const cloud=snap.exists()?snap.data().data:null;
+    window.setData(cloud?window.mergeData(local,cloud):local);
+    await fb.F.setDoc(ref,{data:JSON.parse(JSON.stringify(window.getData())),updatedAt:fb.F.serverTimestamp()});
+    status='Synchronisé à '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){
+    console.warn(e);
+    status=e.code==='permission-denied'?'Accès refusé : vérifie les règles Firestore.':'Hors ligne : synchronisation plus tard.';
+  }
+  window.renderAccount();
+}
+
+window.onLocalChange=()=>{if(!user)return;clearTimeout(tmr);tmr=setTimeout(sync,1500)};
+
+window.renderAccount=()=>{
+  const el=$('acctBody');if(!el)return;
+  const key=mode+'|'+(user?user.uid+'|'+user.emailVerified:'')+'|'+status;
+  if(key===lastKey)return;lastKey=key;
+  if(mode==='none'){el.innerHTML="Les comptes ne sont pas encore activés. L'app fonctionne en mode local : tes données restent sur ce téléphone.";return}
+  if(mode==='offline'){el.innerHTML="Service de compte injoignable pour l'instant (hors ligne ?). Tes données locales restent disponibles.";return}
+  if(!user){
+    el.innerHTML=`<p class="mut" style="margin-top:0">Connecte-toi pour retrouver tes données sur tous tes appareils.</p>
+      <input id="aem" type="email" autocomplete="email" placeholder="E-mail">
+      <input id="apw" type="password" autocomplete="current-password" placeholder="Mot de passe (6 caractères min.)" style="margin-top:8px">
+      <div class="row"><button onclick="acctLogin()">Se connecter</button><button class="sec" onclick="acctSignup()">Créer un compte</button></div>
+      <div class="row"><button class="sec" onclick="acctReset()">Mot de passe oublié</button></div>
+      <div id="acctMsg" class="mut"></div>`;
+    return;
+  }
+  el.innerHTML=`<p style="margin-top:0">Connecté : <b>${E(user.email)}</b></p>
+    ${user.emailVerified?'':'<p class="mut">E-mail non vérifié.</p><div class="row"><button class="sec" onclick="acctVerify()">Renvoyer le mail de vérification</button></div>'}
+    <div class="mut">${E(status)}</div>
+    <div class="row"><button onclick="acctSync()">Synchroniser maintenant</button></div>
+    <div class="row"><button class="sec" onclick="acctLogout()">Se déconnecter</button></div>
+    <div class="row"><button class="del" onclick="acctDelete()">Supprimer mon compte</button></div>
+    <div id="acctMsg" class="mut"></div>`;
+};
+
+window.acctLogin=async()=>{
+  const e=$('aem').value.trim(),p=$('apw').value;
+  if(!e||!p)return setMsg("Remplis l'e-mail et le mot de passe.");
+  setMsg('Connexion…');
+  try{await fb.Au.signInWithEmailAndPassword(fb.auth,e,p)}catch(x){setMsg(msg(x))}
+};
+window.acctSignup=async()=>{
+  const e=$('aem').value.trim(),p=$('apw').value;
+  if(!e||!p)return setMsg("Remplis l'e-mail et le mot de passe.");
+  setMsg('Création du compte…');
+  try{
+    const c=await fb.Au.createUserWithEmailAndPassword(fb.auth,e,p);
+    try{await fb.Au.sendEmailVerification(c.user)}catch(_){}
+  }catch(x){setMsg(msg(x))}
+};
+window.acctReset=async()=>{
+  const e=$('aem').value.trim();
+  if(!e)return setMsg("Entre ton e-mail ci-dessus d'abord.");
+  try{await fb.Au.sendPasswordResetEmail(fb.auth,e);setMsg('Si un compte existe, un mail de réinitialisation vient de partir (regarde aussi les spams).')}catch(x){setMsg(msg(x))}
+};
+window.acctVerify=async()=>{try{await fb.Au.sendEmailVerification(user);setMsg('Mail envoyé (regarde aussi les spams).')}catch(x){setMsg(msg(x))}};
+window.acctSync=sync;
+window.acctLogout=()=>fb.Au.signOut(fb.auth);
+window.acctDelete=async()=>{
+  if(!confirm("Supprimer définitivement ton compte et tes données en ligne ? Les données de ce téléphone sont conservées."))return;
+  const pw=prompt('Confirme avec ton mot de passe :');
+  if(pw===null)return;
+  try{
+    await fb.Au.reauthenticateWithCredential(user,fb.Au.EmailAuthProvider.credential(user.email,pw));
+    await fb.F.deleteDoc(fb.F.doc(fb.db,'users',user.uid));
+    await fb.Au.deleteUser(user);
+    localStorage.removeItem('sportapp.uid');
+  }catch(x){setMsg(msg(x))}
+};
+
+if(mode==='ready'){
+  fb.Au.onAuthStateChanged(fb.auth,u=>{
+    user=u;status='';
+    if(u){
+      const last=localStorage.getItem('sportapp.uid');
+      if(last&&last!==u.uid)window.setData({});
+      localStorage.setItem('sportapp.uid',u.uid);
+    }
+    window.renderAccount();
+    if(u)sync();
+  });
+  window.addEventListener('online',sync);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+}
+window.renderAccount();
 </script>
 </body>
 </html>
