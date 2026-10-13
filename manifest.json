@@ -1,16 +1,17 @@
 {
   "name": "Kinetra",
   "short_name": "Kinetra",
-  "description": "Suivi de séances, progression et repas. Gratuit, sans pub, données sur ton téléphone.",
+  "description": "Suivi de séances, progression et repas. Gratuit, sans pub.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#111418",
-  "theme_color": "#111418",
+  "background_color": "#EAF1F4",
+  "theme_color": "#EAF1F4",
   "lang": "fr",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
