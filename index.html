@@ -142,7 +142,8 @@ details.pg-prog summary::-webkit-details-marker{display:none}
     <div id="runDemo"></div>
     <div class="tm-big" id="runTm"></div>
     <div class="mut" id="runPhase" style="text-align:center"></div>
-    <div class="row"><button class="sec" type="button" id="runPauseBtn" onclick="runPause()">Pause</button><button type="button" onclick="runSkip()">Passer</button></div>
+    <div class="row hide" id="runIn"><input id="runKg" type="number" inputmode="decimal" step="any" placeholder="kg" aria-label="Charge en kg"><input id="runReps" type="number" inputmode="numeric" placeholder="Répétitions" aria-label="Répétitions"></div>
+    <div class="row"><button class="sec" type="button" id="runPauseBtn" onclick="runPause()">Pause</button><button type="button" id="runSkipBtn" onclick="runSkip()">Passer</button></div>
     <div class="row"><button class="del" type="button" onclick="runStop()">Retour aux séances</button></div>
   </div>
   <div class="card">
@@ -472,19 +473,25 @@ function startSess(i){
 function stepStart(){
   const st=run.s.s[run.k],id=st[0];
   run.ph='prep';run.left=PREP;
-  $('runProg').textContent=`Exercice ${run.k+1} sur ${run.s.s.length} · ${run.s.n}`;
-  $('runName').textContent=Bonhomme._X[id].n;
-  Bonhomme.mount($('runDemo'),id);
+  $('runProg').textContent=st[5]?`${st[5]} · ${run.s.n}`:`Exercice ${run.k+1} sur ${run.s.s.length} · ${run.s.n}`;
+  $('runName').textContent=st[3]||Bonhomme._X[id].n;
+  Bonhomme.mount($('runDemo'),st[3]||id);
+  if(st[4]){$('runKg').value=st[4].kg;$('runReps').value=st[4].reps;$('runKg').classList.toggle('hide',!st[4].hasKg)}
   phaseUI();
 }
 function phaseUI(){
-  $('runTm').textContent=fmtS(run.left);
-  $('runPhase').textContent=run.ph==='prep'?'Prépare-toi':run.ph==='work'?"Fais l'exercice":'Repos';
+  const cs=run.s.s[run.k],strength=!!(cs&&cs[4]),work=run.ph==='work';
+  $('runTm').textContent=strength&&work?'À toi':fmtS(run.left);
+  $('runPhase').textContent=run.ph==='prep'?'Prépare-toi':work?(strength?'Fais la série, puis valide':"Fais l'exercice"):'Repos';
+  $('runIn').classList.toggle('hide',!(strength&&work));
+  $('runSkipBtn').textContent=strength&&work?'Série faite':'Passer';
 }
 function endWork(){
   if(!run||run.ph!=='work')return;
-  const st=run.s.s[run.k],done=st[1]-run.left;
-  if(done>0){D.sets.push({id:Date.now(),d:day(),ex:Bonhomme._X[st[0]].n,kg:0,reps:0,sec:done});save()}
+  const st=run.s.s[run.k];
+  if(st[4]){const reps=parseInt($('runReps').value),kg=st[4].hasKg?(parseFloat($('runKg').value)||0):0;if(reps>0){D.sets.push({id:Date.now(),d:day(),ex:st[3],kg,reps});save()}return}
+  const done=st[1]-run.left;
+  if(done>0){D.sets.push({id:Date.now(),d:day(),ex:st[3]||Bonhomme._X[st[0]].n,kg:0,reps:0,sec:done});save()}
 }
 function nextStep(){
   run.k++;
@@ -493,6 +500,7 @@ function nextStep(){
 }
 function tickRun(){
   if(!run||run.paused)return;
+  if(run.ph==='work'&&run.s.s[run.k][4]){phaseUI();return}
   run.left--;
   if(run.left>0){phaseUI();return}
   const st=run.s.s[run.k];
@@ -506,8 +514,14 @@ function tickRun(){
   if(run)phaseUI();
 }
 function runPause(){if(!run)return;run.paused=!run.paused;$('runPauseBtn').textContent=run.paused?'Reprendre':'Pause'}
-function runSkip(){if(!run)return;endWork();nextStep()}
+function runSkip(){
+  if(!run)return;
+  const st=run.s.s[run.k];
+  if(run.ph==='work'&&st[4]&&st[2]>0&&run.k<run.s.s.length-1){endWork();run.ph='rest';run.left=st[2];vib();phaseUI();return}
+  endWork();nextStep();
+}
 function finish(){
+  if(window.pOnFinish)pOnFinish();
   clearInterval(rTick);run=null;
   $('runProg').textContent='';$('runName').textContent='Séance terminée';
   Bonhomme.mount($('runDemo'),'');
@@ -518,6 +532,7 @@ function runStop(){
   clearInterval(rTick);endWork();run=null;
   Bonhomme.mount($('runDemo'),'');
   $('runCard').classList.add('hide');$('pre').classList.remove('hide');
+  if(window.pAfterRun)pAfterRun();
 }
 sessList();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');

@@ -59,63 +59,46 @@ function pPrefill(x){
   return{kg:mx,reps:reps0,hint:'Dernière fois : '+pNum(mx)+' kg × '+reps+'.'};
 }
 
-// ----- Séance du jour (dans l'onglet Séance)
+// ----- Séance du jour : lancée dans le même écran que les séances toutes faites
+window.pRunning=false;
+// Étapes : [id, secondes d'effort, secondes de repos, nom, saisie {kg,reps,hasKg} ou null, libellé]
+function pSteps(p,i){
+  const out=[];
+  p.sessions[i].ex.forEach(x=>{
+    const timed=pTimed(x.r),pf=timed?null:pPrefill(x);
+    for(let j=1;j<=x.s;j++){
+      out.push([null,timed?(parseInt(x.r)||30):0,x.t||90,x.n,timed?null:{kg:pf.kg,reps:pf.reps,hasKg:!x.b},'Série '+j+' sur '+x.s]);
+    }
+  });
+  if(out.length)out[out.length-1][2]=0;
+  return out;
+}
 function renderProg(){
   const box=$('progBox');if(!box)return;
+  if(window.pRunning){box.classList.add('hide');return}
+  box.classList.remove('hide');
   const c=pCur();
-  if(!c){box.innerHTML=`<div class="pg-card"><h3>Programme</h3><p class="mut" style="margin:0 0 12px">Aucun programme en cours. Choisis-en un dans l'onglet Programmes pour suivre tes séances ici.</p><div class="row"><button class="sec" onclick="go('plans')">Voir les programmes</button></div></div>`;return}
-  const p=c.p,i=c.i,s=p.sessions[i];
-  const rows=s.ex.map((x,ei)=>{
-    const key=p.id+'|'+i+'|'+ei,dr=pDraft[key]||{},pf=pPrefill(x);
-    const kv=dr.k!==undefined?dr.k:pf.kg,rv=dr.r!==undefined?dr.r:pf.reps;
-    const done=D.sets.filter(t=>t.d===day()&&pSame(t.ex,x.n)).length;
-    const dots=Array.from({length:x.s},(_,k)=>`<i class="${k<done?'f':''}"></i>`).join('')+(done>x.s?`<span>+${done-x.s}</span>`:'');
-    const timed=pTimed(x.r),hasDemo=!!(window.Bonhomme&&Bonhomme.find(x.n));
-    return `<div class="pg-ex"><div class="pg-exh"><b>${esc(x.n)}</b><span class="mut num">${x.s} × ${esc(x.r.replace('-','–'))}</span><span class="pg-dots" role="img" aria-label="${done} séries faites sur ${x.s}">${dots}</span></div>`
-      +(pf.hint?`<div class="pg-hint">${esc(pf.hint)}</div>`:'')
-      +`<div class="pg-in${x.b?' nb':''}">`
-      +(x.b?'':`<input id="pk_${ei}" type="number" inputmode="decimal" step="any" placeholder="kg" aria-label="Charge en kg" value="${esc(kv)}">`)
-      +`<input id="pr_${ei}" type="number" inputmode="numeric" placeholder="${timed?'sec':'rép.'}" aria-label="${timed?'Secondes':'Répétitions'}" value="${esc(rv)}">`
-      +`<button onclick="pLog(${ei})">Valider</button></div><div class="pg-err" id="pe_${ei}"></div>`
-      +(hasDemo?`<details class="pg-demo"><summary>Voir le geste</summary><div class="pg-dm" data-n="${esc(x.n)}"></div></details>`:'')
-      +`</div>`;
-  }).join('');
-  box.innerHTML=`<div class="pg-card"><div class="pg-head"><div><h3>${esc(s.n)}</h3><span class="mut">${esc(p.name)}</span></div>`
-    +(p.sessions.length>1?`<select id="pSess" onchange="pPick(this.value)" aria-label="Changer de séance">${p.sessions.map((q,k)=>`<option value="${k}"${k===i?' selected':''}>${esc(q.n)}</option>`).join('')}</select>`:'')
-    +`</div>`+(pFlash?`<div class="pg-flash">${esc(pFlash)}</div>`:'')+rows
-    +`<div class="row"><button class="sec" onclick="pFinish()">Terminer la séance</button><button class="del" onclick="pStop()">Arrêter le programme</button></div></div>`;
-  box.querySelectorAll('details.pg-demo').forEach(d=>d.addEventListener('toggle',()=>{if(d.open){const m=d.querySelector('.pg-dm');if(m&&!m.hasChildNodes())Bonhomme.mount(m,m.dataset.n)}}));
+  if(!c){box.innerHTML=`<div class="pg-card"><h3>Programme</h3><p class="mut" style="margin:0 0 12px">Aucun programme en cours. Choisis-en un dans l'onglet Programmes pour lancer ses séances ici.</p><div class="row"><button class="sec" onclick="go('plans')">Voir les programmes</button></div></div>`;return}
+  const s=c.p.sessions[c.i];
+  const sel=c.p.sessions.length>1?`<select id="pSess" onchange="pPick(this.value)" aria-label="Changer de séance">${c.p.sessions.map((q,k)=>`<option value="${k}"${k===c.i?' selected':''}>${esc(q.n)}</option>`).join('')}</select>`:'';
+  box.innerHTML=`<div class="pg-card"><div class="pg-head"><div><h3>${esc(s.n)}</h3><span class="mut">${esc(c.p.name)} · ${s.ex.length} exercices</span></div>${sel}</div>`
+    +`<div class="row"><button onclick="pRunStart()">Commencer la séance</button></div><div class="row"><button class="del" onclick="pStop()">Arrêter le programme</button></div></div>`;
 }
-const pBox=document.getElementById('progBox');
-if(pBox){
-  pBox.addEventListener('input',e=>{
-    const m=(e.target.id||'').match(/^p([kr])_(\d+)$/);if(!m)return;
-    const c=pCur();if(!c)return;
-    const key=c.p.id+'|'+c.i+'|'+m[2];(pDraft[key]=pDraft[key]||{})[m[1]==='k'?'k':'r']=e.target.value;
-    const er=$('pe_'+m[2]);if(er)er.textContent='';
-  });
-}
-function pLog(ei){
+function pRunStart(){
   const c=pCur();if(!c)return;
-  const x=c.p.sessions[c.i].ex[ei],er=$('pe_'+ei);
-  const reps=parseFloat($('pr_'+ei).value);
-  const kg=x.b?0:parseFloat($('pk_'+ei).value);
-  if(isNaN(reps)||reps<=0){er.textContent=pTimed(x.r)?'Entre la durée en secondes.':'Entre le nombre de répétitions.';return}
-  if(isNaN(kg)||kg<0){er.textContent='Entre la charge en kg (0 si poids du corps).';return}
-  const rec=pTimed(x.r)?{id:pNewId(),d:day(),ex:x.n,kg:0,reps:0,sec:reps}:{id:pNewId(),d:day(),ex:x.n,kg,reps};
-  D.sets.push(rec);delete pDraft[c.p.id+'|'+c.i+'|'+ei];pFlash='';
-  save();render();rest(x.t||90);
+  const steps=pSteps(c.p,c.i);if(!steps.length)return;
+  run={s:{n:c.p.name+' · '+c.p.sessions[c.i].n,s:steps},k:0,ph:'prep',left:PREP,paused:false,pid:c.p.id,pi:c.i};
+  window.pRunning=true;
+  $('pre').classList.add('hide');$('progBox').classList.add('hide');$('runCard').classList.remove('hide');
+  $('runPauseBtn').textContent='Pause';scrollTo(0,0);
+  stepStart();
+  clearInterval(rTick);rTick=setInterval(tickRun,1000);
 }
-function pPick(v){if(!D.act)return;D.act={id:D.act.id,i:+v,t:Date.now()};pDraft={};pFlash='';save();render()}
-function pFinish(){
-  const c=pCur();if(!c)return;
-  const n=c.p.sessions.length,nx=(c.i+1)%n;
-  D.act={id:c.p.id,i:nx,t:Date.now()};pDraft={};
-  pFlash=n>1?'Séance terminée. Prochaine séance : '+c.p.sessions[nx].n+'.':'Séance terminée.';
-  save();render();scrollTo(0,0);
-}
-function pStart(id){D.act={id,i:0,t:Date.now()};pDraft={};pFlash='';save();go('seance')}
-function pStop(){if(!confirm('Arrêter le programme en cours ?'))return;D.act={id:null,i:0,t:Date.now()};pDraft={};pFlash='';save();render()}
+function pOnFinish(){const p=pFind(run.pid);if(!p)return;D.act={id:p.id,i:(run.pi+1)%p.sessions.length,t:Date.now()};save()}
+function pAfterRun(){window.pRunning=false;render()}
+function pPick(v){if(!D.act)return;D.act={id:D.act.id,i:+v,t:Date.now()};save();render()}
+function pStart(id){D.act={id,i:0,t:Date.now()};save();go('seance')}
+function pStop(){if(!confirm('Arrêter le programme en cours ?'))return;D.act={id:null,i:0,t:Date.now()};save();render()}
 
 // ----- Onglet Programmes
 const pExLine=x=>`<li><span>${esc(x.n)}</span><span class="mut num">${x.s} × ${esc(x.r.replace('-','–'))}</span></li>`;
