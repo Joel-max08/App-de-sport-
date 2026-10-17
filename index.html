@@ -771,7 +771,8 @@ function startSess(i){
 }
 function stepStart(){
   const st=run.s.s[run.k],id=st[0];
-  run.ph='prep';run.left=PREP;
+  const quick=!!run.noPrep;run.noPrep=false;
+  run.ph=quick?'work':'prep';run.left=quick?st[1]:PREP;
   $('runProg').textContent=st[5]?`${st[5]} · ${run.s.n}`:`Exercice ${run.k+1} sur ${run.s.s.length} · ${run.s.n}`;
   $('runName').textContent=st[3]||Bonhomme._X[id].n;
   Bonhomme.mount($('runDemo'),st[3]||id);
@@ -792,6 +793,12 @@ function endWork(){
   const done=st[1]-run.left;
   if(done>0){D.sets.push({id:Date.now(),d:day(),ex:st[3]||Bonhomme._X[st[0]].n,kg:0,reps:0,sec:done});save()}
 }
+// Pause après une étape. Si la suivante est une série de force du même exercice, on n'attend pas la préparation.
+function startRest(st){
+  const nx=run.s.s[run.k+1];
+  run.noPrep=!!(nx&&nx[4]&&nx[3]===st[3]);
+  run.ph='rest';run.left=st[2];vib();
+}
 function nextStep(){
   run.k++;
   if(run.k>=run.s.s.length){finish();return}
@@ -806,7 +813,7 @@ function tickRun(){
   if(run.ph==='prep'){run.ph='work';run.left=st[1];vib()}
   else if(run.ph==='work'){
     endWork();
-    if(st[2]>0&&run.k<run.s.s.length-1){run.ph='rest';run.left=st[2];vib()}
+    if(st[2]>0&&run.k<run.s.s.length-1){startRest(st);}
     else nextStep();
   }
   else nextStep();
@@ -816,7 +823,7 @@ function runPause(){if(!run)return;run.paused=!run.paused;$('runPauseBtn').textC
 function runSkip(){
   if(!run)return;
   const st=run.s.s[run.k];
-  if(run.ph==='work'&&st[4]&&st[2]>0&&run.k<run.s.s.length-1){endWork();run.ph='rest';run.left=st[2];vib();phaseUI();return}
+  if(run.ph==='work'&&st[4]&&st[2]>0&&run.k<run.s.s.length-1){endWork();startRest(st);phaseUI();return}
   endWork();nextStep();
 }
 function finish(){

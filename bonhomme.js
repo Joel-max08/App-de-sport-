@@ -188,6 +188,7 @@ jacks:{n:'Jumping jacks',m:'Cardio',
 };
 
 const RULES=[
+ [/face pull/,'tirage'],
  [/pont|hip thrust|releve de bassin/,'pont'],
  [/roumain|rdl|jambes tendues/,'rdl'],
  [/souleve de terre|deadlift|\bsdt\b/,'sdt'],
@@ -220,7 +221,7 @@ const VARIANTS=[
   [/pont.*une jambe/,'pont1j']
 ];
 const NOPIC=[
-  /incline|marteau|gainage.*lateral|planche.*lateral|fentes? arriere|assis|poulie|face pull|leg|presse|superman/
+  /leg|presse|superman/
 ];
 function find(name){
   const s=norm(name);if(!s)return null;

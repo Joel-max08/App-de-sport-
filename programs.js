@@ -5,29 +5,29 @@ const PRESETS=[
 {id:'fb3',name:'Full body 3 jours',lvl:'Débutant',where:'Salle',freq:'3 séances par semaine',
  desc:'Tout le corps à chaque séance, en alternant A et B. Le plus simple pour apprendre les mouvements.',
  sessions:[
-  {n:'Full body A',ex:[X('Squat',3,'6-8',150),X('Développé couché',3,'6-8',150),X('Rowing barre',3,'8-10',120),X('Développé militaire',2,'8-10',120),X('Gainage',3,'30-45 s',60,1)]},
-  {n:'Full body B',ex:[X('Soulevé de terre roumain',3,'8-10',150),X('Développé incliné haltères',3,'8-10',120),X('Tirage vertical',3,'8-10',120),X('Fentes',2,'10-12',90),X('Curl biceps',2,'10-12',60)]}
+  {n:'Full body A',ex:[X('Squat',3,'6-8',120),X('Développé couché',3,'6-8',120),X('Rowing barre',3,'8-10',90),X('Développé militaire',2,'8-10',90),X('Gainage',3,'30-45 s',45,1)]},
+  {n:'Full body B',ex:[X('Soulevé de terre roumain',3,'8-10',120),X('Développé incliné haltères',3,'8-10',90),X('Tirage vertical',3,'8-10',90),X('Fentes',2,'10-12',60),X('Curl biceps',2,'10-12',45)]}
  ]},
 {id:'ul4',name:'Haut / bas 4 jours',lvl:'Intermédiaire',where:'Salle',freq:'4 séances par semaine',
  desc:'Deux séances haut du corps, deux séances bas du corps. Par exemple lundi haut, mardi bas, jeudi haut, vendredi bas.',
  sessions:[
-  {n:'Haut A',ex:[X('Développé couché',4,'6-8',150),X('Rowing barre',4,'6-8',150),X('Développé militaire',3,'8-10',120),X('Tirage vertical',3,'8-10',90),X('Curl biceps',2,'10-12',60),X('Extension triceps poulie',2,'10-12',60)]},
-  {n:'Bas A',ex:[X('Squat',4,'6-8',150),X('Soulevé de terre roumain',3,'8-10',150),X('Presse à cuisses',3,'10-12',120),X('Leg curl',3,'10-12',90),X('Mollets debout',4,'10-15',60)]},
-  {n:'Haut B',ex:[X('Développé incliné haltères',4,'8-10',120),X('Tractions',4,'6-10',150),X('Rowing haltère',3,'8-10',90),X('Élévations latérales',3,'12-15',60),X('Face pull',3,'12-15',60),X('Curl marteau',2,'10-12',60)]},
-  {n:'Bas B',ex:[X('Soulevé de terre',3,'5',180),X('Fentes bulgares',3,'8-10',120),X('Hip thrust',3,'8-12',120),X('Leg extension',3,'12-15',90),X('Mollets assis',4,'12-15',60)]}
+  {n:'Haut A',ex:[X('Développé couché',4,'6-8',120),X('Rowing barre',4,'6-8',120),X('Développé militaire',3,'8-10',90),X('Tirage vertical',3,'8-10',60),X('Curl biceps',2,'10-12',45),X('Extension triceps poulie',2,'10-12',45)]},
+  {n:'Bas A',ex:[X('Squat',4,'6-8',120),X('Soulevé de terre roumain',3,'8-10',120),X('Presse à cuisses',3,'10-12',90),X('Leg curl',3,'10-12',60),X('Mollets debout',4,'10-15',45)]},
+  {n:'Haut B',ex:[X('Développé incliné haltères',4,'8-10',90),X('Tractions',4,'6-10',120),X('Rowing haltère',3,'8-10',60),X('Élévations latérales',3,'12-15',45),X('Face pull',3,'12-15',45),X('Curl marteau',2,'10-12',45)]},
+  {n:'Bas B',ex:[X('Soulevé de terre',3,'5',150),X('Fentes bulgares',3,'8-10',90),X('Hip thrust',3,'8-12',90),X('Leg extension',3,'12-15',60),X('Mollets assis',4,'12-15',45)]}
  ]},
 {id:'ppl',name:'Push / Pull / Legs',lvl:'Intermédiaire',where:'Salle',freq:'3 à 6 séances par semaine',
  desc:'Trois séances qui se répètent : pousser, tirer, jambes. Une fois chacune pour 3 jours par semaine, ou deux fois pour 6 jours.',
  sessions:[
-  {n:'Push',ex:[X('Développé couché',4,'6-8',150),X('Développé militaire',3,'8-10',120),X('Développé incliné haltères',3,'8-10',120),X('Élévations latérales',3,'12-15',60),X('Extension triceps poulie',3,'10-12',60)]},
-  {n:'Pull',ex:[X('Rowing barre',4,'6-8',150),X('Tractions',3,'6-10',150),X('Rowing poulie assis',3,'10-12',90),X('Face pull',3,'12-15',60),X('Curl biceps',3,'10-12',60),X('Curl marteau',2,'10-12',60)]},
-  {n:'Legs',ex:[X('Squat',4,'6-8',150),X('Soulevé de terre roumain',3,'8-10',150),X('Presse à cuisses',3,'10-12',120),X('Leg curl',3,'10-12',90),X('Mollets debout',4,'10-15',60)]}
+  {n:'Push',ex:[X('Développé couché',4,'6-8',120),X('Développé militaire',3,'8-10',90),X('Développé incliné haltères',3,'8-10',90),X('Élévations latérales',3,'12-15',45),X('Extension triceps poulie',3,'10-12',45)]},
+  {n:'Pull',ex:[X('Rowing barre',4,'6-8',120),X('Tractions',3,'6-10',120),X('Rowing poulie assis',3,'10-12',60),X('Face pull',3,'12-15',45),X('Curl biceps',3,'10-12',45),X('Curl marteau',2,'10-12',45)]},
+  {n:'Legs',ex:[X('Squat',4,'6-8',120),X('Soulevé de terre roumain',3,'8-10',120),X('Presse à cuisses',3,'10-12',90),X('Leg curl',3,'10-12',60),X('Mollets debout',4,'10-15',45)]}
  ]},
 {id:'home',name:'Maison, sans matériel',lvl:'Débutant',where:'Maison',freq:'3 séances par semaine',
  desc:'Aucun matériel : une chaise et un mur suffisent. Alterne A et B. Quand les séries deviennent faciles, ajoute des répétitions.',
  sessions:[
-  {n:'Maison A',ex:[X('Squat au poids du corps',3,'12-15',60,1),X('Pompes',3,'8-12',90,1),X('Fentes arrière',3,'10-12',60,1),X('Pont fessier',3,'12-15',60,1),X('Gainage',3,'30-45 s',60,1)]},
-  {n:'Maison B',ex:[X('Squat bulgare (pied sur une chaise)',3,'8-10',90,1),X('Pompes inclinées (mains sur une chaise)',3,'10-15',60,1),X('Pont fessier à une jambe',3,'8-12',60,1),X('Superman',3,'12-15',60,1),X('Gainage latéral',3,'20-30 s',60,1)]}
+  {n:'Maison A',ex:[X('Squat au poids du corps',3,'12-15',45,1),X('Pompes',3,'8-12',60,1),X('Fentes arrière',3,'10-12',45,1),X('Pont fessier',3,'12-15',45,1),X('Gainage',3,'30-45 s',45,1)]},
+  {n:'Maison B',ex:[X('Squat bulgare (pied sur une chaise)',3,'8-10',60,1),X('Pompes inclinées (mains sur une chaise)',3,'10-15',45,1),X('Pont fessier à une jambe',3,'8-12',45,1),X('Superman',3,'12-15',45,1),X('Gainage latéral',3,'20-30 s',45,1)]}
  ]}
 ];
 
