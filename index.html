@@ -133,6 +133,10 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 #cgu h3{font-size:16px;margin:18px 0 6px}
 #cgu p{font-size:15px;line-height:1.5;margin:0 0 8px}
 #cgu a{color:var(--teal)}
+.done-t{width:100%;border-collapse:collapse;font-size:14px;margin:4px 0 12px}
+.done-t th,.done-t td{padding:8px 4px;border-top:1px solid var(--line);text-align:left}
+.done-t th{color:var(--mut);font-weight:600;font-size:13px}
+.done-t td.num,.done-t th.num{text-align:right}
 #streak{padding:16px 18px}
 #streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
@@ -239,6 +243,12 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     <div class="row hide" id="runIn"><input id="runKg" type="number" inputmode="decimal" step="any" placeholder="kg" aria-label="Charge en kg"><input id="runReps" type="number" inputmode="numeric" placeholder="Répétitions" aria-label="Répétitions"></div>
     <div class="row"><button class="sec" type="button" id="runPauseBtn" onclick="runPause()">Pause</button><button type="button" id="runSkipBtn" onclick="runSkip()">Passer</button></div>
     <div class="row"><button class="del" type="button" onclick="runStop()">Retour aux séances</button></div>
+  </div>
+  <div class="card hide" id="doneCard">
+    <h3 style="margin:0 0 4px">Bien joué !</h3>
+    <p class="mut" style="margin:0 0 10px">Voici ce que tu as fait pendant cette séance.</p>
+    <div id="doneTable"></div>
+    <div class="row"><button type="button" onclick="doneClose()">Retour aux séances</button></div>
   </div>
   <details class="card" id="manual">
     <summary>Saisir une série à la main</summary>
@@ -789,9 +799,10 @@ function phaseUI(){
 function endWork(){
   if(!run||run.ph!=='work')return;
   const st=run.s.s[run.k];
-  if(st[4]){const reps=parseInt($('runReps').value),kg=st[4].hasKg?(parseFloat($('runKg').value)||0):0;if(reps>0){D.sets.push({id:Date.now(),d:day(),ex:st[3],kg,reps});save()}return}
+  run.log=run.log||[];
+  if(st[4]){const reps=parseInt($('runReps').value),kg=st[4].hasKg?(parseFloat($('runKg').value)||0):0;if(reps>0){D.sets.push({id:Date.now(),d:day(),ex:st[3],kg,reps});save();run.log.push({ex:st[3],hk:!!st[4].hasKg,kg,reps})}return}
   const done=st[1]-run.left;
-  if(done>0){D.sets.push({id:Date.now(),d:day(),ex:st[3]||Bonhomme._X[st[0]].n,kg:0,reps:0,sec:done});save()}
+  if(done>0){const nm=st[3]||Bonhomme._X[st[0]].n;D.sets.push({id:Date.now(),d:day(),ex:nm,kg:0,reps:0,sec:done});save();run.log.push({ex:nm,hk:false,sec:done})}
 }
 // Pause après une étape. Si la suivante est une série de force du même exercice, on n'attend pas la préparation.
 function startRest(st){
@@ -827,12 +838,23 @@ function runSkip(){
   endWork();nextStep();
 }
 function finish(){
+  const log=(run&&run.log)||[];
   if(window.pOnFinish)pOnFinish();
   clearInterval(rTick);run=null;
-  $('runProg').textContent='';$('runName').textContent='Séance terminée';
   Bonhomme.mount($('runDemo'),'');
-  $('runTm').textContent='';$('runPhase').textContent="Bravo, tu as fini la séance. Tes exercices sont dans l'historique.";
-  $('runPauseBtn').textContent='Pause';
+  $('runCard').classList.add('hide');$('pre').classList.add('hide');
+  const cnt={};
+  const rows=log.map(r=>{cnt[r.ex]=(cnt[r.ex]||0)+1;
+    const poids=r.sec!=null?'—':(r.hk?r.kg+' kg':'poids du corps');
+    const det=r.sec!=null?r.sec+' s':r.reps+' rép.';
+    return `<tr><td>${esc(r.ex)}</td><td class="num">${cnt[r.ex]}</td><td class="num">${poids}</td><td class="num">${det}</td></tr>`}).join('');
+  $('doneTable').innerHTML=rows?`<table class="done-t"><thead><tr><th>Exercice</th><th class="num">Série</th><th class="num">Poids</th><th class="num">Détail</th></tr></thead><tbody>${rows}</tbody></table>`:`<p class="mut">Aucune charge saisie pendant cette séance. Note le poids à chaque série pour le retrouver ici.</p>`;
+  $('doneCard').classList.remove('hide');
+  scrollTo(0,0);
+}
+function doneClose(){
+  $('doneCard').classList.add('hide');$('pre').classList.remove('hide');
+  if(window.pAfterRun)pAfterRun();
 }
 function runStop(){
   clearInterval(rTick);endWork();run=null;
