@@ -114,7 +114,7 @@ function pCard(p,custom){
 function renderPlans(){
   const L=$('plansList');if(!L)return;
   const open=new Set([...L.querySelectorAll('details[open]')].map(d=>d.dataset.id));
-  const c=pCur();let h='';
+  const c=pCur();let h=recoCard();
   if(c)h+=`<div class="pg-card"><h3>Programme en cours</h3><p style="margin:0 0 4px"><b>${esc(c.p.name)}</b></p><p class="mut" style="margin:0 0 12px">Prochaine séance : ${esc(c.p.sessions[c.i].n)}</p><div class="row"><button onclick="go('seance')">Ouvrir la séance</button></div></div>`;
   h+=`<div class="pg-sec">Prêts à l'emploi</div>`+PRESETS.map(p=>pCard(p,false)).join('');
   h+=`<div class="pg-sec">Mes programmes</div>`+(D.progs.length?D.progs.map(p=>pCard(p,true)).join(''):`<p class="mut" style="margin:6px 2px">Tu n'as pas encore créé de programme.</p>`);
@@ -168,3 +168,90 @@ document.getElementById('plansEdit').addEventListener('input',e=>{
 });
 
 // Navigation entre onglets
+
+// ===== Programme recommandé : questionnaire -> programme adapté (niveau, lieu, jours, durée) =====
+// Exercices : [nom, groupe, niveau 0 à 2, lieu M = maison sans matériel, H = haltères, S = salle, durée si chronométré]
+const EXO=[
+ ["Pompes inclinées (mains sur une chaise)","push",0,"M",""],["Pompes","push",1,"M",""],["Pompes pieds surélevés","push",2,"M",""],
+ ["Dips sur chaise","push",1,"M",""],["Squat au poids du corps","legs",0,"M",""],["Fentes arrière","legs",1,"M",""],
+ ["Squat bulgare (pied sur une chaise)","legs",2,"M",""],["Pont fessier","hinge",0,"M",""],["Pont fessier à une jambe","hinge",2,"M",""],
+ ["Superman","pull",0,"M",""],["Gainage (genoux au sol)","core",0,"M","20-30 s"],["Gainage","core",1,"M","30-45 s"],
+ ["Gainage latéral","core",2,"M","20-30 s"],["Crunch","core",1,"M",""],["Jumping jacks","cardio",0,"M","30-40 s"],
+ ["Mountain climbers","cardio",1,"M","30-40 s"],
+ ["Développé haltères","push",1,"H",""],["Rowing haltère","pull",1,"H",""],["Squat gobelet","legs",1,"H",""],
+ ["Fentes haltères","legs",1,"H",""],["Soulevé de terre roumain haltères","hinge",1,"H",""],["Élévations latérales","shoulder",0,"H",""],
+ ["Curl biceps","arms",0,"H",""],["Extension triceps","arms",1,"H",""],["Développé militaire haltères","shoulder",1,"H",""],
+ ["Presse à cuisses","legs",0,"S",""],["Squat","legs",1,"S",""],["Fentes bulgares","legs",2,"S",""],["Leg extension","legs",0,"S",""],
+ ["Développé couché","push",1,"S",""],["Développé incliné haltères","push",1,"S",""],["Tirage vertical","pull",0,"S",""],
+ ["Rowing barre","pull",1,"S",""],["Tractions","pull",2,"S",""],["Soulevé de terre roumain","hinge",1,"S",""],
+ ["Soulevé de terre","hinge",2,"S",""],["Leg curl","hinge",0,"S",""],["Hip thrust","hinge",1,"S",""],
+ ["Développé militaire","shoulder",1,"S",""],["Face pull","shoulder",1,"S",""],["Curl biceps poulie","arms",0,"S",""],
+ ["Extension triceps poulie","arms",1,"S",""],["Mollets debout","calves",0,"S",""]
+].map(([n,g,l,w,t])=>({n,g,l,w,t,b:w==='M'}));
+const RQ=[
+ {k:'lvl',q:"Quel est ton niveau ?",o:[['deb',"Je débute ou je reprends"],['int',"Je m'entraîne depuis quelques mois"],['av',"Je m'entraîne depuis plus d'un an"]]},
+ {k:'lieu',q:"Où t'entraînes-tu ?",o:[['M','Maison, sans matériel'],['H','Maison, avec des haltères'],['S','Salle de sport']]},
+ {k:'jours',q:"Combien de jours par semaine ?",o:[['2','2 jours'],['3','3 jours'],['4','4 jours']]},
+ {k:'dur',q:"Combien de temps par séance ?",o:[['10','10 à 15 min'],['20','20 à 30 min'],['30','30 à 45 min']]}
+];
+let RQS={step:0,a:{}};
+const RLVL={deb:'débutant',int:'intermédiaire',av:'avancé'},RLIEU={M:'maison sans matériel',H:'maison avec haltères',S:'salle de sport'},RDUR={'10':'10 à 15 min','20':'20 à 30 min','30':'30 à 45 min'};
+function recoCard(){return `<div class="pg-card"><h3>Programme recommandé</h3><p class="mut" style="margin:0 0 12px">Réponds à quatre questions (niveau, lieu, jours et durée) et Kinetra te propose un programme adapté.</p><div class="row"><button onclick="recoStart()">Trouver mon programme</button></div></div>`}
+function recoStart(){RQS={step:0,a:{}};$('plansList').classList.add('hide');$('reco').classList.remove('hide');renderReco();scrollTo(0,0)}
+function recoClose(){RQS={step:0,a:{}};$('reco').classList.add('hide');$('plansList').classList.remove('hide');render()}
+function recoAns(k,v){RQS.a[k]=v;RQS.step++;renderReco();scrollTo(0,0)}
+function recoBack(){if(RQS.step>0){RQS.step--;renderReco()}}
+function recoPick(g,place,maxL,used,rot){
+  const ok=e=>e.g===g&&!used.has(e.n)&&e.l<=maxL&&(place==='S'||(place==='H'?e.w!=='S':e.w==='M'));
+  const c=EXO.filter(ok).sort((x,y)=>y.l-x.l);
+  return c.length?c[rot%c.length]:null;
+}
+function recoBuild(a){
+  // Difficulté : niveau, séries et repos. Durée : nombre d'exercices calculé pour tenir le temps choisi.
+  const L={deb:{sets:3,rest:60,maxL:0,reps:'10-12'},int:{sets:3,rest:75,maxL:1,reps:'8-12'},av:{sets:4,rest:90,maxL:2,reps:'6-10'}}[a.lvl];
+  const short=a.dur==='10';
+  const sets=short?2:L.sets;
+  const rest=short?({deb:45,int:60,av:90})[a.lvl]:L.rest;
+  const target={'10':720,'20':1500,'30':2280}[a.dur];
+  const nEx=Math.max(2,Math.min(7,Math.round(Math.round(target/(45+rest))/sets)));
+  const days=+a.jours;
+  const T=days===2?[['legs','push','pull','core','hinge'],['legs','push','pull','hinge','shoulder']]
+    :days===3?[['legs','push','pull','core','hinge'],['legs','push','pull','core','arms'],['legs','hinge','push','pull','core']]
+    :[['push','pull','push','pull','shoulder','arms'],['legs','hinge','legs','core','calves'],['push','pull','push','pull','shoulder','arms'],['legs','hinge','legs','core','calves']];
+  const names=days===4?['Haut A','Bas A','Haut B','Bas B']:['Séance A','Séance B','Séance C'];
+  const sessions=T.map((slots,i)=>{
+    const used=new Set(),ex=[];
+    for(let k=0;ex.length<nEx&&k<slots.length*3;k++){
+      const e=recoPick(slots[k%slots.length],a.lieu,L.maxL,used,i+k);
+      if(e){used.add(e.n);ex.push({n:e.n,s:sets,r:e.t||L.reps,t:rest,b:!!e.b})}
+    }
+    const min=Math.round(ex.reduce((s,x)=>s+x.s*(45+x.t),0)/60);
+    return {n:names[i],ex,min};
+  });
+  const desc=`Niveau ${RLVL[a.lvl]}, ${RLIEU[a.lieu]}, ${days} jour${days>1?'s':''} par semaine, séances d'environ ${RDUR[a.dur]}.`;
+  return {name:'Programme recommandé',desc,sessions};
+}
+function renderReco(){
+  const box=$('reco');if(!box)return;
+  if(RQS.step<RQ.length){
+    const Q=RQ[RQS.step];
+    box.innerHTML=`<div class="pg-card"><div class="mut">Question ${RQS.step+1} sur ${RQ.length}</div><h3 style="margin-top:6px">${esc(Q.q)}</h3>`
+      +Q.o.map(([v,t])=>`<button class="rec" type="button" onclick="recoAns('${Q.k}','${v}')">${esc(t)}</button>`).join('')
+      +`<div class="row" style="margin-top:14px"><button class="sec" type="button" onclick="${RQS.step>0?'recoBack()':'recoClose()'}">${RQS.step>0?'← Retour':'Annuler'}</button></div></div>`;
+    return;
+  }
+  const P=recoBuild(RQS.a);RQS.plan=P;
+  box.innerHTML=`<div class="pg-card"><h3>Ton programme recommandé</h3><p class="mut" style="margin:0 0 6px">${esc(P.desc)}</p>`
+    +P.sessions.map(s=>`<div class="pg-sname">${esc(s.n)} · environ ${s.min} min</div><ul class="pg-exl">${s.ex.map(pExLine).join('')}</ul>`).join('')
+    +`<div class="row" style="margin-top:14px"><button type="button" onclick="recoSave(false)">Enregistrer et commencer</button></div>`
+    +`<div class="row"><button class="sec" type="button" onclick="recoSave(true)">Enregistrer sans commencer</button></div>`
+    +`<div class="row"><button class="sec" type="button" onclick="recoStart()">Refaire le questionnaire</button></div>`
+    +`<div class="row"><button class="del" type="button" onclick="recoClose()">Fermer</button></div>`
+    +`<p class="mut" style="font-size:13px">Repère général, pas un avis médical. Commence doucement et arrête si tu as mal.</p></div>`;
+}
+function recoSave(noStart){
+  const P=RQS.plan;if(!P)return;
+  const p={id:pNewId(),name:P.name,desc:P.desc,sessions:P.sessions.map(s=>({n:s.n,ex:s.ex})),u:Date.now()};
+  D.progs.push(p);save();
+  if(noStart){recoClose()}else{recoClose();pStart(p.id)}
+}
