@@ -157,6 +157,7 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 .rd-nut div{background:var(--soft);border-radius:14px;padding:10px 4px}
 .rd-nut b{display:block;font-size:16px}
 .rd-nut span{font-size:12px;color:var(--mut)}
+.btn-a{display:block;text-align:center;background:var(--teal);color:var(--tealink);border-radius:14px;padding:13px;font-weight:700;font-size:16px;text-decoration:none;margin-top:10px}
 #manual{padding:0}
 #manual>summary{cursor:pointer;list-style:none;padding:16px 18px;font-size:16px;font-weight:700;color:var(--teal)}
 #manual>summary::-webkit-details-marker{display:none}
@@ -191,6 +192,11 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     <textarea id="fbText" rows="4" placeholder="Ton message" aria-label="Ton message"></textarea>
     <div class="row"><button onclick="sendFeedback()">Envoyer au développeur</button></div>
     <div class="mut" id="fbMsg"></div>
+  </div>
+  <div class="card hide" id="donate">
+    <h3>Soutenir Kinetra</h3>
+    <p class="mut" style="margin-top:0">Kinetra est gratuite et sans publicité. Si l'app t'aide, tu peux la soutenir avec un don. C'est facultatif et cela ne débloque aucune fonction.</p>
+    <a class="btn-a" id="dnLink" href="#" target="_blank" rel="noopener">Faire un don</a>
   </div>
 </section>
 
@@ -533,6 +539,13 @@ function recToJournal(id){
   D.meals.push({id:Date.now(),d:day(),n:r.t+' (1 portion)',k:r.nut[0],p:r.nut[1]});save();renderMeals();
   const b=$('recAddBtn');if(b)b.textContent='Ajouté au journal ✓';
 }
+// Lien de don (Ko-fi, PayPal.me, etc.). Tant qu'il est vide, la carte « Soutenir » reste cachée.
+const DONATE_URL='https://paypal.me/JoelCourcol';
+function renderDonate(){
+  const c=$('donate');if(!c)return;
+  c.classList.toggle('hide',!DONATE_URL);
+  if(DONATE_URL)$('dnLink').href=DONATE_URL;
+}
 function renderToday(){
   const t=D.sets.filter(s=>s.d===day());
   const vol=t.reduce((a,s)=>a+s.kg*s.reps,0);
@@ -644,7 +657,7 @@ function render(){
   const cur=$('pex').value;
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
   if(exercises().includes(cur))$('pex').value=cur;
-  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();renderStreak();renderHome();renderRecipes();
+  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();renderStreak();renderHome();renderRecipes();renderDonate();
   if($('pname')&&document.activeElement!==$('pname'))$('pname').value=D.name||'';
   if(window.renderAccount)window.renderAccount();
 }
