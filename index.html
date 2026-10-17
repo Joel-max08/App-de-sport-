@@ -124,7 +124,7 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 #streak .st-dots{display:flex;gap:6px;margin-top:32px;align-items:center}
 #streak .st-dots i{position:relative}
 #streak .st-dots i.now.on{outline:none;box-shadow:0 0 0 3px #FF8A4C,0 4px 10px 3px rgba(255,138,76,.5)}
-#streak .fl{position:absolute;bottom:calc(100% + 1px);transform:translateX(-50%);pointer-events:none}
+#streak .fl{position:absolute;bottom:calc(100% - 3px);transform:translateX(-50%);pointer-events:none}
 #streak .fl svg{display:block;width:100%;height:100%;overflow:visible;transform-origin:50% 100%;animation:stFlick 1.2s ease-in-out infinite}
 @keyframes stFlick{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.08,.92) translateY(-1px)}}
 @media (prefers-reduced-motion:reduce){#streak .fl svg{animation:none}}
@@ -452,7 +452,7 @@ function renderStreak(){
   else msg='Fais une séance cette semaine pour lancer ta série.';
   // Flammes autour de la case de la semaine en cours : une au-dessus, une à chaque bout
   const FLAME='<path d="M12 1c1.2 4.2 5.8 6.6 5.8 13.2A5.8 5.8 0 0 1 6.2 14.2c0-2.6 1.2-4.3 2.6-5.6.4 2.1 1.3 3.4 2.6 4C10.8 9.4 10.4 5.6 12 1z" fill="#FF8A4C"/><path d="M12 13.5c.6 2 2.6 3 2.6 5.6a2.6 2.6 0 0 1-5.2 0c0-1.2.6-2 1.3-2.7.2 1 .6 1.5 1.3 1.9-.4-1.2-.5-2.5 0-4.8z" fill="#FFD08A"/>';
-  const fire=[[20,16,20,'0s'],[42,22,28,'-.5s'],[64,18,24,'-.9s'],[84,14,18,'-.3s']].map(([l,w,hh,d])=>`<span class="fl" style="left:${l}%;width:${w}px;height:${hh}px"><svg style="animation-delay:${d}" viewBox="0 0 24 28" aria-hidden="true">${FLAME}</svg></span>`).join('');
+  const fire=[[50,24,30,'0s']].map(([l,w,hh,d])=>`<span class="fl" style="left:${l}%;width:${w}px;height:${hh}px"><svg style="animation-delay:${d}" viewBox="0 0 24 28" aria-hidden="true">${FLAME}</svg></span>`).join('');
   const dots=[];for(let j=7;j>=0;j--){const w=wk(j);const on=active.has(w);dots.push(`<i class="${on?'on':''}${j===0?' now':''}" title="Semaine du ${w}">${j===0&&on?fire:''}</i>`)}
   box.innerHTML=`<div class="mut">Régularité</div>`
     +`<div class="st-big">${n} semaine${n>1?'s':''} de suite</div>`
