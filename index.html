@@ -62,6 +62,9 @@ button.x{width:34px;height:34px;flex:none;padding:0;border-radius:50%;background
 .tm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 canvas{display:block;width:100%;height:200px;margin-top:12px}
 .hide{display:none!important}
+.linkbtn{background:none;color:var(--teal);padding:8px 0 0;font-size:15px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips button{background:var(--soft);color:var(--ink);font-size:14px;font-weight:600;padding:8px 12px;border-radius:999px}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--nav);border-top:1px solid var(--line);padding:6px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;color:var(--mut);padding:4px 0;font-size:12px;font-weight:500;border-radius:12px}
 nav .ic{display:flex;align-items:center;justify-content:center;width:56px;height:30px;border-radius:15px;transition:background .2s}
@@ -91,7 +94,10 @@ nav button.on .ic{background:var(--tsoft)}
     </div>
     <div class="row"><button onclick="addSet()">Ajouter la série</button></div>
     <div class="mut" id="last"></div>
+    <button class="linkbtn" type="button" onclick="toggleMoves()" id="movesBtn">Voir comment faire les exercices</button>
+    <div class="chips hide" id="moves"></div>
   </div>
+  <div class="card hide" id="demoCard"><div id="demo"></div></div>
   <div class="card">
     <h3>Repos</h3>
     <div class="ringwrap" id="rw">
@@ -190,6 +196,7 @@ nav button.on .ic{background:var(--tsoft)}
   <button data-v="data"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.8-4 4-5.5 7.5-5.5s6.7 1.5 7.5 5.5"/></svg></span>Compte</button>
 </nav>
 
+<script src="bonhomme.js"></script>
 <script>
 const KEY='sportapp.v1';
 let D;
@@ -233,7 +240,22 @@ function lastInfo(){
   const prev=D.sets.filter(s=>s.ex===ex&&s.d!==day()).slice(-1)[0];
   $('last').textContent=prev?`Dernière fois (${fmt(prev.d)}) : ${prev.kg} kg × ${prev.reps}`:'';
 }
-$('ex').addEventListener('input',lastInfo);
+// Bonhomme qui montre le mouvement
+let demoId=null;
+function showDemo(){
+  const B=window.Bonhomme;if(!B)return;
+  const id=B.find($('ex').value);
+  if(id===demoId)return;demoId=id;
+  $('demoCard').classList.toggle('hide',!B.mount($('demo'),id||''));
+}
+function toggleMoves(){
+  const m=$('moves'),B=window.Bonhomme;if(!B)return;
+  if(!m.innerHTML)m.innerHTML=B.names().map(n=>`<button type="button">${esc(n)}</button>`).join('');
+  m.onclick=e=>{const b=e.target.closest('button');if(!b)return;$('ex').value=b.textContent;lastInfo();showDemo();m.classList.add('hide');$('movesBtn').textContent='Voir comment faire les exercices';$('demoCard').scrollIntoView({behavior:'smooth',block:'nearest'})};
+  const open=m.classList.toggle('hide')===false;
+  $('movesBtn').textContent=open?'Masquer la liste':'Voir comment faire les exercices';
+}
+$('ex').addEventListener('input',()=>{lastInfo();showDemo()});
 
 function isPR(s){const p=D.sets.filter(x=>x.ex===s.ex&&x.id<s.id);return p.length>0&&p.every(x=>x.kg<s.kg)}
 function setRow(s){return `<div class="set"><div class="si"><span><b>${esc(s.ex)}</b>${isPR(s)?'<span class="pr">Record</span>':''}</span><span class="mut num">${s.kg} kg × ${s.reps}</span></div><button class="x" aria-label="Supprimer la série" onclick="delSet(${s.id})">×</button></div>`}
@@ -345,7 +367,7 @@ function importData(e){
 }
 
 function render(){
-  $('exlist').innerHTML=exercises().map(e=>`<option value="${esc(e)}">`).join('');
+  $('exlist').innerHTML=[...new Set([...exercises(),...(window.Bonhomme?Bonhomme.names():[])])].map(e=>`<option value="${esc(e)}">`).join('');
   const cur=$('pex').value;
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
   if(exercises().includes(cur))$('pex').value=cur;
