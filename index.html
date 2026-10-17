@@ -118,6 +118,14 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .pg-edx input{padding:11px 10px}
 .pg-edb{display:flex;align-items:center;font-size:14px;color:var(--mut);margin:0 0 4px}
 .pg-edb input{display:inline-block;width:auto;margin:0 8px 0 0;accent-color:var(--teal)}
+.sl-det{padding:0 0 10px}
+.sl-det summary{font-size:14px;color:var(--teal);font-weight:600;cursor:pointer;padding:4px 0}
+.sl-row{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.sl-thumb{flex:0 0 118px;border-radius:12px;background:var(--field);overflow:hidden}
+.sl-thumb .bh-hd,.sl-thumb .bh-cues,.sl-thumb .bh-mus{display:none}
+.sl-thumb .bh{padding:0;margin:0;background:none;border:0}
+.sl-thumb svg{display:block;width:100%;height:auto}
+.sl-txt{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:15px}
 #streak{padding:16px 18px}
 #streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
@@ -703,7 +711,15 @@ const SESS=[
  {n:'Pull (tirage)',s:[['tractions',30,50],['rowing',40,30],['tirage',40,30],['curl',30,30],['sdt',40,50],['crunch',30,30],['gainage',30,30],['mountain',30,20]]},
  {n:'Maison, sans matériel',s:[['squatpdc',40,20],['pompes',30,30],['fente',40,20],['dipschaise',30,30],['pont',40,20],['mountain',30,20],['crunch',30,20],['gainage',30,20],['jacks',40,20],['bulgare',40,20]]}
 ];function sessList(){
-  $('sessList').innerHTML=SESS.map((x,i)=>{const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `<div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div>`}).join('');
+  $('sessList').innerHTML=SESS.map((x,i)=>{const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `<div class="sesswrap"><div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div><details class="sl-det" ontoggle="sessShow(${i},this)"><summary>Voir les exercices</summary><div class="sl-list"></div></details></div>`}).join('');
+}
+// Liste des exercices d'une séance avec leur dessin (dessins créés seulement à l'ouverture)
+function sessShow(i,el){
+  if(!el.open||el.dataset.done)return;
+  el.dataset.done='1';
+  const st=SESS[i].s;
+  el.querySelector('.sl-list').innerHTML=st.map((x,k)=>{const nm=x[3]||(Bonhomme._X[x[0]]||{}).n||x[0];return `<div class="sl-row"><div class="sl-thumb" id="slt${i}_${k}"></div><div class="sl-txt"><b>${esc(nm)}</b><span class="mut">${x[1]} s d'effort · ${x[2]} s de repos</span></div></div>`}).join('');
+  st.forEach((x,k)=>{const t=document.getElementById(`slt${i}_${k}`);if(t)Bonhomme.mount(t,x[0])});
 }
 let run=null,rTick=null;
 const PREP=10;
