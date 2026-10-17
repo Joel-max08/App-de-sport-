@@ -123,7 +123,8 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
 #streak .st-dots{display:flex;gap:6px;margin-top:32px;align-items:center}
 #streak .st-dots i{position:relative}
-#streak .fire{position:absolute;left:-10px;right:-10px;top:-22px;bottom:-8px;pointer-events:none}
+#streak .fire{position:absolute;left:-12px;right:-12px;top:-24px;bottom:-10px;pointer-events:none}
+#streak .st-dots i.now.on{box-shadow:0 0 0 2px var(--card),0 0 0 3.5px #FF8A4C,0 0 12px 3px rgba(255,138,76,.45)}
 #streak .fire svg{display:block;width:100%;height:100%;overflow:visible}
 #streak .fire path{transform-box:fill-box;transform-origin:50% 100%;animation:stFlick 1.2s ease-in-out infinite}
 #streak .fire path:nth-child(3n+2){animation-duration:1.6s;animation-delay:-.4s}
@@ -452,11 +453,17 @@ function renderStreak(){
   if(doneNow)msg='Cette semaine est faite. Reviens la semaine prochaine pour prolonger ta série.';
   else if(n>0)msg=`Plus que ${daysLeft} jour${daysLeft>1?'s':''} cette semaine pour garder ta série. Une séance suffit.`;
   else msg='Fais une séance cette semaine pour lancer ta série.';
-  // Flammes qui encadrent la case de la semaine en cours (dessus et bouts)
+  // Anneau de flammes autour de la case de la semaine en cours : dessus, bouts et dessous
   const tg=(x,tip,hw,c)=>`<path d="M${x-hw},23 Q${x-hw-1.5},${((tip+23)/2).toFixed(1)} ${x},${tip} Q${x+hw+1.5},${((tip+23)/2).toFixed(1)} ${x+hw},23Z" fill="${c}"/>`;
+  const tgL=(y,hw,c)=>`<path d="M9,${y-hw} Q5,${y-hw-1.2} 1,${y} Q5,${y+hw+1.2} 9,${y+hw}Z" fill="${c}"/>`;
+  const tgR=(y,hw,c)=>`<path d="M91,${y-hw} Q95,${y-hw-1.2} 99,${y} Q95,${y+hw+1.2} 91,${y+hw}Z" fill="${c}"/>`;
+  const tgD=(x,tip,hw,c)=>`<path d="M${x-hw},29 Q${x-hw-1},${((tip+29)/2).toFixed(1)} ${x},${tip} Q${x+hw+1},${((tip+29)/2).toFixed(1)} ${x+hw},29Z" fill="${c}"/>`;
   const tips=[[14,12,7],[28,4,8],[42,9,7],[56,2,8],[70,8,7],[84,11,7]];
+  const sides=[[24,3.5],[30,3.5]];
+  const under=[[22,36,5],[50,37,6],[78,36,5]];
   let tongues=tips.map(([x,t,w])=>tg(x,t,w,'#FF8A4C')).join('')+tips.map(([x,t,w])=>tg(x,t+7,w*.5,'#FFD08A')).join('')
-    +tg(5,16,4,'#FF8A4C')+tg(95,16,4,'#FF8A4C');
+    +sides.map(([y,w])=>tgL(y,w,'#FF8A4C')).join('')+sides.map(([y,w])=>tgR(y,w,'#FF8A4C')).join('')
+    +under.map(([x,t,w])=>tgD(x,t,w,'#FF8A4C')).join('');
   const fire=`<span class="fire"><svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">${tongues}</svg></span>`;
   const dots=[];for(let j=7;j>=0;j--){const w=wk(j);const on=active.has(w);dots.push(`<i class="${on?'on':''}${j===0?' now':''}" title="Semaine du ${w}">${j===0&&on?fire:''}</i>`)}
   box.innerHTML=`<div class="mut">Régularité</div>`
