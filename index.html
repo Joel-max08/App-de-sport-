@@ -64,6 +64,12 @@ canvas{display:block;width:100%;height:200px;margin-top:12px}
 .hide{display:none!important}
 .linkbtn{background:none;color:var(--teal);padding:8px 0 0;font-size:15px;font-weight:600}
 .tm-big{font-size:48px;font-weight:700;text-align:center;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:8px 0 2px}
+#runCard{position:fixed;inset:0;z-index:30;margin:0;border:0;border-radius:0;overflow-y:auto;background:var(--bg);padding:calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+#runCard h3{font-size:22px}
+#runCard .bh-hd{display:none}
+#runCard .bh svg{max-width:min(80vw,400px)}
+#runCard .bh-cues li{font-size:17px}
+#runCard .tm-big{font-size:64px;margin:12px 0 4px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .chips button{background:var(--soft);color:var(--ink);font-size:14px;font-weight:600;padding:8px 12px;border-radius:999px}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--nav);border-top:1px solid var(--line);padding:6px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}
@@ -252,7 +258,7 @@ function addSet(){
 function delSet(id){D.sets=D.sets.filter(s=>s.id!==id);D.del.push(id);save();render()}
 function lastInfo(){
   const ex=$('ex').value.trim();if(!ex){$('last').textContent='';return}
-  const prev=D.sets.filter(s=>s.ex===ex&&s.d!==day()).slice(-1)[0];
+  const prev=D.sets.filter(s=>s.ex===ex&&s.d!==day()&&!s.sec).slice(-1)[0];
   $('last').textContent=prev?`Dernière fois (${fmt(prev.d)}) : ${prev.kg} kg × ${prev.reps}`:'';
 }
 // Bonhomme qui montre le mouvement
@@ -273,7 +279,7 @@ function toggleMoves(){
 $('ex').addEventListener('input',()=>{lastInfo();showDemo()});
 
 function isPR(s){const p=D.sets.filter(x=>x.ex===s.ex&&x.id<s.id);return p.length>0&&p.every(x=>x.kg<s.kg)}
-function setRow(s){return `<div class="set"><div class="si"><span><b>${esc(s.ex)}</b>${isPR(s)?'<span class="pr">Record</span>':''}</span><span class="mut num">${s.kg} kg × ${s.reps}</span></div><button class="x" aria-label="Supprimer la série" onclick="delSet(${s.id})">×</button></div>`}
+function setRow(s){return `<div class="set"><div class="si"><span><b>${esc(s.ex)}</b>${isPR(s)?'<span class="pr">Record</span>':''}</span><span class="mut num">${s.sec?s.sec+" s":s.kg+" kg × "+s.reps}</span></div><button class="x" aria-label="Supprimer la série" onclick="delSet(${s.id})">×</button></div>`}
 const nf=n=>Math.round(n).toLocaleString('fr-FR');
 function renderToday(){
   const t=D.sets.filter(s=>s.d===day());
@@ -334,7 +340,7 @@ function line(cv,pts,unit,msg){
 }
 function drawProg(){
   const ex=$('pex').value;const by={};
-  D.sets.filter(s=>s.ex===ex).forEach(s=>by[s.d]=Math.max(by[s.d]||0,s.kg));
+  D.sets.filter(s=>s.ex===ex&&!s.sec).forEach(s=>by[s.d]=Math.max(by[s.d]||0,s.kg));
   line($('cv1'),Object.keys(by).sort().map(d=>({x:d,y:by[d]})),' kg','Fais deux séances du même exercice\npour voir ta courbe.');
   line($('cv2'),[...D.bw].sort((a,b)=>a.d<b.d?-1:1).map(b=>({x:b.d,y:b.kg})),' kg','Ajoute ton poids à deux dates\npour voir ta courbe.');
 }
@@ -405,14 +411,15 @@ const SESS=[
  {n:'Maison, sans matériel',s:[['squatpdc',40,20],['pompes',30,30],['fente',40,20],['dipschaise',30,30],['pont',40,20],['mountain',30,20],['crunch',30,20],['gainage',30,20],['jacks',40,20]]}
 ];
 function sessList(){
-  $('sessList').innerHTML=SESS.map((x,i)=>{const T=x.s.reduce((a,st)=>a+st[1]+st[2],0);return `<div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div>`}).join('');
+  $('sessList').innerHTML=SESS.map((x,i)=>{const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `<div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div>`}).join('');
 }
 let run=null,rTick=null;
+const PREP=10;
 const fmtS=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 function vib(){try{if(navigator.vibrate)navigator.vibrate(200)}catch(_){}}
 function startSess(i){
   clearInterval(rTick);
-  run={s:SESS[i],k:0,ph:'work',left:0,paused:false};
+  run={s:SESS[i],k:0,ph:'prep',left:PREP,paused:false};
   $('pre').classList.add('hide');$('runCard').classList.remove('hide');
   $('runPauseBtn').textContent='Pause';
   scrollTo(0,0);
@@ -421,7 +428,7 @@ function startSess(i){
 }
 function stepStart(){
   const st=run.s.s[run.k],id=st[0];
-  run.ph='work';run.left=st[1];
+  run.ph='prep';run.left=PREP;
   $('runProg').textContent=`Exercice ${run.k+1} sur ${run.s.s.length} · ${run.s.n}`;
   $('runName').textContent=Bonhomme._X[id].n;
   Bonhomme.mount($('runDemo'),id);
@@ -429,32 +436,43 @@ function stepStart(){
 }
 function phaseUI(){
   $('runTm').textContent=fmtS(run.left);
-  $('runPhase').textContent=run.ph==='work'?"Fais l'exercice":'Repos, prépare-toi pour le suivant';
+  $('runPhase').textContent=run.ph==='prep'?'Prépare-toi':run.ph==='work'?"Fais l'exercice":'Repos';
+}
+function endWork(){
+  if(!run||run.ph!=='work')return;
+  const st=run.s.s[run.k],done=st[1]-run.left;
+  if(done>0){D.sets.push({id:Date.now(),d:day(),ex:Bonhomme._X[st[0]].n,kg:0,reps:0,sec:done});save()}
 }
 function nextStep(){
   run.k++;
   if(run.k>=run.s.s.length){finish();return}
-  stepStart();vib();
+  stepStart();
 }
 function tickRun(){
   if(!run||run.paused)return;
   run.left--;
   if(run.left>0){phaseUI();return}
   const st=run.s.s[run.k];
-  if(run.ph==='work'&&st[2]>0){run.ph='rest';run.left=st[2];vib();phaseUI()}
+  if(run.ph==='prep'){run.ph='work';run.left=st[1];vib()}
+  else if(run.ph==='work'){
+    endWork();
+    if(st[2]>0&&run.k<run.s.s.length-1){run.ph='rest';run.left=st[2];vib()}
+    else nextStep();
+  }
   else nextStep();
+  if(run)phaseUI();
 }
 function runPause(){if(!run)return;run.paused=!run.paused;$('runPauseBtn').textContent=run.paused?'Reprendre':'Pause'}
-function runSkip(){if(!run)return;nextStep()}
+function runSkip(){if(!run)return;endWork();nextStep()}
 function finish(){
   clearInterval(rTick);run=null;
   $('runProg').textContent='';$('runName').textContent='Séance terminée';
   Bonhomme.mount($('runDemo'),'');
-  $('runTm').textContent='';$('runPhase').textContent='Bravo, tu as fini la séance.';
+  $('runTm').textContent='';$('runPhase').textContent="Bravo, tu as fini la séance. Tes exercices sont dans l'historique.";
   $('runPauseBtn').textContent='Pause';
 }
 function runStop(){
-  clearInterval(rTick);run=null;
+  clearInterval(rTick);endWork();run=null;
   Bonhomme.mount($('runDemo'),'');
   $('runCard').classList.add('hide');$('pre').classList.remove('hide');
 }
