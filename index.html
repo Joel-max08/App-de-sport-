@@ -118,6 +118,22 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .pg-edx input{padding:11px 10px}
 .pg-edb{display:flex;align-items:center;font-size:14px;color:var(--mut);margin:0 0 4px}
 .pg-edb input{display:inline-block;width:auto;margin:0 8px 0 0;accent-color:var(--teal)}
+#streak{padding:16px 18px}
+#streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
+#streak .st-msg{font-size:15px;margin:6px 0 0}
+#streak .st-dots{display:flex;gap:6px;margin-top:12px;align-items:center}
+#streak .st-dots i{flex:1;height:10px;border-radius:999px;background:var(--line)}
+#streak .st-dots i.on{background:var(--teal)}
+#streak .st-dots i.now{outline:2px solid var(--teal);outline-offset:2px}
+#streak .st-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:6px}
+#manual{padding:0}
+#manual>summary{cursor:pointer;list-style:none;padding:16px 18px;font-size:16px;font-weight:700;color:var(--teal)}
+#manual>summary::-webkit-details-marker{display:none}
+#manual[open]>summary{border-bottom:1px solid var(--line)}
+#manual .manualbody{padding:14px 18px 18px}
+.sub-h{font-size:15px;font-weight:700;margin:18px 0 6px}
+#v-seance:has(#runCard:not(.hide)) #manual{display:none}
+#v-seance:has(#runCard:not(.hide)) #pre{display:none}
 </style>
 </head>
 <body>
@@ -130,10 +146,11 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 <main>
 
 <section id="v-seance">
+  <div class="card" id="streak"></div>
   <div id="progBox"></div>
   <div class="card" id="pre">
     <h3>Séances toutes faites</h3>
-    <p class="mut" style="margin-top:0">Chaque exercice s'enchaîne avec sa durée, son repos et le bonhomme qui montre le geste.</p>
+    <p class="mut" style="margin-top:0">Choisis une séance : le bonhomme te montre chaque exercice.</p>
     <div id="sessList"></div>
   </div>
   <div class="card hide" id="runCard">
@@ -146,8 +163,9 @@ details.pg-prog summary::-webkit-details-marker{display:none}
     <div class="row"><button class="sec" type="button" id="runPauseBtn" onclick="runPause()">Pause</button><button type="button" id="runSkipBtn" onclick="runSkip()">Passer</button></div>
     <div class="row"><button class="del" type="button" onclick="runStop()">Retour aux séances</button></div>
   </div>
-  <div class="card">
-    <h3>Nouvelle série</h3>
+  <details class="card" id="manual">
+    <summary>Saisir une série à la main</summary>
+    <div class="manualbody">
     <input id="ex" list="exlist" placeholder="Exercice (ex. développé couché)" autocomplete="off">
     <datalist id="exlist"></datalist>
     <div class="row">
@@ -158,10 +176,8 @@ details.pg-prog summary::-webkit-details-marker{display:none}
     <div class="mut" id="last"></div>
     <button class="linkbtn" type="button" onclick="toggleMoves()" id="movesBtn">Voir comment faire les exercices</button>
     <div class="chips hide" id="moves"></div>
-  </div>
-  <div class="card hide" id="demoCard"><div id="demo"></div></div>
-  <div class="card">
-    <h3>Repos</h3>
+    <div class="card hide" id="demoCard"><div id="demo"></div></div>
+    <div class="sub-h">Repos</div>
     <div class="ringwrap" id="rw">
       <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="rb" cx="60" cy="60" r="52"/><circle class="rf" id="rf" cx="60" cy="60" r="52" transform="rotate(-90 60 60)"/></svg>
       <div class="tm" id="tm" role="timer" aria-live="off">0:00</div>
@@ -172,12 +188,8 @@ details.pg-prog summary::-webkit-details-marker{display:none}
       <button class="sec" onclick="rest(120)">2:00</button>
       <button class="sec" onclick="rest(0)">Arrêter</button>
     </div>
-  </div>
-  <div class="card">
-    <h3>Aujourd'hui</h3>
-    <div class="stats" id="todayStats"></div>
-    <div id="today"></div>
-  </div>
+    </div>
+  </details>
 </section>
 
 <section id="v-plans" class="hide">
@@ -186,25 +198,15 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 </section>
 
 <section id="v-histo" class="hide">
+  <div class="card">
+    <h3>Aujourd'hui</h3>
+    <div class="stats" id="todayStats"></div>
+    <div id="today"></div>
+  </div>
   <div class="card"><div id="histo"></div></div>
 </section>
 
-<section id="v-prog" class="hide">
-  <div class="card">
-    <h3>Progression</h3>
-    <select id="pex" onchange="drawProg()" aria-label="Exercice"></select>
-    <canvas id="cv1" role="img" aria-label="Courbe de la charge maximale par séance"></canvas>
-    <div class="mut">Charge maximale par séance</div>
-  </div>
-  <div class="card">
-    <h3>Poids du corps</h3>
-    <div class="row">
-      <input id="bw" type="number" inputmode="decimal" placeholder="kg" aria-label="Poids en kg">
-      <button onclick="addBW()">Ajouter</button>
-    </div>
-    <canvas id="cv2" role="img" aria-label="Courbe du poids du corps"></canvas>
-  </div>
-</section>
+
 
 <section id="v-repas" class="hide">
   <div class="card">
@@ -236,6 +238,20 @@ details.pg-prog summary::-webkit-details-marker{display:none}
     <h3>Compte</h3>
     <div id="acctBody" class="mut">Chargement…</div>
   </div>
+    <div class="card">
+    <h3>Progression</h3>
+    <select id="pex" onchange="drawProg()" aria-label="Exercice"></select>
+    <canvas id="cv1" role="img" aria-label="Courbe de la charge maximale par séance"></canvas>
+    <div class="mut">Charge maximale par séance</div>
+  </div>
+  <div class="card">
+    <h3>Poids du corps</h3>
+    <div class="row">
+      <input id="bw" type="number" inputmode="decimal" placeholder="kg" aria-label="Poids en kg">
+      <button onclick="addBW()">Ajouter</button>
+    </div>
+    <canvas id="cv2" role="img" aria-label="Courbe du poids du corps"></canvas>
+  </div>
   <div class="card">
     <h3>Apparence</h3>
     <select id="theme" onchange="setTheme(this.value)" aria-label="Thème">
@@ -259,7 +275,6 @@ details.pg-prog summary::-webkit-details-marker{display:none}
   <button data-v="seance" class="on"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span>Séance</button>
   <button data-v="plans"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5h6V7H9zM7.5 5.5H6A1.5 1.5 0 0 0 4.5 7v11.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V7A1.5 1.5 0 0 0 18 5.5h-1.5M8.5 12h7M8.5 15.5h5"/></svg></span>Programmes</button>
   <button data-v="histo"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>Journal</button>
-  <button data-v="prog"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg></span>Progrès</button>
   <button data-v="repas"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg></span>Repas</button>
   <button data-v="data"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.8-4 4-5.5 7.5-5.5s6.7 1.5 7.5 5.5"/></svg></span>Compte</button>
 </nav>
@@ -325,6 +340,31 @@ $('ex').addEventListener('input',()=>{lastInfo();showDemo()});
 function isPR(s){const p=D.sets.filter(x=>x.ex===s.ex&&x.id<s.id);return p.length>0&&p.every(x=>x.kg<s.kg)}
 function setRow(s){return `<div class="set"><div class="si"><span><b>${esc(s.ex)}</b>${isPR(s)?'<span class="pr">Record</span>':''}</span><span class="mut num">${s.sec?s.sec+" s":s.kg+" kg × "+s.reps}</span></div><button class="x" aria-label="Supprimer la série" onclick="delSet(${s.id})">×</button></div>`}
 const nf=n=>Math.round(n).toLocaleString('fr-FR');
+// Régularité : une semaine (lundi-dimanche) compte si on y a fait au moins une série
+function wkStart(s){const[y,m,d]=s.split('-').map(Number);const t=new Date(y,m-1,d);t.setDate(t.getDate()-((t.getDay()+6)%7));return day(t.getTime())}
+function renderStreak(){
+  const box=$('streak');if(!box)return;
+  const active=new Set(D.sets.map(s=>wkStart(s.d)));
+  const now=new Date(),k=(now.getDay()+6)%7;
+  const thisWk=wkStart(day());
+  const [y,m,d]=thisWk.split('-').map(Number);
+  const wk=i=>day(new Date(y,m-1,d-7*i).getTime());
+  // semaines de suite jusqu'à maintenant (la semaine en cours ne coupe pas la série tant qu'elle n'est pas finie)
+  let i0=active.has(wk(0))?0:1,n=0;
+  while(active.has(wk(i0+n)))n++;
+  const doneNow=active.has(wk(0));
+  const daysLeft=7-k;
+  let msg;
+  if(doneNow)msg='Cette semaine est faite. Reviens la semaine prochaine pour prolonger ta série.';
+  else if(n>0)msg=`Plus que ${daysLeft} jour${daysLeft>1?'s':''} cette semaine pour garder ta série. Une séance suffit.`;
+  else msg='Fais une séance cette semaine pour lancer ta série.';
+  const dots=[];for(let j=7;j>=0;j--){const w=wk(j);dots.push(`<i class="${active.has(w)?'on':''}${j===0?' now':''}" title="Semaine du ${w}"></i>`)}
+  box.innerHTML=`<div class="mut">Régularité</div>`
+    +`<div class="st-big">${n} semaine${n>1?'s':''} de suite</div>`
+    +`<div class="st-msg">${msg}</div>`
+    +`<div class="st-dots">${dots.join('')}</div>`
+    +`<div class="st-lbl"><span>il y a 7 semaines</span><span>cette semaine</span></div>`;
+}
 function renderToday(){
   const t=D.sets.filter(s=>s.d===day());
   const vol=t.reduce((a,s)=>a+s.kg*s.reps,0);
@@ -436,7 +476,7 @@ function render(){
   const cur=$('pex').value;
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
   if(exercises().includes(cur))$('pex').value=cur;
-  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();
+  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();renderStreak();
   if(window.renderAccount)window.renderAccount();
 }
 applyTheme();

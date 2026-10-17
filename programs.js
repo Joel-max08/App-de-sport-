@@ -170,7 +170,7 @@ document.getElementById('plansEdit').addEventListener('input',e=>{
 // Navigation entre onglets
 function go(v){
   document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
-  ['seance','plans','histo','prog','repas','data'].forEach(k=>$('v-'+k).classList.toggle('hide',k!==v));
+  ['seance','plans','histo','repas','data'].forEach(k=>$('v-'+k).classList.toggle('hide',k!==v));
   $('title').textContent=titles[v];
   pFlash='';scrollTo(0,0);render();
 }
