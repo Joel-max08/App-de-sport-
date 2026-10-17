@@ -137,6 +137,11 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .done-t th,.done-t td{padding:8px 4px;border-top:1px solid var(--line);text-align:left}
 .done-t th{color:var(--mut);font-weight:600;font-size:13px}
 .done-t td.num,.done-t th.num{text-align:right}
+.crown{display:block;width:96px;height:auto;margin:0 auto 2px}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti i{position:absolute;top:-20px;border-radius:2px;animation-name:cfall;animation-timing-function:cubic-bezier(.25,.6,.4,1);animation-fill-mode:both}
+@keyframes cfall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion:reduce){.confetti{display:none}}
 #streak{padding:16px 18px}
 #streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
@@ -244,10 +249,24 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     <div class="row"><button class="sec" type="button" id="runPauseBtn" onclick="runPause()">Pause</button><button type="button" id="runSkipBtn" onclick="runSkip()">Passer</button></div>
     <div class="row"><button class="del" type="button" onclick="runStop()">Retour aux séances</button></div>
   </div>
-  <div class="card hide" id="doneCard">
-    <h3 style="margin:0 0 4px">Bien joué !</h3>
+  <div class="card hide" id="doneCard" style="text-align:center">
+    <svg class="crown" viewBox="0 0 120 84" aria-hidden="true">
+      <defs>
+        <linearGradient id="crG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE7A0"/><stop offset="1" stop-color="#D99A1E"/></linearGradient>
+        <radialGradient id="crR" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FF9AA8"/><stop offset=".45" stop-color="#C0102E"/><stop offset="1" stop-color="#5E0716"/></radialGradient>
+      </defs>
+      <path d="M8 66 L4 26 L34 46 L60 12 L86 46 L116 26 L112 66 Z" fill="url(#crG)" stroke="#B67A12" stroke-width="2" stroke-linejoin="round"/>
+      <rect x="8" y="60" width="104" height="11" rx="3" fill="#B67A12"/>
+      <circle cx="4" cy="26" r="4" fill="#FFE7A0" stroke="#B67A12" stroke-width="1.5"/>
+      <circle cx="60" cy="10" r="4" fill="#FFE7A0" stroke="#B67A12" stroke-width="1.5"/>
+      <circle cx="116" cy="26" r="4" fill="#FFE7A0" stroke="#B67A12" stroke-width="1.5"/>
+      <rect x="40" y="38" width="40" height="5" rx="2.5" fill="#6E0716"/>
+      <rect x="31" y="29" width="13" height="23" rx="4" fill="url(#crR)"/>
+      <rect x="76" y="29" width="13" height="23" rx="4" fill="url(#crR)"/>
+    </svg>
+    <h3 style="margin:4px 0 4px">Bien joué !</h3>
     <p class="mut" style="margin:0 0 10px">Voici ce que tu as fait pendant cette séance.</p>
-    <div id="doneTable"></div>
+    <div id="doneTable" style="text-align:left"></div>
     <div class="row"><button type="button" onclick="doneClose()">Retour aux séances</button></div>
   </div>
   <details class="card" id="manual">
@@ -800,7 +819,7 @@ function endWork(){
   if(!run||run.ph!=='work')return;
   const st=run.s.s[run.k];
   run.log=run.log||[];
-  if(st[4]){const reps=parseInt($('runReps').value),kg=st[4].hasKg?(parseFloat($('runKg').value)||0):0;if(reps>0){D.sets.push({id:Date.now(),d:day(),ex:st[3],kg,reps});save();run.log.push({ex:st[3],hk:!!st[4].hasKg,kg,reps})}return}
+  if(st[4]){const reps=parseInt($('runReps').value),kg=st[4].hasKg?(parseFloat($('runKg').value)||0):0;if(reps>0){D.sets.push({id:Date.now(),d:day(),ex:st[3],kg,reps});save()}run.log.push({ex:st[3],hk:!!st[4].hasKg,kg,reps:reps>0?reps:null});return}
   const done=st[1]-run.left;
   if(done>0){const nm=st[3]||Bonhomme._X[st[0]].n;D.sets.push({id:Date.now(),d:day(),ex:nm,kg:0,reps:0,sec:done});save();run.log.push({ex:nm,hk:false,sec:done})}
 }
@@ -846,11 +865,24 @@ function finish(){
   const cnt={};
   const rows=log.map(r=>{cnt[r.ex]=(cnt[r.ex]||0)+1;
     const poids=r.sec!=null?'—':(r.hk?r.kg+' kg':'poids du corps');
-    const det=r.sec!=null?r.sec+' s':r.reps+' rép.';
+    const det=r.sec!=null?r.sec+' s':(r.reps!=null?r.reps+' rép.':'—');
     return `<tr><td>${esc(r.ex)}</td><td class="num">${cnt[r.ex]}</td><td class="num">${poids}</td><td class="num">${det}</td></tr>`}).join('');
-  $('doneTable').innerHTML=rows?`<table class="done-t"><thead><tr><th>Exercice</th><th class="num">Série</th><th class="num">Poids</th><th class="num">Détail</th></tr></thead><tbody>${rows}</tbody></table>`:`<p class="mut">Aucune charge saisie pendant cette séance. Note le poids à chaque série pour le retrouver ici.</p>`;
+  $('doneTable').innerHTML=rows?`<table class="done-t"><thead><tr><th>Exercice</th><th class="num">Série</th><th class="num">Poids</th><th class="num">Détail</th></tr></thead><tbody>${rows}</tbody></table>`:`<p class="mut">Aucune série enregistrée pendant cette séance.</p>`;
   $('doneCard').classList.remove('hide');
   scrollTo(0,0);
+  confettiBurst();
+}
+function confettiBurst(){
+  try{if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}
+  const box=document.createElement('div');box.className='confetti';
+  const cols=['#00A99D','#22CDBE','#FF8A4C','#FFD08A','#C23B3B','#FFFFFF'];
+  let h='';
+  for(let i=0;i<70;i++){
+    const x=Math.random()*100,d=(Math.random()*0.6).toFixed(2),t=(2.2+Math.random()*1.8).toFixed(2),w=6+Math.random()*6,hh=w*(0.45+Math.random()*0.7);
+    h+=`<i style="left:${x.toFixed(1)}%;width:${w.toFixed(1)}px;height:${hh.toFixed(1)}px;background:${cols[i%cols.length]};animation-duration:${t}s;animation-delay:${d}s;transform:rotate(${Math.round(Math.random()*360)}deg)"></i>`;
+  }
+  box.innerHTML=h;document.body.appendChild(box);
+  setTimeout(()=>box.remove(),4800);
 }
 function doneClose(){
   $('doneCard').classList.add('hide');$('pre').classList.remove('hide');
