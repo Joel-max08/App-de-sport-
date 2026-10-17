@@ -130,6 +130,14 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 #streak .st-dots i.on{background:var(--teal)}
 #streak .st-dots i.now{outline:2px solid var(--teal);outline-offset:2px}
 #streak .st-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:6px}
+#v-accueil>.card+.card{margin-top:0}
+.hm{padding:18px}
+.hm-top{display:flex;align-items:center;gap:14px}
+.hm-logo{width:56px;height:56px;flex:none;border-radius:14px}
+.hm-hi{font-size:22px;font-weight:800;line-height:1.2}
+textarea{display:block;width:100%;background:var(--field);color:var(--ink);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;font:inherit;font-size:16px;margin:10px 0 0;resize:vertical}
+#fbMsg{margin-top:8px;font-size:14px}
+#fbMsg:empty{display:none}
 #manual{padding:0}
 #manual>summary{cursor:pointer;list-style:none;padding:16px 18px;font-size:16px;font-weight:700;color:var(--teal)}
 #manual>summary::-webkit-details-marker{display:none}
@@ -146,11 +154,28 @@ details.pg-prog summary::-webkit-details-marker{display:none}
   <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#0F2B3D"/><path d="M20 50C20 34 44 44 44 16" fill="none" stroke="#00A99D" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="50" r="5" fill="#FF8A4C"/><circle cx="44" cy="16" r="5" fill="#EAF1F4"/></svg>
   <span class="brand">Kinetra</span>
 </div>
-<h1 id="title">Séance</h1>
+<h1 id="title">Accueil</h1>
 <main>
 
-<section id="v-seance">
+<section id="v-accueil">
+  <div class="card hm" id="greet"></div>
   <div class="card" id="streak"></div>
+  <div class="card">
+    <h3>Envoyer un retour</h3>
+    <p class="mut" style="margin-top:0">Une idée, un bug ou un exercice à ajouter ? Écris-le ici : ton application mail s'ouvre avec le message prêt à envoyer au développeur.</p>
+    <select id="fbType" aria-label="Type de retour">
+      <option>Idée ou recommandation</option>
+      <option>Bug (quelque chose ne marche pas)</option>
+      <option>Exercice à ajouter</option>
+      <option>Autre</option>
+    </select>
+    <textarea id="fbText" rows="4" placeholder="Ton message" aria-label="Ton message"></textarea>
+    <div class="row"><button onclick="sendFeedback()">Envoyer au développeur</button></div>
+    <div class="mut" id="fbMsg"></div>
+  </div>
+</section>
+
+<section id="v-seance" class="hide">
   <div id="progBox"></div>
   <div class="card" id="pre">
     <h3>Séances toutes faites</h3>
@@ -239,6 +264,11 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 
 <section id="v-data" class="hide">
   <div class="card">
+    <h3>Mon profil</h3>
+    <input id="pname" maxlength="30" placeholder="Ton prénom" aria-label="Ton prénom">
+    <div class="row"><button onclick="saveName()">Enregistrer le prénom</button></div>
+  </div>
+  <div class="card">
     <h3>Compte</h3>
     <div id="acctBody" class="mut">Chargement…</div>
   </div>
@@ -276,7 +306,8 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 </main>
 </div>
 <nav>
-  <button data-v="seance" class="on"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span>Séance</button>
+  <button data-v="accueil" class="on"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5v8.5a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg></span>Accueil</button>
+  <button data-v="seance"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span>Séance</button>
   <button data-v="plans"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5h6V7H9zM7.5 5.5H6A1.5 1.5 0 0 0 4.5 7v11.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V7A1.5 1.5 0 0 0 18 5.5h-1.5M8.5 12h7M8.5 15.5h5"/></svg></span>Programmes</button>
   <button data-v="histo"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>Journal</button>
   <button data-v="repas"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg></span>Repas</button>
@@ -289,7 +320,7 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 const KEY='sportapp.v1';
 let D;
 // MERGE-START
-function norm(x){x=x||{};return{sets:x.sets||[],bw:x.bw||[],meals:x.meals||[],goals:x.goals||{k:2200,p:120},goalsT:x.goalsT||0,del:x.del||[],progs:x.progs||[],act:x.act||null}}
+function norm(x){x=x||{};return{name:x.name||'',nameT:x.nameT||0,sets:x.sets||[],bw:x.bw||[],meals:x.meals||[],goals:x.goals||{k:2200,p:120},goalsT:x.goalsT||0,del:x.del||[],progs:x.progs||[],act:x.act||null}}
 function mergeData(a,b){
   a=norm(a);b=norm(b);
   const del=new Set([...a.del,...b.del]);
@@ -298,7 +329,7 @@ function mergeData(a,b){
   const g=(b.goalsT||0)>(a.goalsT||0)?b:a;
   const pm=new Map();[...a.progs,...b.progs].forEach(p=>{if(del.has(p.id))return;const o=pm.get(p.id);if(!o||(p.u||0)>=(o.u||0))pm.set(p.id,p)});
   const act=((b.act&&b.act.t)||0)>((a.act&&a.act.t)||0)?b.act:a.act;
-  return{sets:uni(a.sets,b.sets),meals:uni(a.meals,b.meals),bw:[...bw.values()],goals:g.goals,goalsT:g.goalsT,del:[...del],progs:[...pm.values()].sort((p,q)=>p.id-q.id),act};
+  return{name:(b.nameT||0)>(a.nameT||0)?(b.name||''):(a.name||''),nameT:Math.max(a.nameT||0,b.nameT||0),sets:uni(a.sets,b.sets),meals:uni(a.meals,b.meals),bw:[...bw.values()],goals:g.goals,goalsT:g.goalsT,del:[...del],progs:[...pm.values()].sort((p,q)=>p.id-q.id),act};
 }
 // MERGE-END
 try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
@@ -308,13 +339,13 @@ const $=id=>document.getElementById(id);
 const day=(t=Date.now())=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmt=s=>new Date(s+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const titles={seance:'Séance',plans:'Programmes',histo:'Journal',prog:'Progrès',repas:'Repas',data:'Compte'};
+const titles={accueil:'Accueil',seance:'Séance',plans:'Programmes',histo:'Journal',prog:'Progrès',repas:'Repas',data:'Compte'};
 
 // Navigation : définie ici pour ne plus dépendre de programs.js (les sections absentes sont ignorées)
 function go(v){
-  if(!titles[v])v='seance';
+  if(!titles[v])v='accueil';
   document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
-  ['seance','plans','histo','repas','data'].forEach(k=>{const el=document.getElementById('v-'+k);if(el)el.classList.toggle('hide',k!==v)});
+  ['accueil','seance','plans','histo','repas','data'].forEach(k=>{const el=document.getElementById('v-'+k);if(el)el.classList.toggle('hide',k!==v)});
   document.getElementById('title').textContent=titles[v];
   if(typeof pFlash!=='undefined')pFlash='';
   scrollTo(0,0);render();
@@ -378,6 +409,29 @@ function renderStreak(){
     +`<div class="st-msg">${msg}</div>`
     +`<div class="st-dots">${dots.join('')}</div>`
     +`<div class="st-lbl"><span>il y a 7 semaines</span><span>cette semaine</span></div>`;
+}
+
+// ----- Accueil : bonjour, prénom, retour au développeur
+function renderHome(){
+  const box=$('greet');if(!box)return;
+  const n=(D.name||'').trim();
+  box.innerHTML=`<div class="hm-top"><svg class="hm-logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0F2B3D"/><path d="M20 50C20 34 44 44 44 16" fill="none" stroke="#00A99D" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="50" r="5" fill="#FF8A4C"/><circle cx="44" cy="16" r="5" fill="#fff"/></svg>`
+    +`<div><div class="hm-hi">Bonjour${n?', '+esc(n):''} !</div><div class="mut">${n?'Prêt pour ta prochaine séance ?':'Ajoute ton prénom dans Compte pour personnaliser l\'accueil.'}</div></div></div>`;
+}
+function saveName(){
+  const v=($('pname').value||'').trim().slice(0,30);
+  D.name=v;D.nameT=Date.now();save();renderHome();
+  $('pname').value=v;
+}
+const FB_EMAIL='kinetra.sport@gmail.com';
+function sendFeedback(){
+  const txt=($('fbText').value||'').trim();
+  if(!txt){$('fbMsg').textContent='Écris ton message avant d\'envoyer.';return}
+  const type=$('fbType').value;
+  const body=txt+'\n\n---\nEnvoyé depuis Kinetra';
+  const url='mailto:'+FB_EMAIL+'?subject='+encodeURIComponent('[Kinetra] '+type)+'&body='+encodeURIComponent(body);
+  $('fbMsg').textContent='Ton application mail s\'ouvre. Appuie sur Envoyer pour transmettre le message.';
+  window.location.href=url;
 }
 function renderToday(){
   const t=D.sets.filter(s=>s.d===day());
@@ -490,7 +544,8 @@ function render(){
   const cur=$('pex').value;
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
   if(exercises().includes(cur))$('pex').value=cur;
-  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();renderStreak();
+  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();renderStreak();renderHome();
+  if($('pname')&&document.activeElement!==$('pname'))$('pname').value=D.name||'';
   if(window.renderAccount)window.renderAccount();
 }
 applyTheme();
