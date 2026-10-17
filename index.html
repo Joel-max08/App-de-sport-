@@ -138,6 +138,16 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 textarea{display:block;width:100%;background:var(--field);color:var(--ink);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;font:inherit;font-size:16px;margin:10px 0 0;resize:vertical}
 #fbMsg{margin-top:8px;font-size:14px}
 #fbMsg:empty{display:none}
+button.rec{display:block;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px;box-shadow:none;font:inherit}
+button.rec b{display:block;font-size:16px}
+button.rec span{display:block;font-size:13px;color:var(--mut);margin-top:4px}
+.rec-back{margin:0 0 6px;padding:0}
+.rd-t{margin:6px 0 2px;font-size:19px}
+.rd-sub{font-size:13px;font-weight:700;color:var(--mut);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.rd-ing{margin:0;padding-left:20px}
+.rd-ing li{margin:5px 0;font-size:15px}
+.rd-steps{margin:0;padding-left:20px}
+.rd-steps li{margin:9px 0;font-size:15px;line-height:1.4}
 #manual{padding:0}
 #manual>summary{cursor:pointer;list-style:none;padding:16px 18px;font-size:16px;font-weight:700;color:var(--teal)}
 #manual>summary::-webkit-details-marker{display:none}
@@ -239,6 +249,11 @@ textarea{display:block;width:100%;background:var(--field);color:var(--ink);borde
 
 <section id="v-repas" class="hide">
   <div class="card">
+    <h3>Recettes protéinées</h3>
+    <div id="recList"></div>
+    <div id="recDetail" class="hide"></div>
+  </div>
+  <div class="card">
     <h3>Aujourd'hui</h3>
     <div id="mealStats"></div>
     <div id="meals"></div>
@@ -310,7 +325,7 @@ textarea{display:block;width:100%;background:var(--field);color:var(--ink);borde
   <button data-v="seance"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span>Séance</button>
   <button data-v="plans"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5h6V7H9zM7.5 5.5H6A1.5 1.5 0 0 0 4.5 7v11.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V7A1.5 1.5 0 0 0 18 5.5h-1.5M8.5 12h7M8.5 15.5h5"/></svg></span>Programmes</button>
   <button data-v="histo"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>Journal</button>
-  <button data-v="repas"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg></span>Repas</button>
+  <button data-v="repas"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg></span>Nutrition</button>
   <button data-v="data"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.8-4 4-5.5 7.5-5.5s6.7 1.5 7.5 5.5"/></svg></span>Compte</button>
 </nav>
 
@@ -339,7 +354,7 @@ const $=id=>document.getElementById(id);
 const day=(t=Date.now())=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmt=s=>new Date(s+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const titles={accueil:'Accueil',seance:'Séance',plans:'Programmes',histo:'Journal',prog:'Progrès',repas:'Repas',data:'Compte'};
+const titles={accueil:'Accueil',seance:'Séance',plans:'Programmes',histo:'Journal',prog:'Progrès',repas:'Nutrition',data:'Compte'};
 
 // Navigation : définie ici pour ne plus dépendre de programs.js (les sections absentes sont ignorées)
 function go(v){
@@ -432,6 +447,40 @@ function sendFeedback(){
   const url='mailto:'+FB_EMAIL+'?subject='+encodeURIComponent('[Kinetra] '+type)+'&body='+encodeURIComponent(body);
   $('fbMsg').textContent='Ton application mail s\'ouvre. Appuie sur Envoyer pour transmettre le message.';
   window.location.href=url;
+}
+// ----- Recettes protéinées (quantités pour le nombre de portions indiqué)
+const RECIPES=[
+{id:'poulet-indien',t:"Poulet à l'indienne, brocoli et riz",p:4,src:'Weight Watchers',url:'https://www.weightwatchers.com/be/fr/recipe/poulet-lindienne-brocoli-riz/5ef08851dabc072b53157355',
+ ing:['160 g de riz basmati (cru)','500 g de filet de poulet cru, haché','1 oignon rouge moyen','2 carottes moyennes','300 g de brocoli','2 cm de gingembre frais','2 gousses d\'ail','2 c. à soupe d\'huile','1 c. à soupe de pâte de curry jaune','120 g de petits pois surgelés','60 ml d\'eau','2 c. à café de jus de citron vert','1 c. à soupe de sauce soja','Une poignée de coriandre fraîche, hachée','15 g de noix de cajou','Sel et poivre'],
+ steps:['Fais cuire le riz. Pendant ce temps, épluche et émince l\'oignon, coupe les carottes en dés et détaille le brocoli en petits bouquets. Épluche le gingembre et hache-le finement avec l\'ail.','Dans un wok très chaud, fais revenir le poulet haché avec un peu d\'huile, puis mets-le de côté.','Dans le jus de cuisson, fais revenir l\'oignon 2 à 3 minutes à feu moyen.','Ajoute l\'ail, le gingembre et la pâte de curry, et laisse cuire environ 1 minute.','Ajoute les carottes, le brocoli, les petits pois et l\'eau, et laisse cuire environ 2 minutes.','Remets le riz et le poulet dans le wok, ajoute le jus de citron vert et la sauce soja, puis fais cuire environ 2 minutes.','Parsème de coriandre et de noix de cajou, puis sers.'],
+ note:'Vérifie la quantité d\'huile : la source indique 2 c. à soupe dans la liste et 2 c. à café dans la préparation.'},
+{id:'omelette-chevre',t:'Omelette au chèvre et aux herbes',p:4,src:'Weight Watchers',url:'https://www.weightwatchers.com/fr/recipe/omelette-au-chevre-et-aux-herbes/5625ad18b7878c0b34e71498',
+ ing:['60 ml de lait demi-écrémé','100 g de fromage de chèvre frais','2 c. à café de persil frais haché','2 c. à café de basilic frais','2 feuilles de menthe fraîche','2 c. à café de ciboulette fraîche','6 blancs d\'œufs','3 jaunes d\'œufs','1 c. à café d\'huile d\'olive','1 c. à café de beurre doux','1 pincée de sel','1 pincée de poivre noir fraîchement moulu'],
+ steps:['Dans un petit bol, mélange le lait et le fromage jusqu\'à obtenir une crème lisse. Ajoute les herbes hachées et mets de côté.','Dans un autre bol, bats les blancs et les jaunes ensemble.','Huile légèrement une grande poêle et chauffe-la à feu moyen. Fais fondre le beurre, verse les œufs battus et incline la poêle pour les étaler. Laisse cuire jusqu\'à ce que les bords commencent à se raffermir.','Dépose la crème de fromage au centre. Quand l\'omelette est presque cuite, replie-la en deux et poursuis la cuisson 3 à 5 minutes. Coupe en quatre, assaisonne et sers aussitôt.']},
+{id:'skyr-fruits',t:'Bol de skyr aux fruits rouges',p:1,src:'Recette maison',url:null,
+ ing:['200 g de skyr nature (ou fromage blanc 0 %)','100 g de fruits rouges (frais ou surgelés)','1 banane mûre','20 g de flocons d\'avoine ou de granola','1 c. à café de miel (facultatif)'],
+ steps:['Mets le skyr dans un bol.','Écrase la moitié de la banane et mélange-la au skyr.','Ajoute les fruits rouges, le reste de la banane en rondelles, les flocons et le miel si tu en veux.']}
+];
+function renderRecipes(){
+  const box=$('recList');if(!box)return;
+  box.innerHTML=RECIPES.map(r=>`<button class="rec" type="button" onclick="openRecipe('${r.id}')"><b>${esc(r.t)}</b><span>${r.p} portion${r.p>1?'s':''} · ${r.ing.length} ingrédients</span></button>`).join('');
+}
+function openRecipe(id){
+  const r=RECIPES.find(x=>x.id===id);if(!r)return;
+  $('recList').classList.add('hide');
+  const d=$('recDetail');d.classList.remove('hide');
+  d.innerHTML=`<button class="linkbtn rec-back" type="button" onclick="closeRecipe()">← Toutes les recettes</button>`
+    +`<h3 class="rd-t">${esc(r.t)}</h3>`
+    +`<div class="mut">Pour ${r.p} portion${r.p>1?'s':''}</div>`
+    +`<div class="rd-sub">Quantités</div><ul class="rd-ing">${r.ing.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`
+    +`<div class="rd-sub">Préparation</div><ol class="rd-steps">${r.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`
+    +(r.note?`<p class="mut" style="font-size:14px">${esc(r.note)}</p>`:'')
+    +`<div class="mut" style="font-size:14px">Source : ${r.url?`<a href="${r.url}" target="_blank" rel="noopener">${esc(r.src)}</a>`:esc(r.src)}</div>`;
+  d.scrollIntoView({block:'start'});
+}
+function closeRecipe(){
+  $('recDetail').classList.add('hide');$('recList').classList.remove('hide');
+  $('recList').scrollIntoView({block:'start'});
 }
 function renderToday(){
   const t=D.sets.filter(s=>s.d===day());
@@ -544,7 +593,7 @@ function render(){
   const cur=$('pex').value;
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
   if(exercises().includes(cur))$('pex').value=cur;
-  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();renderStreak();renderHome();
+  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();renderStreak();renderHome();renderRecipes();
   if($('pname')&&document.activeElement!==$('pname'))$('pname').value=D.name||'';
   if(window.renderAccount)window.renderAccount();
 }
