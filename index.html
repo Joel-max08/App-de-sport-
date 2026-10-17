@@ -306,6 +306,15 @@ const fmt=s=>new Date(s+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',da
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const titles={seance:'Séance',plans:'Programmes',histo:'Journal',prog:'Progrès',repas:'Repas',data:'Compte'};
 
+// Navigation : définie ici pour ne plus dépendre de programs.js (les sections absentes sont ignorées)
+function go(v){
+  if(!titles[v])v='seance';
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
+  ['seance','plans','histo','repas','data'].forEach(k=>{const el=document.getElementById('v-'+k);if(el)el.classList.toggle('hide',k!==v)});
+  document.getElementById('title').textContent=titles[v];
+  if(typeof pFlash!=='undefined')pFlash='';
+  scrollTo(0,0);render();
+}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
 
 function exercises(){return [...new Set(D.sets.map(s=>s.ex))].sort()}
