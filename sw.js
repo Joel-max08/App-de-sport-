@@ -1,5 +1,5 @@
-const CACHE = 'kinetra-v7';
-const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './firebase-config.js', './bonhomme.js'];
+const CACHE = 'kinetra-v8';
+const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './firebase-config.js', './bonhomme.js', './programs.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));

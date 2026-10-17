@@ -79,6 +79,45 @@ nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;st
 nav button.on{color:var(--ink);font-weight:700}
 nav button.on .ic{background:var(--tsoft)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.pg-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:12px 0}
+.pg-card h3{margin:0 0 10px;font-size:17px;font-weight:700}
+.pg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:4px}
+.pg-head h3{margin:0 0 2px}
+.pg-head select{width:auto;max-width:150px;padding:9px 10px;font-size:14px}
+.pg-flash{background:var(--tsoft);border-radius:12px;padding:10px 12px;margin:10px 0 2px;font-size:14px}
+.pg-ex{padding:14px 0;border-top:1px solid var(--line)}
+.pg-exh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.pg-exh b{font-size:16px}
+.pg-dots{margin-left:auto;display:flex;gap:5px;align-items:center}
+.pg-dots i{width:11px;height:11px;border-radius:50%;border:2px solid var(--teal);box-sizing:border-box}
+.pg-dots i.f{background:var(--teal)}
+.pg-dots span{font-size:12px;color:var(--mut)}
+.pg-hint{font-size:13px;color:var(--mut);margin:4px 0 0}
+.pg-in{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:10px}
+.pg-in.nb{grid-template-columns:1fr auto}
+.pg-in input{padding:11px 12px}
+.pg-in button{padding:11px 16px;font-size:15px}
+.pg-err{font-size:13px;color:var(--red);margin-top:6px}
+.pg-err:empty{display:none}
+.pg-demo{margin-top:8px}
+.pg-demo summary{font-size:14px;color:var(--teal);font-weight:600;cursor:pointer}
+.pg-dm{margin-top:6px}
+.pg-sec{font-size:14px;font-weight:700;color:var(--mut);margin:22px 2px 2px}
+details.pg-prog{background:var(--card);border:1px solid var(--line);border-radius:20px;margin:12px 0;overflow:hidden}
+details.pg-prog summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+details.pg-prog summary::-webkit-details-marker{display:none}
+.pg-pt{font-size:17px;font-weight:700}
+.pg-tags{display:flex;flex-wrap:wrap;gap:6px}
+.pg-tag{display:inline-block;background:var(--soft);color:var(--ink);font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 10px}
+.pg-tag.pg-on{background:var(--teal);color:var(--tealink);margin-left:6px}
+.pg-pb{padding:0 18px 18px}
+.pg-sname{font-weight:700;margin:16px 0 4px}
+.pg-exl{list-style:none;margin:0;padding:0}
+.pg-exl li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.pg-edx{display:grid;grid-template-columns:1fr 62px 80px 34px;gap:6px;margin:10px 0 2px;align-items:center}
+.pg-edx input{padding:11px 10px}
+.pg-edb{display:flex;align-items:center;font-size:14px;color:var(--mut);margin:0 0 4px}
+.pg-edb input{display:inline-block;width:auto;margin:0 8px 0 0;accent-color:var(--teal)}
 </style>
 </head>
 <body>
@@ -91,6 +130,7 @@ nav button.on .ic{background:var(--tsoft)}
 <main>
 
 <section id="v-seance">
+  <div id="progBox"></div>
   <div class="card" id="pre">
     <h3>Séances toutes faites</h3>
     <p class="mut" style="margin-top:0">Chaque exercice s'enchaîne avec sa durée, son repos et le bonhomme qui montre le geste.</p>
@@ -137,6 +177,11 @@ nav button.on .ic{background:var(--tsoft)}
     <div class="stats" id="todayStats"></div>
     <div id="today"></div>
   </div>
+</section>
+
+<section id="v-plans" class="hide">
+  <div id="plansList"></div>
+  <div id="plansEdit" class="hide"></div>
 </section>
 
 <section id="v-histo" class="hide">
@@ -211,25 +256,29 @@ nav button.on .ic{background:var(--tsoft)}
 </div>
 <nav>
   <button data-v="seance" class="on"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span>Séance</button>
-  <button data-v="histo"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>Historique</button>
+  <button data-v="plans"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5h6V7H9zM7.5 5.5H6A1.5 1.5 0 0 0 4.5 7v11.5A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5V7A1.5 1.5 0 0 0 18 5.5h-1.5M8.5 12h7M8.5 15.5h5"/></svg></span>Programmes</button>
+  <button data-v="histo"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>Journal</button>
   <button data-v="prog"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg></span>Progrès</button>
   <button data-v="repas"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg></span>Repas</button>
   <button data-v="data"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.8-4 4-5.5 7.5-5.5s6.7 1.5 7.5 5.5"/></svg></span>Compte</button>
 </nav>
 
 <script src="bonhomme.js"></script>
+<script src="programs.js"></script>
 <script>
 const KEY='sportapp.v1';
 let D;
 // MERGE-START
-function norm(x){x=x||{};return{sets:x.sets||[],bw:x.bw||[],meals:x.meals||[],goals:x.goals||{k:2200,p:120},goalsT:x.goalsT||0,del:x.del||[]}}
+function norm(x){x=x||{};return{sets:x.sets||[],bw:x.bw||[],meals:x.meals||[],goals:x.goals||{k:2200,p:120},goalsT:x.goalsT||0,del:x.del||[],progs:x.progs||[],act:x.act||null}}
 function mergeData(a,b){
   a=norm(a);b=norm(b);
   const del=new Set([...a.del,...b.del]);
   const uni=(x,y)=>{const m=new Map();[...x,...y].forEach(i=>{if(!del.has(i.id))m.set(i.id,i)});return[...m.values()].sort((p,q)=>p.id-q.id)};
   const bw=new Map();[...a.bw,...b.bw].forEach(i=>{const o=bw.get(i.d);if(!o||(i.t||0)>=(o.t||0))bw.set(i.d,i)});
   const g=(b.goalsT||0)>(a.goalsT||0)?b:a;
-  return{sets:uni(a.sets,b.sets),meals:uni(a.meals,b.meals),bw:[...bw.values()],goals:g.goals,goalsT:g.goalsT,del:[...del]};
+  const pm=new Map();[...a.progs,...b.progs].forEach(p=>{if(del.has(p.id))return;const o=pm.get(p.id);if(!o||(p.u||0)>=(o.u||0))pm.set(p.id,p)});
+  const act=((b.act&&b.act.t)||0)>((a.act&&a.act.t)||0)?b.act:a.act;
+  return{sets:uni(a.sets,b.sets),meals:uni(a.meals,b.meals),bw:[...bw.values()],goals:g.goals,goalsT:g.goalsT,del:[...del],progs:[...pm.values()].sort((p,q)=>p.id-q.id),act};
 }
 // MERGE-END
 try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
@@ -239,15 +288,9 @@ const $=id=>document.getElementById(id);
 const day=(t=Date.now())=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmt=s=>new Date(s+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const titles={seance:'Séance',histo:'Historique',prog:'Progrès',repas:'Repas',data:'Compte'};
+const titles={seance:'Séance',plans:'Programmes',histo:'Journal',prog:'Progrès',repas:'Repas',data:'Compte'};
 
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
-  ['seance','histo','prog','repas','data'].forEach(v=>$('v-'+v).classList.toggle('hide',v!==b.dataset.v));
-  $('title').textContent=titles[b.dataset.v];
-  scrollTo(0,0);
-  render();
-});
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
 
 function exercises(){return [...new Set(D.sets.map(s=>s.ex))].sort()}
 function addSet(){
@@ -388,11 +431,11 @@ function importData(e){
 }
 
 function render(){
-  $('exlist').innerHTML=[...new Set([...exercises(),...(window.Bonhomme?Bonhomme.names():[])])].map(e=>`<option value="${esc(e)}">`).join('');
+  $('exlist').innerHTML=[...new Set([...exercises(),...(window.Bonhomme?Bonhomme.names():[]),...pNames()])].map(e=>`<option value="${esc(e)}">`).join('');
   const cur=$('pex').value;
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
   if(exercises().includes(cur))$('pex').value=cur;
-  renderToday();renderHisto();renderMeals();drawProg();
+  renderToday();renderHisto();renderMeals();drawProg();renderProg();renderPlans();
   if(window.renderAccount)window.renderAccount();
 }
 applyTheme();
