@@ -126,6 +126,13 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .sl-thumb .bh{padding:0;margin:0;background:none;border:0}
 .sl-thumb svg{display:block;width:100%;height:auto}
 .sl-txt{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:15px}
+#cgu{position:fixed;inset:0;background:var(--bg);overflow:auto;z-index:30;padding:14px 18px 40px}
+#cgu.hide{display:none}
+#cgu .cgu-bar{position:sticky;top:0;background:var(--bg);padding:4px 0 10px}
+#cgu h2{margin:6px 0 4px;font-size:22px}
+#cgu h3{font-size:16px;margin:18px 0 6px}
+#cgu p{font-size:15px;line-height:1.5;margin:0 0 8px}
+#cgu a{color:var(--teal)}
 #streak{padding:16px 18px}
 #streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
@@ -323,6 +330,7 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     <h3>Mon profil</h3>
     <input id="pname" maxlength="30" placeholder="Ton prénom" aria-label="Ton prénom">
     <div class="row"><button onclick="saveName()">Enregistrer le prénom</button></div>
+    <div style="text-align:center;margin-top:12px"><button class="linkbtn" type="button" onclick="document.getElementById('cgu').classList.remove('hide');scrollTo(0,0)">Conditions générales d'utilisation</button></div>
   </div>
   <div class="card">
     <h3>Compte</h3>
@@ -358,6 +366,33 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     <input type="file" id="imp" accept="application/json" class="hide" onchange="importData(event)">
   </div>
 </section>
+
+<div id="cgu" class="hide" role="dialog" aria-modal="true" aria-labelledby="cguT">
+  <div class="cgu-bar"><button class="sec" type="button" onclick="document.getElementById('cgu').classList.add('hide');scrollTo(0,0)">← Fermer</button></div>
+  <h2 id="cguT">Conditions générales d'utilisation</h2>
+  <p class="mut">Dernière mise à jour : 17 octobre 2026</p>
+  <h3>1. Objet</h3>
+  <p>Kinetra est une application de suivi d'entraînement sportif et de nutrition, en français. Elle est éditée à titre personnel et ne remplace pas un avis médical.</p>
+  <h3>2. Gratuité</h3>
+  <p>L'application est gratuite et sans publicité. Le don proposé dans l'onglet Accueil est facultatif : il ne débloque aucune fonction.</p>
+  <h3>3. Tes données</h3>
+  <p>Tes données (prénom, séances, repas, poids, objectifs) sont enregistrées sur ton téléphone. Si tu crées un compte, elles peuvent être synchronisées pour être retrouvées sur un autre appareil, grâce au service Firebase de Google. Nous ne vendons pas tes données et ne les utilisons pas à des fins publicitaires.</p>
+  <p>Tu peux supprimer toutes tes données à tout moment depuis l'onglet Compte, dans la section « Mes données ».</p>
+  <h3>4. Compte</h3>
+  <p>La création d'un compte est facultative. Tu es responsable de la confidentialité de ton mot de passe.</p>
+  <h3>5. Santé et sécurité</h3>
+  <p>Les programmes, conseils et exercices sont donnés à titre indicatif. Consulte un médecin avant de commencer si tu as un problème de santé, si tu es enceinte, ou si tu n'as pas pratiqué d'activité physique depuis longtemps. Arrête immédiatement en cas de douleur, de malaise ou de gêne inhabituelle.</p>
+  <p>Les valeurs nutritionnelles sont approximatives. Pour les produits de marque, reporte-toi à l'étiquette.</p>
+  <h3>6. Responsabilité</h3>
+  <p>Tu pratiques les exercices sous ta propre responsabilité. Dans la limite permise par la loi, l'éditeur ne peut être tenu responsable des blessures ou dommages liés à l'utilisation de l'application.</p>
+  <h3>7. Contenus</h3>
+  <p>Les textes, dessins et programmes de l'application sont protégés. Tu peux les utiliser pour ton usage personnel, sans les reproduire ni les diffuser.</p>
+  <h3>8. Contact</h3>
+  <p>Pour toute question ou demande : <a href="mailto:kinetra.sport@gmail.com">kinetra.sport@gmail.com</a>.</p>
+  <h3>9. Modifications</h3>
+  <p>Ces conditions peuvent évoluer. La date de dernière mise à jour ci-dessus indique la version en vigueur.</p>
+</div>
+
 
 </main>
 </div>
