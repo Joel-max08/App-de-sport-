@@ -167,6 +167,20 @@ mountain:{n:'Mountain climbers',m:'Abdominaux, cardio',
   c:['Position de pompe, bras tendus','Ramène un genou vers la poitrine puis alterne','Bassin bas et stable'],
   mu:[['torso',.15,.75],['thigh',0,1]],
   k:[{d:380,h:0,p:{hip:[101,125],t:68,ft:[110,144],kb:-1,fft:[51,143],ffo:205,fo:205,ht:[141,146],eb:1}},{d:380,h:0,p:{hip:[101,125],t:68,ft:[51,143],fft:[110,144],fkb:-1,ffo:205,fo:205,ht:[141,146],eb:1}}]},
+pompesinc:{n:'Pompes inclinées',m:'Pectoraux, triceps, gainage',
+  c:['Mains posées sur la chaise, bras tendus','Corps droit de la tête aux talons','Descends la poitrine vers le bord de la chaise'],
+  mu:[['torso',.6,.95],['ua',0,1]],
+  stat:`<rect x="150" y="104" width="34" height="6" rx="2" class="bh-prop"/><path d="M156 110V${G}M180 110V${G}" class="bh-propl"/>`,
+  k:[{d:1000,h:300,p:{hip:[82,132],t:71,ft:[40,146],fo:205,ht:[165,104],eb:1}},{d:1300,h:200,p:{hip:[80,140],t:72,ft:[40,146],fo:205,ht:[165,104],eb:1}}]},
+bulgare:{n:'Squat bulgare',m:'Cuisses, fessiers',
+  c:['Pied arrière posé sur la chaise, pied avant au sol','Descends le genou arrière vers le sol, buste droit','Genou avant dans l\'axe du pied'],
+  mu:[['thigh',0,1]],
+  stat:`<rect x="62" y="100" width="30" height="6" rx="2" class="bh-prop"/><path d="M68 106V${G}M86 106V${G}" class="bh-propl"/>`,
+  k:[{d:1100,h:300,p:{hip:[112,96],t:4,ft:[120,146],fft:[76,100],fkb:-1,ffo:110}},{d:1300,h:250,p:{hip:[110,116],t:6,ft:[120,146],fft:[76,100],fkb:-1,ffo:110}}]},
+pont1j:{n:'Pont fessier à une jambe',m:'Fessiers, ischios',
+  c:['Une jambe tendue vers le haut, l\'autre pliée au sol','Pousse dans le talon et monte le bassin','Garde le bassin droit, sans pencher sur le côté'],
+  mu:[['thigh',0,.35],['torso',0,.2]],
+  k:[{d:1100,h:250,p:{hip:[112,140],t:-90,hd:0,ft:[142,145],kb:-1,fft:null,fth:60,fsh:60,ua:90,fa:90}},{d:1000,h:600,p:{hip:[112,116],t:-123,hd:33,ft:[142,145],kb:-1,fft:null,fth:60,fsh:60,ua:90,fa:90}}]},
 jacks:{n:'Jumping jacks',m:'Cardio',
   c:['Saute en écartant bras et jambes','Atterris en souplesse sur l\'avant du pied','Garde un rythme régulier'],
   mu:[],
@@ -199,7 +213,22 @@ const RULES=[
  [/jumping|jack/,'jacks']
 ];
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
-function find(name){const s=norm(name);if(!s)return null;for(const[r,id]of RULES)if(r.test(s))return id;return null}
+// Variantes dessinées en premier, puis exercices sans dessin exact (null = pas d'image, seulement le nom et les conseils)
+const VARIANTS=[
+  [/pompe.*(incline|chaise)/,'pompesinc'],
+  [/bulgare/,'bulgare'],
+  [/pont.*une jambe/,'pont1j']
+];
+const NOPIC=[
+  /incline|marteau|gainage.*lateral|planche.*lateral|fentes? arriere|assis|poulie|face pull|leg|presse|superman/
+];
+function find(name){
+  const s=norm(name);if(!s)return null;
+  for(const[r,id]of VARIANTS)if(r.test(s))return id;
+  if(NOPIC.some(r=>r.test(s)))return null;
+  for(const[r,id]of RULES)if(r.test(s))return id;
+  return null;
+}
 
 // ---------- Dessin ----------
 const P=(a,b)=>`M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
