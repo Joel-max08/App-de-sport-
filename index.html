@@ -148,6 +148,15 @@ button.rec span{display:block;font-size:13px;color:var(--mut);margin-top:4px}
 .rd-ing li{margin:5px 0;font-size:15px}
 .rd-steps{margin:0;padding-left:20px}
 .rd-steps li{margin:9px 0;font-size:15px;line-height:1.4}
+button.fd{display:block;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:11px 14px;margin-top:6px;box-shadow:none;font:inherit}
+button.fd b{display:block;font-size:15px}
+button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
+#mres{max-height:330px;overflow:auto;margin-top:4px}
+.mpk-n{font-size:16px;font-weight:700;margin:2px 0 8px}
+.rd-nut{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 6px;text-align:center}
+.rd-nut div{background:var(--soft);border-radius:14px;padding:10px 4px}
+.rd-nut b{display:block;font-size:16px}
+.rd-nut span{font-size:12px;color:var(--mut)}
 #manual{padding:0}
 #manual>summary{cursor:pointer;list-style:none;padding:16px 18px;font-size:16px;font-weight:700;color:var(--teal)}
 #manual>summary::-webkit-details-marker{display:none}
@@ -260,6 +269,15 @@ button.rec span{display:block;font-size:13px;color:var(--mut);margin-top:4px}
   </div>
   <div class="card">
     <h3>Nouveau repas</h3>
+    <input id="mcat" placeholder="Chercher un aliment ou un plat (ex. poulet, banane)" autocomplete="off" oninput="catSearch()" aria-label="Chercher dans le catalogue">
+    <div id="mres"></div>
+    <div id="mpick" class="hide">
+      <div class="rd-sub" style="margin-top:6px">Quantité</div>
+      <div class="mpk-n" id="mpname"></div>
+      <div class="row"><input id="mq" type="number" inputmode="numeric" placeholder="Grammes" oninput="foodCalc()" aria-label="Quantité en grammes"></div>
+      <div class="mut" style="font-size:13px">Les kcal et protéines se calculent à partir des grammes. Tu peux les modifier.</div>
+    </div>
+    <div class="rd-sub" style="margin-top:12px">Ou saisie libre</div>
     <input id="mn" placeholder="Aliment ou repas" autocomplete="off">
     <div class="row">
       <input id="mk" type="number" inputmode="numeric" placeholder="kcal">
@@ -450,14 +468,14 @@ function sendFeedback(){
 }
 // ----- Recettes protéinées (quantités pour le nombre de portions indiqué)
 const RECIPES=[
-{id:'poulet-indien',t:"Poulet à l'indienne, brocoli et riz",p:4,src:'Weight Watchers',url:'https://www.weightwatchers.com/be/fr/recipe/poulet-lindienne-brocoli-riz/5ef08851dabc072b53157355',
+{id:'poulet-indien',nut:[450, 37, 50, 11],t:"Poulet à l'indienne, brocoli et riz",p:4,src:'Weight Watchers',url:'https://www.weightwatchers.com/be/fr/recipe/poulet-lindienne-brocoli-riz/5ef08851dabc072b53157355',
  ing:['160 g de riz basmati (cru)','500 g de filet de poulet cru, haché','1 oignon rouge moyen','2 carottes moyennes','300 g de brocoli','2 cm de gingembre frais','2 gousses d\'ail','2 c. à soupe d\'huile','1 c. à soupe de pâte de curry jaune','120 g de petits pois surgelés','60 ml d\'eau','2 c. à café de jus de citron vert','1 c. à soupe de sauce soja','Une poignée de coriandre fraîche, hachée','15 g de noix de cajou','Sel et poivre'],
  steps:['Fais cuire le riz. Pendant ce temps, épluche et émince l\'oignon, coupe les carottes en dés et détaille le brocoli en petits bouquets. Épluche le gingembre et hache-le finement avec l\'ail.','Dans un wok très chaud, fais revenir le poulet haché avec un peu d\'huile, puis mets-le de côté.','Dans le jus de cuisson, fais revenir l\'oignon 2 à 3 minutes à feu moyen.','Ajoute l\'ail, le gingembre et la pâte de curry, et laisse cuire environ 1 minute.','Ajoute les carottes, le brocoli, les petits pois et l\'eau, et laisse cuire environ 2 minutes.','Remets le riz et le poulet dans le wok, ajoute le jus de citron vert et la sauce soja, puis fais cuire environ 2 minutes.','Parsème de coriandre et de noix de cajou, puis sers.'],
  note:'Vérifie la quantité d\'huile : la source indique 2 c. à soupe dans la liste et 2 c. à café dans la préparation.'},
-{id:'omelette-chevre',t:'Omelette au chèvre et aux herbes',p:4,src:'Weight Watchers',url:'https://www.weightwatchers.com/fr/recipe/omelette-au-chevre-et-aux-herbes/5625ad18b7878c0b34e71498',
+{id:'omelette-chevre',nut:[135, 11, 2, 9],t:'Omelette au chèvre et aux herbes',p:4,src:'Weight Watchers',url:'https://www.weightwatchers.com/fr/recipe/omelette-au-chevre-et-aux-herbes/5625ad18b7878c0b34e71498',
  ing:['60 ml de lait demi-écrémé','100 g de fromage de chèvre frais','2 c. à café de persil frais haché','2 c. à café de basilic frais','2 feuilles de menthe fraîche','2 c. à café de ciboulette fraîche','6 blancs d\'œufs','3 jaunes d\'œufs','1 c. à café d\'huile d\'olive','1 c. à café de beurre doux','1 pincée de sel','1 pincée de poivre noir fraîchement moulu'],
  steps:['Dans un petit bol, mélange le lait et le fromage jusqu\'à obtenir une crème lisse. Ajoute les herbes hachées et mets de côté.','Dans un autre bol, bats les blancs et les jaunes ensemble.','Huile légèrement une grande poêle et chauffe-la à feu moyen. Fais fondre le beurre, verse les œufs battus et incline la poêle pour les étaler. Laisse cuire jusqu\'à ce que les bords commencent à se raffermir.','Dépose la crème de fromage au centre. Quand l\'omelette est presque cuite, replie-la en deux et poursuis la cuisson 3 à 5 minutes. Coupe en quatre, assaisonne et sers aussitôt.']},
-{id:'skyr-fruits',t:'Bol de skyr aux fruits rouges',p:1,src:'Recette maison',url:null,
+{id:'skyr-fruits',nut:[370, 27, 62, 3],t:'Bol de skyr aux fruits rouges',p:1,src:'Recette maison',url:null,
  ing:['200 g de skyr nature (ou fromage blanc 0 %)','100 g de fruits rouges (frais ou surgelés)','1 banane mûre','20 g de flocons d\'avoine ou de granola','1 c. à café de miel (facultatif)'],
  steps:['Mets le skyr dans un bol.','Écrase la moitié de la banane et mélange-la au skyr.','Ajoute les fruits rouges, le reste de la banane en rondelles, les flocons et le miel si tu en veux.']}
 ];
@@ -474,6 +492,9 @@ function openRecipe(id){
     +`<div class="mut">Pour ${r.p} portion${r.p>1?'s':''}</div>`
     +`<div class="rd-sub">Quantités</div><ul class="rd-ing">${r.ing.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>`
     +`<div class="rd-sub">Préparation</div><ol class="rd-steps">${r.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`
+    +`<div class="rd-nut"><div><b>${r.nut[0]}</b><span>kcal</span></div><div><b>${r.nut[1]} g</b><span>protéines</span></div><div><b>${r.nut[2]} g</b><span>glucides</span></div><div><b>${r.nut[3]} g</b><span>lipides</span></div></div>`
+    +`<div class="mut" style="font-size:12px">Valeurs par portion, estimées à partir de tables de composition : indicatives.</div>`
+    +`<div class="row"><button class="sec" type="button" id="recAddBtn" onclick="recToJournal('${r.id}')">Ajouter 1 portion au journal</button></div>`
     +(r.note?`<p class="mut" style="font-size:14px">${esc(r.note)}</p>`:'')
     +`<div class="mut" style="font-size:14px">Source : ${r.url?`<a href="${r.url}" target="_blank" rel="noopener">${esc(r.src)}</a>`:esc(r.src)}</div>`;
   d.scrollIntoView({block:'start'});
@@ -481,6 +502,36 @@ function openRecipe(id){
 function closeRecipe(){
   $('recDetail').classList.add('hide');$('recList').classList.remove('hide');
   $('recList').scrollIntoView({block:'start'});
+}
+const FOODS=[["Blanc de poulet cuit", "V", 165, 31, 0, 3.6, 120], ["Poulet cru (filet)", "V", 110, 23, 0, 1.5, 120], ["Cuisse de poulet sans peau cuite", "V", 180, 27, 0, 8, 120], ["Dinde (blanc) cuit", "V", 135, 30, 0, 1, 120], ["Jambon de dinde", "V", 100, 20, 1, 2, 30], ["Steak haché 5 % (cru)", "V", 121, 21, 0, 4, 125], ["Steak haché 15 % (cru)", "V", 215, 18, 0, 15.5, 125], ["Bœuf maigre cuit", "V", 170, 30, 0, 5, 120], ["Escalope de veau cuite", "V", 170, 30, 0, 5, 120], ["Filet de porc cuit", "V", 145, 26, 0, 4, 120], ["Lapin cuit", "V", 173, 33, 0, 4, 120], ["Jambon blanc", "V", 110, 19, 1, 3, 30], ["Bacon cuit", "V", 540, 37, 1, 42, 20], ["Saucisse de Strasbourg", "V", 280, 12, 2, 25, 50], ["Chorizo", "V", 455, 24, 2, 38, 30], ["Saumon cuit", "V", 200, 25, 0, 12, 130], ["Saumon fumé", "V", 180, 25, 0, 8, 50], ["Cabillaud cuit", "V", 95, 21, 0, 1, 150], ["Lieu noir cuit", "V", 95, 20, 0, 1.5, 150], ["Merlu cuit", "V", 90, 20, 0, 1, 150], ["Dorade cuite", "V", 120, 22, 0, 3, 150], ["Truite cuite", "V", 150, 21, 0, 7, 120], ["Maquereau cuit", "V", 205, 19, 0, 14, 120], ["Hareng fumé", "V", 200, 24, 0, 11, 50], ["Crevettes cuites", "V", 100, 24, 0, 0.5, 100], ["Thon au naturel (égoutté)", "V", 110, 25, 0, 1, 100], ["Thon à l'huile (égoutté)", "V", 190, 25, 0, 9, 100], ["Sardines à l'huile (égouttées)", "V", 208, 24, 0, 12, 100], ["Œuf entier", "L", 155, 13, 1, 11, 50], ["Blanc d'œuf", "L", 52, 11, 0.7, 0.2, 33], ["Skyr nature 0 %", "L", 63, 11, 4, 0.2, 200], ["Fromage blanc 0 %", "L", 45, 8, 4, 0.2, 100], ["Fromage blanc 3 %", "L", 72, 8, 4, 3, 100], ["Petit-suisse 0 %", "L", 60, 8, 4, 0.2, 60], ["Yaourt nature 0 %", "L", 40, 4.5, 5, 0.2, 125], ["Yaourt grec 0 %", "L", 57, 10, 4, 0.2, 150], ["Kéfir nature", "L", 60, 3.4, 4.7, 3.2, 200], ["Cottage cheese", "L", 98, 11, 3.4, 4.3, 100], ["Lait écrémé", "L", 35, 3.4, 4.8, 0.1, 200], ["Lait demi-écrémé", "L", 46, 3.4, 4.8, 1.6, 200], ["Lait entier", "L", 64, 3.3, 4.7, 3.6, 200], ["Lait d'amande non sucré", "L", 15, 0.5, 0.3, 1.2, 200], ["Emmental", "L", 380, 28, 0, 30, 30], ["Comté", "L", 400, 27, 0, 32, 30], ["Gouda", "L", 356, 25, 2, 27, 30], ["Camembert", "L", 300, 20, 0.5, 24, 30], ["Brie", "L", 330, 21, 0.5, 27, 30], ["Mozzarella", "L", 240, 18, 2, 18, 125], ["Feta", "L", 260, 14, 4, 21, 50], ["Fromage de chèvre frais", "L", 170, 11, 1, 14, 50], ["Ricotta", "L", 150, 11, 3, 11, 100], ["Fromage frais type Philadelphia", "L", 340, 6, 4, 34, 30], ["Parmesan râpé", "L", 390, 36, 0, 27, 10], ["Beurre", "L", 720, 0.6, 0.4, 80, 10], ["Crème fraîche épaisse 30 %", "L", 290, 2.5, 3, 30, 30], ["Crème fraîche allégée 15 %", "L", 150, 3, 4, 14, 30], ["Riz blanc cuit", "F", 130, 2.7, 28, 0.3, 150], ["Riz blanc cru", "F", 360, 7, 79, 0.6, 80], ["Riz complet cuit", "F", 111, 2.6, 23, 0.9, 150], ["Pâtes cuites", "F", 158, 5.8, 31, 0.9, 180], ["Pâtes complètes cuites", "F", 124, 5.3, 25, 1.1, 180], ["Pâtes sèches (crues)", "F", 355, 12, 72, 1.5, 80], ["Quinoa cuit", "F", 120, 4.4, 21, 1.9, 150], ["Semoule cuite", "F", 112, 3.8, 23, 0.2, 150], ["Boulgour cuit", "F", 83, 3.1, 18.6, 0.2, 150], ["Orge perlé cuit", "F", 123, 2.3, 28, 0.4, 150], ["Sarrasin cuit", "F", 92, 3.4, 20, 0.6, 150], ["Polenta cuite", "F", 70, 1.6, 15, 0.3, 200], ["Flocons d'avoine", "F", 370, 13, 59, 7, 40], ["Pain complet", "F", 240, 9, 44, 3, 40], ["Pain aux céréales", "F", 250, 9, 40, 6, 40], ["Pain de seigle", "F", 260, 9, 50, 3, 40], ["Pain blanc", "F", 265, 9, 49, 3, 40], ["Pain de mie", "F", 270, 8, 48, 4, 25], ["Biscottes", "F", 400, 11, 75, 5, 10], ["Pomme de terre cuite à l'eau", "F", 80, 2, 17, 0.1, 200], ["Patate douce cuite", "F", 90, 2, 20, 0.2, 150], ["Maïs cuit", "F", 96, 3.4, 21, 1.5, 100], ["Tortilla de blé", "F", 300, 8, 50, 7, 40], ["Corn flakes", "F", 370, 7, 84, 1, 40], ["Muesli sans sucre", "F", 360, 10, 60, 8, 50], ["Granola", "F", 450, 10, 64, 18, 40], ["Crêpe nature", "F", 230, 6, 33, 8, 60], ["Pancakes", "F", 230, 6, 30, 9, 60], ["Brioche", "F", 350, 8, 50, 13, 50], ["Lentilles cuites", "G", 116, 9, 20, 0.4, 150], ["Pois chiches cuits", "G", 164, 9, 27, 2.6, 150], ["Haricots rouges cuits", "G", 127, 8.7, 22.8, 0.5, 150], ["Haricots blancs cuits", "G", 139, 9.7, 25, 0.4, 150], ["Haricots noirs cuits", "G", 132, 8.9, 24, 0.5, 150], ["Pois cassés cuits", "G", 116, 8, 20, 0.5, 150], ["Fèves cuites", "G", 110, 7.6, 19, 0.4, 150], ["Petits pois cuits", "G", 84, 5.4, 14, 0.2, 100], ["Édamame cuits", "G", 121, 12, 9, 5, 100], ["Soja cuit", "G", 173, 17, 10, 9, 150], ["Tofu ferme", "G", 144, 17, 2, 9, 120], ["Tempeh", "G", 190, 20, 8, 11, 100], ["Houmous", "G", 170, 8, 14, 10, 40], ["Banane", "R", 89, 1.1, 23, 0.3, 120], ["Pomme", "R", 52, 0.3, 14, 0.2, 150], ["Poire", "R", 57, 0.4, 15, 0.1, 170], ["Orange", "R", 47, 0.9, 12, 0.1, 150], ["Kiwi", "R", 61, 1.1, 15, 0.5, 80], ["Fraises", "R", 32, 0.7, 7.7, 0.3, 150], ["Myrtilles", "R", 57, 0.7, 14.5, 0.3, 100], ["Framboises", "R", 52, 1.2, 12, 0.7, 100], ["Fruits rouges (mélange)", "R", 40, 0.8, 9, 0.3, 100], ["Cerises", "R", 63, 1.1, 16, 0.2, 100], ["Abricot", "R", 48, 1.4, 11, 0.4, 60], ["Pêche", "R", 39, 0.9, 10, 0.3, 150], ["Raisin", "R", 69, 0.7, 18, 0.2, 100], ["Ananas", "R", 50, 0.5, 13, 0.1, 150], ["Mangue", "R", 60, 0.8, 15, 0.4, 150], ["Papaye", "R", 43, 0.5, 11, 0.3, 150], ["Litchi", "R", 66, 0.8, 17, 0.4, 100], ["Melon", "R", 34, 0.8, 8, 0.2, 200], ["Pastèque", "R", 30, 0.6, 7.6, 0.2, 200], ["Figue fraîche", "R", 74, 0.8, 19, 0.3, 50], ["Grenade", "R", 83, 1.7, 19, 1.2, 100], ["Pruneaux", "R", 240, 2.2, 64, 0.4, 40], ["Dattes", "R", 277, 1.8, 75, 0.2, 8], ["Avocat", "R", 160, 2, 9, 15, 80], ["Compote sans sucre", "R", 60, 0.2, 14, 0.1, 100], ["Brocoli cuit", "Q", 35, 2.4, 7, 0.4, 150], ["Brocoli cru", "Q", 34, 2.8, 6.6, 0.4, 150], ["Carotte crue", "Q", 41, 0.9, 10, 0.2, 80], ["Courgette cuite", "Q", 17, 1.2, 3.1, 0.3, 150], ["Épinards cuits", "Q", 23, 3, 3.6, 0.3, 100], ["Haricots verts cuits", "Q", 31, 1.8, 7, 0.2, 100], ["Asperges cuites", "Q", 22, 2.4, 3.9, 0.2, 100], ["Artichaut cuit", "Q", 53, 3.3, 11.7, 0.2, 100], ["Betterave cuite", "Q", 44, 1.7, 10, 0.2, 100], ["Céleri branche", "Q", 16, 0.7, 3, 0.2, 100], ["Chou rouge cru", "Q", 31, 1.4, 7, 0.2, 100], ["Chou vert cuit", "Q", 25, 1.3, 6, 0.1, 100], ["Chou-fleur cuit", "Q", 23, 1.9, 4.1, 0.3, 150], ["Fenouil cru", "Q", 31, 1.2, 7.3, 0.2, 100], ["Radis", "Q", 16, 0.7, 3.4, 0.1, 100], ["Mâche", "Q", 21, 2, 3.6, 0.4, 50], ["Pois mange-tout cuits", "Q", 42, 2.8, 7.5, 0.2, 100], ["Potiron cuit", "Q", 26, 1, 6.5, 0.1, 150], ["Butternut cuite", "Q", 40, 1, 10, 0.1, 150], ["Endive", "Q", 17, 1.3, 3.4, 0.1, 100], ["Tomate", "Q", 18, 0.9, 3.9, 0.2, 120], ["Concombre", "Q", 15, 0.7, 3.6, 0.1, 100], ["Salade verte", "Q", 15, 1.4, 2.2, 0.2, 50], ["Poivron rouge", "Q", 31, 1, 6, 0.3, 120], ["Poivron vert", "Q", 20, 0.9, 4.6, 0.2, 120], ["Champignons de Paris", "Q", 22, 3.1, 3.3, 0.3, 100], ["Oignon", "Q", 40, 1.1, 9.3, 0.1, 110], ["Aubergine cuite", "Q", 35, 0.8, 8, 0.2, 150], ["Poireau cuit", "Q", 30, 1.6, 6, 0.3, 100], ["Huile d'olive", "N", 884, 0, 0, 100, 13], ["Huile de colza", "N", 884, 0, 0, 100, 13], ["Huile de coco", "N", 862, 0, 0, 100, 13], ["Beurre de cacahuète", "N", 588, 25, 20, 50, 16], ["Amandes", "N", 579, 21, 22, 50, 30], ["Noix", "N", 654, 15, 14, 65, 30], ["Noix de cajou", "N", 553, 18, 30, 44, 30], ["Noisettes", "N", 628, 15, 17, 61, 30], ["Pistaches", "N", 562, 21, 28, 45, 30], ["Noix de pécan", "N", 691, 9, 14, 72, 30], ["Pignons de pin", "N", 673, 14, 13, 68, 15], ["Graines de chia", "N", 486, 17, 42, 31, 15], ["Graines de courge", "N", 559, 30, 11, 49, 30], ["Graines de tournesol", "N", 584, 21, 20, 51, 30], ["Graines de sésame", "N", 573, 18, 23, 50, 10], ["Tahini (pâte de sésame)", "N", 595, 17, 21, 54, 15], ["Margarine", "N", 717, 0.2, 0.7, 80, 10], ["Chocolat noir 85 %", "S", 600, 10, 25, 46, 20], ["Chocolat au lait", "S", 535, 8, 59, 30, 20], ["Miel", "S", 304, 0.3, 82, 0, 15], ["Confiture", "S", 260, 0.4, 65, 0.1, 20], ["Sucre", "S", 400, 0, 100, 0, 5], ["Biscuit petit beurre", "S", 440, 7, 70, 15, 30], ["Croissant", "S", 406, 8, 46, 21, 60], ["Pain au chocolat", "S", 400, 7, 45, 22, 60], ["Madeleine", "S", 420, 6, 55, 20, 30], ["Cookies", "S", 480, 6, 62, 23, 30], ["Gâteau au yaourt", "S", 370, 6, 50, 16, 60], ["Barre de céréales", "S", 400, 6, 65, 13, 25], ["Pain d'épices", "S", 330, 4, 70, 5, 50], ["Gaufre", "S", 300, 7, 40, 12, 60], ["Glace vanille", "S", 207, 3.5, 24, 11, 100], ["Chips", "S", 540, 6, 52, 35, 30], ["Jus d'orange (100 ml)", "S", 45, 0.7, 10, 0.2, 200], ["Soda cola", "S", 42, 0, 10.6, 0, 330], ["Bière blonde (5 %)", "S", 43, 0.5, 3.6, 0, 250], ["Vin rouge", "S", 85, 0.1, 2.6, 0, 150], ["Café noir (sans sucre)", "S", 2, 0.1, 0, 0, 250], ["Protéine whey (poudre)", "W", 380, 75, 8, 5, 30], ["Barre protéinée", "W", 350, 30, 35, 12, 60], ["Pâtes bolognaise (assiette)", "P", 140, 7, 18, 4.5, 350], ["Lasagnes à la bolognaise", "P", 152, 8, 14, 7, 300], ["Chili con carne", "P", 120, 9, 10, 5, 300], ["Hachis parmentier", "P", 130, 6, 12, 6, 300], ["Quiche lorraine", "P", 290, 10, 20, 20, 150], ["Salade César au poulet", "P", 160, 12, 6, 9, 300], ["Sandwich jambon-beurre", "P", 280, 13, 35, 9, 200], ["Croque-monsieur", "P", 300, 14, 24, 16, 150], ["Wrap poulet crudités", "P", 170, 10, 17, 6, 200], ["Burrito poulet", "P", 190, 9, 25, 6, 300], ["Omelette nature", "P", 150, 11, 1, 12, 150], ["Poke bowl saumon", "P", 140, 10, 15, 5, 400], ["Pizza margherita (1 part)", "P", 266, 11, 33, 10, 110], ["Pizza jambon fromage (1 part)", "P", 260, 11, 30, 10, 110], ["Hamburger", "P", 250, 13, 24, 11, 200], ["Kebab viande (sans sauce)", "P", 220, 12, 24, 9, 300], ["Poulet curry et riz", "P", 125, 10, 12, 4, 400], ["Pad thaï poulet", "P", 150, 8, 20, 4, 350], ["Sushi (maki saumon)", "P", 140, 6, 25, 2, 200], ["Bœuf bourguignon", "P", 140, 11, 5, 8, 350], ["Tartiflette", "P", 180, 7, 14, 11, 300], ["Salade de pâtes au thon", "P", 170, 7, 22, 6, 300], ["Soupe de légumes", "P", 40, 2, 6, 1, 300], ["Soupe de potiron", "P", 60, 1.5, 10, 1.5, 300], ["Purée de pommes de terre", "P", 100, 2, 15, 4, 200]];
+const FCAT={V:'Viande et poisson',L:'Laitier et œufs',F:'Féculents et pain',G:'Légumineuses et soja',R:'Fruits',Q:'Légumes',N:'Gras et fruits à coque',S:'Sucré, boissons et snacks',W:'Compléments',P:'Plats et repas'};
+const nz=s=>String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function catSearch(){
+  const q=nz($('mcat').value.trim()),box=$('mres');
+  if(!q){box.innerHTML='';return}
+  const words=q.split(/\s+/);
+  const hits=[];FOODS.forEach((f,i)=>{if(hits.length<40&&words.every(w=>nz(f[0]).includes(w)))hits.push(i)});
+  box.innerHTML=hits.length
+    ?hits.map(i=>{const f=FOODS[i];return `<button class="fd" type="button" onclick="pickFood(${i})"><b>${esc(f[0])}</b><span>${FCAT[f[1]]} · pour 100 g : ${f[2]} kcal, ${f[3]} g de protéines</span></button>`}).join('')
+    :'<div class="mut" style="margin-top:8px">Aucun résultat. Tu peux saisir les valeurs à la main.</div>';
+}
+function pickFood(i){
+  const f=FOODS[i];
+  $('mcat').value='';$('mres').innerHTML='';
+  $('mpick').dataset.i=i;$('mpname').textContent=f[0];
+  $('mq').value=f[6];$('mpick').classList.remove('hide');
+  foodCalc();
+}
+function foodCalc(){
+  const i=+$('mpick').dataset.i,f=FOODS[i],q=parseFloat($('mq').value)||0;
+  $('mn').value=f[0]+(q?', '+q+' g':'');
+  $('mk').value=Math.round(f[2]*q/100);
+  $('mp').value=Math.round(f[3]*q/100);
+}
+function recToJournal(id){
+  const r=RECIPES.find(x=>x.id===id);if(!r)return;
+  D.meals.push({id:Date.now(),d:day(),n:r.t+' (1 portion)',k:r.nut[0],p:r.nut[1]});save();renderMeals();
+  const b=$('recAddBtn');if(b)b.textContent='Ajouté au journal ✓';
 }
 function renderToday(){
   const t=D.sets.filter(s=>s.d===day());
@@ -552,7 +603,7 @@ function addBW(){const v=parseFloat($('bw').value);if(isNaN(v))return;D.bw=D.bw.
 function addMeal(){
   const n=$('mn').value.trim(),k=parseInt($('mk').value)||0,p=parseInt($('mp').value)||0;
   if(!n){return}D.meals.push({id:Date.now(),d:day(),n,k,p});save();
-  ['mn','mk','mp'].forEach(i=>$(i).value='');renderMeals();
+  ['mn','mk','mp','mq','mcat'].forEach(i=>$(i).value='');$('mres').innerHTML='';$('mpick').classList.add('hide');renderMeals();
 }
 function delMeal(id){D.meals=D.meals.filter(m=>m.id!==id);D.del.push(id);save();renderMeals()}
 function saveGoals(){D.goals={k:parseInt($('gk').value)||0,p:parseInt($('gp').value)||0};D.goalsT=Date.now();save();renderMeals()}
