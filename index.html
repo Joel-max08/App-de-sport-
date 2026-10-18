@@ -149,6 +149,7 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .sl-tips{padding-left:18px;margin:12px 0 6px;font-size:15px;line-height:1.5}
 .sl-tips li{margin:0 0 10px}
 .sl-note{font-size:13px;margin:6px 0 0}
+.cat-h{font-size:15px;margin:18px 0 2px;color:var(--teal)}
 #streak{padding:16px 18px}
 #streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
@@ -787,7 +788,8 @@ window.setData=x=>{D=norm(x);localStorage.setItem(KEY,JSON.stringify(D));render(
 window.mergeData=mergeData;
 // Séances toutes faites : [exercice, secondes d'effort, secondes de repos]
 const SESS=[
- {n:'Étirements après la course ou le vélo',s:[['etqua',30,5],['etqua',30,5],['etisch',30,5],['etisch',30,5],['etpec',30,0]]},
+ {n:'Étirements après la course',cat:'Étirements',s:[['etqua',30,5],['etqua',30,5],['etisch',30,5],['etisch',30,5]]},
+ {n:'Étirements après le vélo',cat:'Étirements',s:[['etqua',30,5],['etqua',30,5],['etpec',30,0]]},
  {n:'Full body A (salle)',s:[['squat',45,40],['couche',40,40],['rowing',40,40],['militaire',40,40],['rdl',40,40],['gainage',30,30],['tirage',40,30],['curl',30,30]]},
  {n:'Full body B (salle)',s:[['sdt',40,50],['fente',40,30],['tirage',40,40],['laterale',30,30],['curl',30,30],['crunch',30,30],['couche',40,40],['pont',40,30],['triceps',30,30]]},
  {n:'Haut du corps',s:[['couche',40,30],['rowing',40,30],['militaire',40,30],['tirage',40,30],['curl',30,30],['triceps',30,30],['laterale',30,30],['tractions',30,50],['pompes',30,30]]},
@@ -795,8 +797,13 @@ const SESS=[
  {n:'Push (poussée)',s:[['couche',40,30],['militaire',40,30],['dipsbarres',30,40],['laterale',30,30],['triceps',30,30],['pompes',40,30],['pompesinc',40,30],['dipschaise',30,30]]},
  {n:'Pull (tirage)',s:[['tractions',30,50],['rowing',40,30],['tirage',40,30],['curl',30,30],['sdt',40,50],['crunch',30,30],['gainage',30,30],['mountain',30,20]]},
  {n:'Maison, sans matériel',s:[['squatpdc',40,20],['pompes',30,30],['fente',40,20],['dipschaise',30,30],['pont',40,20],['mountain',30,20],['crunch',30,20],['gainage',30,20],['jacks',40,20],['bulgare',40,20]]}
-];function sessList(){
-  $('sessList').innerHTML=SESS.map((x,i)=>{const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `<div class="sesswrap"><div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div><details class="sl-det" ontoggle="sessShow(${i},this)"><summary>Voir les exercices</summary><div class="sl-list"></div></details></div>`}).join('');
+];function sessCard(x,i){const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `<div class="sesswrap"><div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div><details class="sl-det" ontoggle="sessShow(${i},this)"><summary>Voir les exercices</summary><div class="sl-list"></div></details></div>`}
+function sessList(){
+  const main=SESS.map((x,i)=>[x,i]).filter(([x])=>!x.cat);
+  const stretch=SESS.map((x,i)=>[x,i]).filter(([x])=>x.cat==='Étirements');
+  let h=main.map(([x,i])=>sessCard(x,i)).join('');
+  if(stretch.length)h+=`<h4 class="cat-h">Étirements</h4>`+stretch.map(([x,i])=>sessCard(x,i)).join('');
+  $('sessList').innerHTML=h;
 }
 // Liste des exercices d'une séance avec leur dessin (dessins créés seulement à l'ouverture)
 function sessShow(i,el){
