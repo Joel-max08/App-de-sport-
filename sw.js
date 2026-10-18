@@ -1,4 +1,4 @@
-const CACHE = 'kinetra-v44';
+const CACHE = 'kinetra-v45';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './firebase-config.js', './bonhomme.js', './programs.js', './i18n.js'];
 
 self.addEventListener('install', e => {
@@ -28,6 +28,17 @@ self.addEventListener('fetch', e => {
         return r;
       }).catch(() => null);
       return hit || (await net) || c.match('./index.html');
+    })
+  );
+});
+
+// Clic sur une notification : ouvre ou ramène l'app au premier plan
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      if (list.length) return list[0].focus();
+      return clients.openWindow('./');
     })
   );
 });

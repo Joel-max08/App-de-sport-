@@ -214,6 +214,14 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 .sub-h{font-size:15px;font-weight:700;margin:18px 0 6px}
 #v-seance:has(#runCard:not(.hide)) #manual{display:none}
 #v-seance:has(#runCard:not(.hide)) #pre{display:none}
+.rem-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;font-size:15px}
+.rem-l input[type=checkbox]{width:auto;display:inline-block;margin:0;accent-color:var(--teal)}
+.rem-s{width:auto!important;display:inline-block!important;padding:8px 10px;font-size:15px}
+.rem-days{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.rem-day{display:inline-flex;align-items:center;gap:5px;font-size:14px;background:var(--soft);border-radius:999px;padding:6px 10px}
+.rem-day input{width:auto;display:inline-block;margin:0;accent-color:var(--teal)}
+#nudge{position:fixed;left:16px;right:16px;top:calc(12px + env(safe-area-inset-top));z-index:40;background:var(--teal);color:var(--tealink);border-radius:14px;padding:12px 14px;font-weight:700;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+#nudge.hide{display:none}
 </style>
 </head>
 <body>
@@ -416,6 +424,20 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     </select>
   </div>
   <div class="card">
+    <h3>Rappels</h3>
+    <p class="mut" id="remStatus" style="margin-top:0"></p>
+    <div class="row"><button class="sec" onclick="remAllow()">Autoriser les notifications</button></div>
+    <label class="rem-l"><input type="checkbox" id="rWater" onchange="remSave()"> Boire de l'eau toutes les
+      <select id="rWaterH" onchange="remSave()" class="rem-s"><option value="1">1 h</option><option value="2">2 h</option><option value="3">3 h</option></select></label>
+    <label class="rem-l"><input type="checkbox" id="rSeance" onchange="remSave()"> Séance à <input type="time" id="rSeanceT" onchange="remSave()" class="rem-s"></label>
+    <div class="rem-days" id="rDays"></div>
+    <label class="rem-l"><input type="checkbox" id="rPoids" onchange="remSave()"> Peser-toi le
+      <select id="rPoidsD" onchange="remSave()" class="rem-s"><option value="1">lundi</option><option value="2">mardi</option><option value="3">mercredi</option><option value="4">jeudi</option><option value="5">vendredi</option><option value="6">samedi</option><option value="7">dimanche</option></select>
+      à <input type="time" id="rPoidsT" onchange="remSave()" class="rem-s"></label>
+    <label class="rem-l"><input type="checkbox" id="rSess" onchange="remSave()"> Rappel de boire pendant la séance (toutes les 15 min)</label>
+    <div class="row"><button class="sec" onclick="remTest()">Tester une notification dans 1 minute</button></div>
+  </div>
+  <div class="card">
     <h3>Progression</h3>
     <select id="pex" onchange="drawProg()" aria-label="Exercice"></select>
     <canvas id="cv1" role="img" aria-label="Courbe de la charge maximale par séance"></canvas>
@@ -467,6 +489,7 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 
 </main>
 </div>
+<div id="nudge" class="hide" role="status"></div>
 <nav>
   <button data-v="accueil" class="on"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5v8.5a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></svg></span>Accueil</button>
   <button data-v="seance"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span>Séance</button>
@@ -964,6 +987,111 @@ function runStop(){
 }
 sessList();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+<script>
+/* Rappels : notifications programmées (7 jours) et rappel d'eau pendant la séance */
+(function(){
+const REM_KEY='sportapp.rem';
+const DAYS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+let REM={water:{on:false,h:2},seance:{on:false,t:'18:00',days:[1,3,5]},poids:{on:false,d:7,t:'09:00'},sess:{on:false}};
+try{const s=JSON.parse(localStorage.getItem(REM_KEY));if(s)REM=Object.assign(REM,s)}catch(e){}
+let timers=[],nudgeT=0,nudgeInt=0;
+const $r=id=>document.getElementById(id);
+function remBuildDays(){
+  $r('rDays').innerHTML=DAYS.map((d,i)=>`<label class="rem-day"><input type="checkbox" value="${i+1}" onchange="remSave()"> ${d}</label>`).join('');
+}
+function remStatus(){
+  const st='Notification' in window?Notification.permission:'unsupported';
+  $r('remStatus').textContent=st==='granted'?'Notifications autorisées.':st==='unsupported'?'Ce navigateur ne permet pas les notifications.':'Autorise les notifications pour recevoir les rappels.';
+}
+function remUI(){
+  $r('rWater').checked=REM.water.on;$r('rWaterH').value=String(REM.water.h);
+  $r('rSeance').checked=REM.seance.on;$r('rSeanceT').value=REM.seance.t;
+  document.querySelectorAll('#rDays input').forEach(c=>c.checked=REM.seance.days.includes(+c.value));
+  $r('rPoids').checked=REM.poids.on;$r('rPoidsD').value=String(REM.poids.d);$r('rPoidsT').value=REM.poids.t;
+  $r('rSess').checked=REM.sess.on;
+  remStatus();
+}
+function remRead(){
+  REM.water={on:$r('rWater').checked,h:+$r('rWaterH').value};
+  REM.seance={on:$r('rSeance').checked,t:$r('rSeanceT').value||'18:00',days:[...document.querySelectorAll('#rDays input:checked')].map(c=>+c.value)};
+  REM.poids={on:$r('rPoids').checked,d:+$r('rPoidsD').value,t:$r('rPoidsT').value||'09:00'};
+  REM.sess={on:$r('rSess').checked};
+}
+window.remSave=function(){
+  remRead();
+  try{localStorage.setItem(REM_KEY,JSON.stringify(REM))}catch(e){}
+  planReminders();
+};
+window.remAllow=async function(){
+  if(!('Notification' in window)){remStatus();return}
+  await Notification.requestPermission();
+  remStatus();planReminders();
+};
+// Rappels des 7 prochains jours (ISO : lundi = 1 ... dimanche = 7)
+function upcoming(){
+  const out=[],now=Date.now();
+  const at=(off,hhmm)=>{const[h,m]=hhmm.split(':').map(Number);const d=new Date();d.setDate(d.getDate()+off);d.setHours(h,m,0,0);return d.getTime()};
+  const iso=off=>{const g=new Date(now+off*864e5).getDay();return g===0?7:g};
+  for(let off=0;off<7;off++){
+    if(REM.water.on)for(let h=8;h<=20;h+=REM.water.h){
+      const t=at(off,String(h).padStart(2,'0')+':00');
+      if(t>now)out.push({t,title:'Kinetra',body:"Pense à boire un verre d'eau.",tag:'eau-'+t});
+    }
+    if(REM.seance.on&&REM.seance.days.includes(iso(off))){
+      const t=at(off,REM.seance.t);
+      if(t>now)out.push({t,title:'Kinetra',body:"Ta séance t'attend. 10 minutes suffisent.",tag:'seance-'+t});
+    }
+    if(REM.poids.on&&iso(off)===REM.poids.d){
+      const t=at(off,REM.poids.t);
+      if(t>now)out.push({t,title:'Kinetra',body:'Pense à noter ton poids dans le suivi.',tag:'poids-'+t});
+    }
+  }
+  return out.sort((a,b)=>a.t-b.t).slice(0,50);
+}
+function planReminders(){
+  timers.forEach(clearTimeout);timers=[];
+  if(!('Notification' in window)||Notification.permission!=='granted'||!navigator.serviceWorker)return;
+  navigator.serviceWorker.ready.then(reg=>{
+    upcoming().forEach(x=>{
+      const opts={body:x.body,tag:x.tag,icon:'icon-192.png',badge:'icon-192.png'};
+      if(typeof TimestampTrigger==='function'){
+        opts.showTrigger=new TimestampTrigger(x.t);
+        reg.showNotification(x.title,opts).catch(()=>{});
+      }else{
+        // Sans programmation native : la notification part seulement si l'app reste ouverte
+        timers.push(setTimeout(()=>reg.showNotification(x.title,opts).catch(()=>{}),x.t-Date.now()));
+      }
+    });
+  }).catch(()=>{});
+}
+window.remTest=function(){
+  if(!('Notification' in window)||Notification.permission!=='granted'){remStatus();return}
+  navigator.serviceWorker.ready.then(reg=>{
+    const t=Date.now()+60000;
+    const opts={body:'Test : tes rappels fonctionnent.',tag:'test-'+t,icon:'icon-192.png'};
+    if(typeof TimestampTrigger==='function'){opts.showTrigger=new TimestampTrigger(t);reg.showNotification('Kinetra',opts)}
+    else{setTimeout(()=>reg.showNotification('Kinetra',opts),60000);alert("Test lancé : la notification arrive dans 1 minute si l'app reste ouverte.")}
+  });
+};
+// Rappel d'eau pendant la séance
+function nudge(msg){
+  const n=$r('nudge');n.textContent=msg;n.classList.remove('hide');
+  if(navigator.vibrate)navigator.vibrate([150,80,150]);
+  clearTimeout(nudgeT);nudgeT=setTimeout(()=>n.classList.add('hide'),6000);
+}
+const _startSess=window.startSess;
+window.startSess=function(i){
+  _startSess(i);
+  clearInterval(nudgeInt);
+  if(REM.sess.on)nudgeInt=setInterval(()=>{if(typeof run!=='undefined'&&run)nudge("Pense à boire un verre d'eau.")},15*60000);
+};
+const _finish=window.finish;
+window.finish=function(){clearInterval(nudgeInt);$r('nudge').classList.add('hide');return _finish()};
+document.addEventListener('DOMContentLoaded',()=>{});
+remBuildDays();remUI();planReminders();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)planReminders()});
+})();
 </script>
 <script type="module">
 const $=id=>document.getElementById(id);
