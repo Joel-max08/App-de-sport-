@@ -246,6 +246,26 @@ function find(name){
 // ---------- Dessin ----------
 const P=(a,b)=>`M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
 const part=(a,b,f,t)=>P([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f],[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]);
+// Capsule effilée entre deux points (rayon ra au départ, rb à l'arrivée), arrondie aux deux bouts
+const cap=(a,b,ra,rb)=>{
+  const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1e-6;
+  const nx=-dy/l,ny=dx/l,f=v=>v.toFixed(1);
+  return `<path d="M${f(a[0]+nx*ra)} ${f(a[1]+ny*ra)}L${f(b[0]+nx*rb)} ${f(b[1]+ny*rb)}A${rb} ${rb} 0 0 0 ${f(b[0]-nx*rb)} ${f(b[1]-ny*rb)}L${f(a[0]-nx*ra)} ${f(a[1]-ny*ra)}A${ra} ${ra} 0 0 0 ${f(a[0]+nx*ra)} ${f(a[1]+ny*ra)}Z"/>`;
+};
+const dot=(q,r)=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${r}"/>`;
+// Jambe (cuisse épaisse, genou, mollet, cheville, pied) et bras (bras, coude, avant-bras, main)
+function limbsSVG(s){
+  return cap(s.hip,s.knee,6,4)+dot(s.knee,4)+cap(s.knee,s.ank,4,2.6)+dot(s.ank,2.6)+cap(s.ank,s.toe,2.6,2.2)
+    +cap(s.sh,s.elb,4.2,3.2)+dot(s.elb,3.2)+cap(s.elb,s.hand,3.2,2.2)+dot(s.hand,3);
+}
+// Buste : bassin, épaules, cou (et largeur des épaules/hanches de face)
+function torsoSVG(J,p){
+  const w=[(J.hip[0]+J.sh[0])/2,(J.hip[1]+J.sh[1])/2];
+  let s=cap(J.hip,w,8.2,6.8)+cap(w,J.sh,6.8,9.8)+cap(J.sh,J.neck,4.4,3.6);
+  if(p.front)s+=cap(J.n.sh,J.f.sh,6.5,6.5)+cap(J.n.hip,J.f.hip,8,8);
+  return s;
+}
+
 function limbs(s){return P(s.hip,s.knee)+P(s.knee,s.ank)+P(s.ank,s.toe)+P(s.sh,s.elb)+P(s.elb,s.hand)}
 function seg(J,s,name){
   if(name==='torso')return[J.hip,J.sh];
@@ -261,12 +281,11 @@ function css(){
   st.textContent=`.bh{position:relative}
 .bh svg{display:block;width:100%;max-width:260px;height:auto;margin:0 auto;background:var(--field);border-radius:16px}
 .bh-g{stroke:var(--line);stroke-width:2}
-.bh-body{fill:none;stroke:var(--ink);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.bh-near,.bh-torso,.bh-far{fill:var(--ink)}
 .bh-far{opacity:.3}
 .bh-isfront .bh-far{opacity:1}
-.bh-torso{stroke-width:9}
 .bh-head{fill:var(--ink)}
-.bh-mu{fill:none;stroke:var(--teal);stroke-width:7;stroke-linecap:round}
+.bh-mu{fill:none;stroke:var(--teal);stroke-width:5;stroke-linecap:round;opacity:.95}
 .bh-plate{fill:var(--warm);stroke:var(--ink);stroke-width:2}
 .bh-hub{fill:var(--ink)}
 .bh-prop{fill:var(--mut);opacity:.55}
@@ -299,7 +318,7 @@ function mount(el,name,opt){
   el.innerHTML=`<div class="bh"><div class="bh-hd"><b>${ex.n}</b><button class="sec" type="button">Pause</button></div>
 <svg viewBox="0 -12 240 170" role="img" aria-label="Bonhomme qui montre le mouvement : ${ex.n}">
 <path d="M8 ${G+.5}H232" class="bh-g"/><g class="bh-stat">${ex.stat||''}</g><g class="bh-back"></g>
-<path class="bh-body bh-far"/><path class="bh-body bh-torso"/><circle r="${L.HR}" class="bh-head"/><path class="bh-body bh-near"/><path class="bh-mu"/><g class="bh-front"></g></svg>
+<g class="bh-far"></g><g class="bh-torso"></g><ellipse class="bh-head" rx="6.6" ry="8.4"/><g class="bh-near"></g><path class="bh-mu"/><g class="bh-front"></g></svg>
 <ul class="bh-cues">${ex.c.map(c=>`<li>${c}</li>`).join('')}</ul>
 <div class="mut bh-mus"><i></i>Muscles travaillés : ${ex.m}</div></div>`;
   const q=s=>el.querySelector(s),svg=q('svg');
@@ -317,11 +336,13 @@ function mount(el,name,opt){
   }
   function draw(p){
     const J=solve(p);
-    far.setAttribute('d',limbs(J.f));
-    near.setAttribute('d',limbs(J.n));
-    tor.setAttribute('d',P(J.hip,J.sh)+P(J.sh,J.neck)+(p.front?P(J.f.sh,J.n.sh)+P(J.f.hip,J.n.hip):''));
+    far.innerHTML=limbsSVG(J.f);
+    near.innerHTML=limbsSVG(J.n);
+    tor.innerHTML=torsoSVG(J,p);
     svg.classList.toggle('bh-isfront',!!p.front);
-    head.setAttribute('cx',J.head[0].toFixed(1));head.setAttribute('cy',J.head[1].toFixed(1));
+    const hx=J.head[0].toFixed(1),hy=J.head[1].toFixed(1);
+    head.setAttribute('cx',hx);head.setAttribute('cy',hy);
+    head.setAttribute('transform',`rotate(${(p.t+(p.hd||0)).toFixed(1)} ${hx} ${hy})`);
     let m='';
     (ex.mu||[]).forEach(([s,f,t])=>{
       [J.n].concat(p.front?[J.f]:[]).forEach(side=>{const[a,b]=seg(J,side,s);m+=part(a,b,f,t)});
