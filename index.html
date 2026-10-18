@@ -142,6 +142,13 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .confetti i{position:absolute;top:-20px;border-radius:2px;animation-name:cfall;animation-timing-function:cubic-bezier(.25,.6,.4,1);animation-fill-mode:both}
 @keyframes cfall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){.confetti{display:none}}
+.sleep{padding:14px 18px}
+.sleep summary{cursor:pointer;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.sleep summary::after{content:"+";font-size:22px;color:var(--teal);line-height:1}
+.sleep[open] summary::after{content:"–"}
+.sl-tips{padding-left:18px;margin:12px 0 6px;font-size:15px;line-height:1.5}
+.sl-tips li{margin:0 0 10px}
+.sl-note{font-size:13px;margin:6px 0 0}
 #streak{padding:16px 18px}
 #streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
@@ -212,6 +219,19 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 <section id="v-accueil">
   <div class="card hm" id="greet"></div>
   <div class="card" id="streak"></div>
+  <details class="card sleep">
+    <summary><b>Mieux dormir : 7 conseils</b></summary>
+    <ul class="sl-tips">
+      <li><b>Des horaires réguliers.</b> Couche-toi et lève-toi à peu près à la même heure, même le week-end.</li>
+      <li><b>Moins d'écrans le soir.</b> Essaie de poser téléphone et tablette 30 à 60 minutes avant de dormir.</li>
+      <li><b>Une chambre fraîche, calme et sombre.</b> Autour de 16 à 19 °C, avec des rideaux épais si besoin.</li>
+      <li><b>Pas de café l'après-midi.</b> La caféine reste active plusieurs heures : évite-la après 14 h.</li>
+      <li><b>Du sport, mais pas trop tard.</b> L'activité régulière aide à dormir, mais un effort très intense juste avant le coucher peut gêner.</li>
+      <li><b>Un dîner léger.</b> Mange plutôt tôt et limite l'alcool en soirée, qui perturbe le sommeil.</li>
+      <li><b>Si tu n'arrives pas à dormir.</b> Au bout de 20 minutes environ, lève-toi, fais une activité calme avec une lumière faible, puis retourne au lit.</li>
+    </ul>
+    <p class="mut sl-note">Ces conseils sont généraux. Si tes problèmes de sommeil durent plusieurs semaines, parles-en à un médecin.</p>
+  </details>
   <div class="card">
     <h3>Envoyer un retour</h3>
     <p class="mut" style="margin-top:0">Une idée, un bug ou un exercice à ajouter ? Écris-le ici : ton application mail s'ouvre avec le message prêt à envoyer au développeur.</p>
