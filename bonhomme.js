@@ -247,21 +247,21 @@ function find(name){
 const P=(a,b)=>`M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
 const part=(a,b,f,t)=>P([a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f],[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]);
 // Capsule effilée entre deux points (rayon ra au départ, rb à l'arrivée), arrondie aux deux bouts
-const cap=(a,b,ra,rb)=>{
+const cap=(a,b,ra,rb,c='')=>{
   const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1e-6;
   const nx=-dy/l,ny=dx/l,f=v=>v.toFixed(1);
-  return `<path d="M${f(a[0]+nx*ra)} ${f(a[1]+ny*ra)}L${f(b[0]+nx*rb)} ${f(b[1]+ny*rb)}A${rb} ${rb} 0 0 0 ${f(b[0]-nx*rb)} ${f(b[1]-ny*rb)}L${f(a[0]-nx*ra)} ${f(a[1]-ny*ra)}A${ra} ${ra} 0 0 0 ${f(a[0]+nx*ra)} ${f(a[1]+ny*ra)}Z"/>`;
+  return `<path class="${c}" d="M${f(a[0]+nx*ra)} ${f(a[1]+ny*ra)}L${f(b[0]+nx*rb)} ${f(b[1]+ny*rb)}A${rb} ${rb} 0 0 0 ${f(b[0]-nx*rb)} ${f(b[1]-ny*rb)}L${f(a[0]-nx*ra)} ${f(a[1]-ny*ra)}A${ra} ${ra} 0 0 0 ${f(a[0]+nx*ra)} ${f(a[1]+ny*ra)}Z"/>`;
 };
 const dot=(q,r)=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${r}"/>`;
 // Jambe (cuisse épaisse, genou, mollet, cheville, pied) et bras (bras, coude, avant-bras, main)
 function limbsSVG(s){
-  return cap(s.hip,s.knee,6,4)+dot(s.knee,4)+cap(s.knee,s.ank,4,2.6)+dot(s.ank,2.6)+cap(s.ank,s.toe,2.6,2.2)
+  return cap(s.hip,s.knee,6,4)+dot(s.knee,4)+cap(s.knee,s.ank,4,2.6)+dot(s.ank,2.6)+cap(s.ank,s.toe,2.6,2.2,'bh-shoe')
     +cap(s.sh,s.elb,4.2,3.2)+dot(s.elb,3.2)+cap(s.elb,s.hand,3.2,2.2)+dot(s.hand,3);
 }
 // Buste : bassin, épaules, cou (et largeur des épaules/hanches de face)
 function torsoSVG(J,p){
   const w=[(J.hip[0]+J.sh[0])/2,(J.hip[1]+J.sh[1])/2];
-  let s=cap(J.hip,w,8.2,6.8)+cap(w,J.sh,6.8,9.8)+cap(J.sh,J.neck,4.4,3.6);
+  let s=cap(J.hip,w,8.2,6.8)+cap(w,J.sh,6.8,9.8)+cap(J.sh,J.neck,4.4,3.6,'bh-sk');
   if(p.front)s+=cap(J.n.sh,J.f.sh,6.5,6.5)+cap(J.n.hip,J.f.hip,8,8);
   return s;
 }
@@ -281,10 +281,13 @@ function css(){
   st.textContent=`.bh{position:relative}
 .bh svg{display:block;width:100%;max-width:260px;height:auto;margin:0 auto;background:var(--field);border-radius:16px}
 .bh-g{stroke:var(--line);stroke-width:2}
-.bh-near,.bh-torso,.bh-far{fill:var(--ink)}
+.bh-torso{fill:var(--ink)}
+.bh-near,.bh-far{fill:var(--skin,#EDB48F);stroke:rgba(15,43,61,.25);stroke-width:.8}
+.bh-sk{fill:var(--skin,#EDB48F)}
+.bh-shoe{fill:var(--ink)}
 .bh-far{opacity:.3}
 .bh-isfront .bh-far{opacity:1}
-.bh-head{fill:var(--ink)}
+.bh-head{fill:var(--skin,#EDB48F);stroke:rgba(15,43,61,.25);stroke-width:.8}
 .bh-mu{fill:none;stroke:var(--teal);stroke-width:5;stroke-linecap:round;opacity:.95}
 .bh-plate{fill:var(--warm);stroke:var(--ink);stroke-width:2}
 .bh-hub{fill:var(--ink)}

@@ -1,4 +1,4 @@
-const CACHE = 'kinetra-v43';
+const CACHE = 'kinetra-v44';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './firebase-config.js', './bonhomme.js', './programs.js', './i18n.js'];
 
 self.addEventListener('install', e => {
