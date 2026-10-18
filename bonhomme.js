@@ -64,6 +64,18 @@ const bench=`<rect x="58" y="112" width="112" height="8" rx="3" class="bh-prop"/
 // Chaque image clé : d = durée pour l'atteindre (ms), h = pause (ms), p = pose.
 const stand={hip:[120,93],t:0,ft:[121,146],kb:-1,ua:180,fa:180};
 const X={
+etqua:{n:'Étirement des quadriceps',m:'Cuisses (avant)',
+  c:['Debout, tiens-toi à un appui si besoin','Ramène le talon vers la fesse, genoux serrés','Garde le bassin droit, sans cambrer. Change de côté'],
+  mu:[['thigh',0,.5]],
+  k:[{d:900,h:1500,p:{hip:[120,93],t:2,ft:[112,122],kb:-1,ua:180,fa:180}},{d:900,h:1500,p:{hip:[120,93],t:2,ft:[112,122],kb:-1,ua:180,fa:180}}]},
+etisch:{n:'Étirement des ischio-jambiers',m:'Arrière des cuisses',
+  c:['Jambes tendues, genoux souples','Plie-toi en avant depuis les hanches, dos long','Sens l\'étirement derrière la cuisse, puis change de côté'],
+  mu:[['thigh',0,.5]],
+  k:[{d:900,h:1500,p:{hip:[104,98],t:150,ft:[121,146],kb:-1,ua:190,fa:190}},{d:900,h:1500,p:{hip:[104,98],t:150,ft:[121,146],kb:-1,ua:190,fa:190}}]},
+etpec:{n:'Étirement des pectoraux',m:'Poitrine, épaules',
+  c:['Bras tendus à l\'horizontale derrière toi','Ouvre la poitrine, épaules basses','Respire calmement pendant 30 secondes'],
+  mu:[['torso',0,.2]],
+  k:[{d:900,h:1500,p:{hip:[120,93],t:-4,ft:[121,146],ua:-100,fa:-100}},{d:900,h:1500,p:{hip:[120,93],t:-4,ft:[121,146],ua:-100,fa:-100}}]},
 squat:{n:'Squat (barre)',m:'Cuisses, fessiers',
   c:['Pieds largeur d\'épaules, pointes un peu ouvertes','Fesses en arrière, dos droit, regard devant','Genoux dans l\'axe des pieds, talons au sol'],
   mu:[['thigh',0,1]],
