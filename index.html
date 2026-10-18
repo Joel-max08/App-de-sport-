@@ -150,6 +150,14 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .sl-tips li{margin:0 0 10px}
 .sl-note{font-size:13px;margin:6px 0 0}
 .cat-h{font-size:15px;margin:18px 0 2px;color:var(--teal)}
+.water{padding:16px 18px}
+.glasses{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.gl{background:none;border:0;padding:4px 0;box-shadow:none;cursor:pointer}
+.gl svg{display:block;width:100%;max-width:52px;height:auto;margin:0 auto}
+.gl .g-body{fill:none;stroke:var(--mut);stroke-width:1.6;stroke-linejoin:round}
+.gl .g-w{fill:none;transition:fill .2s}
+.gl.on .g-w{fill:#22CDBE}
+.gl.on .g-body{stroke:#00A99D}
 #streak{padding:16px 18px}
 #streak .st-big{font-size:28px;font-weight:800;margin:2px 0 4px}
 #streak .st-msg{font-size:15px;margin:6px 0 0}
@@ -233,6 +241,11 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     </ul>
     <p class="mut sl-note">Ces conseils sont généraux. Si tes problèmes de sommeil durent plusieurs semaines, parles-en à un médecin.</p>
   </details>
+  <div class="card water">
+    <h3>Eau aujourd'hui</h3>
+    <p class="mut" id="wTxt" style="margin:0 0 12px"></p>
+    <div class="glasses" id="glasses"></div>
+  </div>
   <div class="card">
     <h3>Envoyer un retour</h3>
     <p class="mut" style="margin-top:0">Une idée, un bug ou un exercice à ajouter ? Écris-le ici : ton application mail s'ouvre avec le message prêt à envoyer au développeur.</p>
@@ -461,7 +474,7 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 const KEY='sportapp.v1';
 let D;
 // MERGE-START
-function norm(x){x=x||{};return{name:x.name||'',nameT:x.nameT||0,sets:x.sets||[],bw:x.bw||[],meals:x.meals||[],goals:x.goals||{k:2200,p:120},goalsT:x.goalsT||0,del:x.del||[],progs:x.progs||[],act:x.act||null}}
+function norm(x){x=x||{};return{name:x.name||'',nameT:x.nameT||0,sets:x.sets||[],bw:x.bw||[],meals:x.meals||[],goals:x.goals||{k:2200,p:120},goalsT:x.goalsT||0,del:x.del||[],progs:x.progs||[],act:x.act||null,water:x.water||{d:'',n:0,t:0}}}
 function mergeData(a,b){
   a=norm(a);b=norm(b);
   const del=new Set([...a.del,...b.del]);
@@ -470,7 +483,8 @@ function mergeData(a,b){
   const g=(b.goalsT||0)>(a.goalsT||0)?b:a;
   const pm=new Map();[...a.progs,...b.progs].forEach(p=>{if(del.has(p.id))return;const o=pm.get(p.id);if(!o||(p.u||0)>=(o.u||0))pm.set(p.id,p)});
   const act=((b.act&&b.act.t)||0)>((a.act&&a.act.t)||0)?b.act:a.act;
-  return{name:(b.nameT||0)>(a.nameT||0)?(b.name||''):(a.name||''),nameT:Math.max(a.nameT||0,b.nameT||0),sets:uni(a.sets,b.sets),meals:uni(a.meals,b.meals),bw:[...bw.values()],goals:g.goals,goalsT:g.goalsT,del:[...del],progs:[...pm.values()].sort((p,q)=>p.id-q.id),act};
+  const water=((b.water&&b.water.t)||0)>((a.water&&a.water.t)||0)?b.water:a.water;
+  return{name:(b.nameT||0)>(a.nameT||0)?(b.name||''):(a.name||''),nameT:Math.max(a.nameT||0,b.nameT||0),sets:uni(a.sets,b.sets),meals:uni(a.meals,b.meals),bw:[...bw.values()],goals:g.goals,goalsT:g.goalsT,del:[...del],progs:[...pm.values()].sort((p,q)=>p.id-q.id),act,water};
 }
 // MERGE-END
 try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
@@ -773,6 +787,7 @@ function importData(e){
 }
 
 function render(){
+  renderWater();
   $('exlist').innerHTML=[...new Set([...exercises(),...(window.Bonhomme?Bonhomme.names():[]),...pNames()])].map(e=>`<option value="${esc(e)}">`).join('');
   const cur=$('pex').value;
   $('pex').innerHTML=exercises().map(e=>`<option>${esc(e)}</option>`).join('');
@@ -797,7 +812,23 @@ const SESS=[
  {n:'Push (poussée)',s:[['couche',40,30],['militaire',40,30],['dipsbarres',30,40],['laterale',30,30],['triceps',30,30],['pompes',40,30],['pompesinc',40,30],['dipschaise',30,30]]},
  {n:'Pull (tirage)',s:[['tractions',30,50],['rowing',40,30],['tirage',40,30],['curl',30,30],['sdt',40,50],['crunch',30,30],['gainage',30,30],['mountain',30,20]]},
  {n:'Maison, sans matériel',s:[['squatpdc',40,20],['pompes',30,30],['fente',40,20],['dipschaise',30,30],['pont',40,20],['mountain',30,20],['crunch',30,20],['gainage',30,20],['jacks',40,20],['bulgare',40,20]]}
-];function sessCard(x,i){const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `<div class="sesswrap"><div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div><details class="sl-det" ontoggle="sessShow(${i},this)"><summary>Voir les exercices</summary><div class="sl-list"></div></details></div>`}
+];// ----- Eau : 8 verres de 250 ml par jour, un clic remplit ou vide
+var W_GOAL=8;
+function waterToday(){const w=D.water||{};return w.d===day()?(w.n||0):0}
+function waterSet(n){
+  D.water={d:day(),n:Math.max(0,Math.min(W_GOAL,n)),t:Date.now()};
+  save();renderWater();
+}
+function waterTap(i){const cur=waterToday();waterSet(i+1===cur?i:i+1)}
+function renderWater(){
+  const box=document.getElementById('glasses');if(!box)return;
+  const n=waterToday();
+  document.getElementById('wTxt').textContent=`${n} verre${n>1?'s':''} sur ${W_GOAL} · environ ${String(n*0.25).replace('.',',')} L`;
+  const g=`<svg viewBox="0 0 24 32" aria-hidden="true"><path class="g-w" d="M5 10h14l-2 19a1.5 1.5 0 0 1-1.5 1.3h-7A1.5 1.5 0 0 1 7 29z"/><path class="g-body" d="M4 3h16l-2.2 26.5A2 2 0 0 1 16 31H8a2 2 0 0 1-1.8-1.5z"/></svg>`;
+  box.innerHTML=Array.from({length:W_GOAL},(_,i)=>`<button type="button" class="gl${i<n?' on':''}" aria-label="Verre ${i+1}${i<n?' (bu)':''}" onclick="waterTap(${i})">${g}</button>`).join('');
+}
+try{renderWater()}catch(e){}
+function sessCard(x,i){const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `<div class="sesswrap"><div class="set"><div class="si"><b>${esc(x.n)}</b><span class="mut">${x.s.length} exercices · environ ${Math.round(T/60)} min</span></div><button class="sec" type="button" onclick="startSess(${i})">Lancer</button></div><details class="sl-det" ontoggle="sessShow(${i},this)"><summary>Voir les exercices</summary><div class="sl-list"></div></details></div>`}
 function sessList(){
   const main=SESS.map((x,i)=>[x,i]).filter(([x])=>!x.cat);
   const stretch=SESS.map((x,i)=>[x,i]).filter(([x])=>x.cat==='Étirements');
