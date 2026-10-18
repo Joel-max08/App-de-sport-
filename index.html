@@ -1055,7 +1055,7 @@ function planReminders(){
   if(!('Notification' in window)||Notification.permission!=='granted'||!navigator.serviceWorker)return;
   navigator.serviceWorker.ready.then(reg=>{
     upcoming().forEach(x=>{
-      const opts={body:x.body,tag:x.tag,icon:'icon-192.png',badge:'icon-192.png'};
+      const opts={body:x.body,tag:x.tag,icon:'icon-192.png',badge:'badge-96.png'};
       if(typeof TimestampTrigger==='function'){
         opts.showTrigger=new TimestampTrigger(x.t);
         reg.showNotification(x.title,opts).catch(()=>{});
@@ -1070,7 +1070,7 @@ window.remTest=function(){
   if(!('Notification' in window)||Notification.permission!=='granted'){remStatus();return}
   navigator.serviceWorker.ready.then(reg=>{
     const t=Date.now()+60000;
-    const opts={body:'Test : tes rappels fonctionnent.',tag:'test-'+t,icon:'icon-192.png'};
+    const opts={body:'Test : tes rappels fonctionnent.',tag:'test-'+t,icon:'icon-192.png',badge:'badge-96.png'};
     if(typeof TimestampTrigger==='function'){opts.showTrigger=new TimestampTrigger(t);reg.showNotification('Kinetra',opts)}
     else{setTimeout(()=>reg.showNotification('Kinetra',opts),60000);alert("Test lancé : la notification arrive dans 1 minute si l'app reste ouverte.")}
   });
