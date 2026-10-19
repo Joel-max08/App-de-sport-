@@ -449,6 +449,8 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
       <input id="bw" type="number" inputmode="decimal" placeholder="kg" aria-label="Poids en kg">
       <button onclick="addBW()">Ajouter</button>
     </div>
+    <div class="row"><input id="ht" type="number" inputmode="decimal" placeholder="Taille en cm" aria-label="Taille en cm" oninput="saveHeight()"></div>
+    <div id="imc" class="mut" style="margin:6px 0 10px;font-size:15px"></div>
     <canvas id="cv2" role="img" aria-label="Courbe du poids du corps"></canvas>
   </div>
   <div class="card">
@@ -771,10 +773,29 @@ function line(cv,pts,unit,msg){
   c.textAlign='left';
 }
 function drawProg(){
+  imcUpdate();
   const ex=$('pex').value;const by={};
   D.sets.filter(s=>s.ex===ex&&!s.sec).forEach(s=>by[s.d]=Math.max(by[s.d]||0,s.kg));
   line($('cv1'),Object.keys(by).sort().map(d=>({x:d,y:by[d]})),' kg','Fais deux séances du même exercice\npour voir ta courbe.');
   line($('cv2'),[...D.bw].sort((a,b)=>a.d<b.d?-1:1).map(b=>({x:b.d,y:b.kg})),' kg','Ajoute ton poids à deux dates\npour voir ta courbe.');
+}
+// IMC = poids (kg) / taille (m)², avec le dernier poids enregistré
+function imcUpdate(){
+  const el=document.getElementById('imc'),hIn=document.getElementById('ht');
+  if(!el)return;
+  let h=NaN;try{h=parseFloat(localStorage.getItem('sportapp.height'))}catch(e){}
+  if(hIn&&document.activeElement!==hIn&&h>0&&+hIn.value!==h)hIn.value=h;
+  const last=[...D.bw].sort((a,b)=>a.d<b.d?-1:1).pop();
+  if(!last||!(h>0)){el.textContent='Ajoute ta taille et ton poids pour voir ton IMC.';return}
+  const v=last.kg/((h/100)*(h/100));
+  const cat=v<18.5?'insuffisance pondérale':v<25?'poids normal':v<30?'surpoids':'obésité';
+  const [y,mo,da]=String(last.d).split('-');
+  el.innerHTML=`<b style="color:var(--ink);font-size:18px">IMC ${v.toFixed(1)}</b> · ${cat}<br>Calculé avec ton poids du ${da}/${mo}/${y}.<br>L'IMC ne tient pas compte de la masse musculaire : c'est une indication, pas un diagnostic.`;
+}
+function saveHeight(){
+  const v=parseFloat(document.getElementById('ht').value);
+  try{if(v>0)localStorage.setItem('sportapp.height',String(v));else localStorage.removeItem('sportapp.height')}catch(e){}
+  imcUpdate();
 }
 addEventListener('resize',drawProg);
 function addBW(){const v=parseFloat($('bw').value);if(isNaN(v))return;D.bw=D.bw.filter(b=>b.d!==day());D.bw.push({d:day(),kg:v,t:Date.now()});save();$('bw').value='';drawProg()}
