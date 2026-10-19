@@ -196,11 +196,16 @@ pont1j:{ad:{f:"Les deux jambes au sol pour la poussée, puis une seule jambe.",d
 jacks:{ad:{f:"Sans sauter : écarte bras et jambes au rythme de la marche.",d:"Rythme plus rapide, ou ajoute des montées de genoux entre deux."},n:'Jumping jacks',m:'Cardio',
   c:['Saute en écartant bras et jambes','Atterris en souplesse sur l\'avant du pied','Garde un rythme régulier'],
   mu:[],
-  k:[{d:350,h:50,p:{front:1,hip:[120,93],t:0,th:178,sh:180,fo:110,ua:172,fa:172}},{d:350,h:50,p:{front:1,hip:[120,88],t:0,th:160,sh:162,fo:110,ua:30,fa:22}}]}
+  k:[{d:350,h:50,p:{front:1,hip:[120,93],t:0,th:178,sh:180,fo:110,ua:172,fa:172}},{d:350,h:50,p:{front:1,hip:[120,88],t:0,th:160,sh:162,fo:110,ua:30,fa:22}}]},
+superman:{ad:{f:"Lève seulement les bras, ou seulement les jambes.",d:"Tiens 3 secondes en haut, bras et jambes décollés du sol."},n:'Superman',m:'Dos, fessiers',
+  c:['Allongé sur le ventre, bras tendus devant toi','Lève en même temps les bras et les jambes de quelques centimètres','Tiens 2 secondes, puis redescends lentement en gardant la nuque dans le prolongement du dos'],
+  mu:[['torso',.1,.6],['thigh',0,.5]],
+  k:[{d:1000,h:600,p:{hip:[108,141],t:90,hd:0,ft:[57,142],kb:-1,ht:[196,146],eb:1}},{d:1000,h:800,p:{hip:[108,141],t:70,hd:0,ft:[62,122],kb:-1,ht:[200,100],eb:1}}]}
 };
 
 const RULES=[
  [/face pull/,'tirage'],
+ [/superman/,'superman'],
  [/pont|hip thrust|releve de bassin/,'pont'],
  [/roumain|rdl|jambes tendues/,'rdl'],
  [/souleve de terre|deadlift|\bsdt\b/,'sdt'],
@@ -233,7 +238,7 @@ const VARIANTS=[
   [/pont.*une jambe/,'pont1j']
 ];
 const NOPIC=[
-  /leg|presse|superman/
+  /leg|presse/
 ];
 function find(name){
   const s=norm(name);if(!s)return null;
