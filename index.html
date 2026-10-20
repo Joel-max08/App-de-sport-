@@ -972,6 +972,8 @@ function tickRun(){
   if(!run||run.paused)return;
   if(run.ph==='work'&&run.s.s[run.k][4]){phaseUI();return}
   run.left--;
+  if(run.ph==='work'&&run.cueQ&&run.cueQ.length&&run.left<=run.cueQ[0].at)coachSay([run.cueQ.shift().t]);
+  if(run.ph==='work'&&run.left>=1&&run.left<=3)coachSay([String(run.left)]);
   if(run.left>0){phaseUI();return}
   const st=run.s.s[run.k];
   if(run.ph==='prep'){run.ph='work';run.left=st[1];vib()}
@@ -1306,7 +1308,17 @@ function coachStep(){
   const name=st[3]||(ex&&ex.n)||'';
   const cues=((ex&&ex.c)||[]).map(c=>String(c).replace(/<[^>]+>/g,''));
   const head=run.k===0?"C'est parti. Premier mouvement, ":(run.k===list.length-1?'Dernier mouvement, ':'Mouvement suivant, ');
-  coachSay([head+name+'.',...cues,'3','2','1']);
+  coachSay([head+name+'.']);
+  // Conseils répartis pendant l'effort, jamais dans les 4 dernières secondes (compte à rebours)
+  const W=st[1]||0,n=cues.length;
+  run.cueQ=[];
+  if(n&&W>=8&&!st[4]){
+    const from=W-3,to=5;
+    cues.forEach((t,i)=>{
+      const at=n===1?from:(from-(from-to)*i/(n-1));
+      run.cueQ.push({at:Math.max(4,Math.round(at)),t});
+    });
+  }
 }
 coachSet(COACH_ON());
 </script>
