@@ -224,7 +224,8 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 #nudge.hide{display:none}
 #runCard{position:relative}
 .runTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
-#runMenuBtn{width:46px;height:46px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:14px;flex:0 0 auto}
+.runBtns{display:flex;gap:8px;flex:0 0 auto}
+#runCoachBtn,#runMenuBtn{width:46px;height:46px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:14px;flex:0 0 auto}
 #runMenu{position:absolute;right:18px;top:58px;width:270px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:60}
 #runMenu.hide{display:none}
 #runMenu .chips button.on{background:var(--teal);color:var(--tealink)}
@@ -290,7 +291,7 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <div id="sessList"></div>
   </div>
   <div class="card hide" id="runCard">
-    <div class="runTop"><div class="mut" id="runProg"></div><button class="sec" type="button" id="runMenuBtn" onclick="runMenu()" aria-label="Menu de la séance"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
+    <div class="runTop"><div class="mut" id="runProg"></div><div class="runBtns"><button class="sec" type="button" id="runCoachBtn" onclick="coachToggle()" aria-label="Coach vocal"></button><button class="sec" type="button" id="runMenuBtn" onclick="runMenu()" aria-label="Menu de la séance"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div>
     <div id="runMenu" class="hide">
       <div class="mut" style="font-size:14px;margin-bottom:6px">Niveau</div>
       <div class="chips"><button type="button" class="on" data-rl="s" onclick="runLvl('s')">Standard</button><button type="button" data-rl="f" onclick="runLvl('f')">Facile</button><button type="button" data-rl="d" onclick="runLvl('d')">Difficile</button></div>
@@ -937,6 +938,7 @@ function stepStart(){
   $('runName').textContent=st[3]||Bonhomme._X[id].n;
   Bonhomme.mount($('runDemo'),st[3]||id);
   $('runMenu').classList.add('hide');runLvl('s');
+  coachStep();
   if(st[4]){$('runKg').value=st[4].kg;$('runReps').value=st[4].reps;$('runKg').classList.toggle('hide',!st[4].hasKg)}
   phaseUI();
 }
@@ -1028,7 +1030,7 @@ function runLvl(l){
   if(l==='s'||!ex||!ex.ad){if(cues)cues.classList.remove('hide');adt.textContent=''}
   else{if(cues)cues.classList.add('hide');adt.textContent=(l==='f'?'Version facile : ':'Version difficile : ')+ex.ad[l]}
 }
-function runStop(){
+function runStop(){coachCancel();
   clearInterval(rTick);endWork();run=null;
   Bonhomme.mount($('runDemo'),'');
   $('runCard').classList.add('hide');$('pre').classList.remove('hide');
@@ -1136,7 +1138,7 @@ window.startSess=function(i){
   if(REM.sess.on)nudgeInt=setInterval(()=>{if(typeof run!=='undefined'&&run)nudge("Pense à boire un verre d'eau.")},15*60000);
 };
 const _finish=window.finish;
-window.finish=function(){clearInterval(nudgeInt);$r('nudge').classList.add('hide');return _finish()};
+window.finish=function(){clearInterval(nudgeInt);$r('nudge').classList.add('hide');coachSay(["Bravo, l'entraînement est terminé."]);return _finish()};
 document.addEventListener('DOMContentLoaded',()=>{});
 remBuildDays();remUI();planReminders();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)planReminders()});
@@ -1277,6 +1279,35 @@ window.renderAccount();
   new MutationObserver(sync).observe(rc,{attributes:true,attributeFilter:['class']});
   sync();
 })();
+const COACH_ON=()=>{try{return localStorage.getItem('sportapp.coach')==='1'}catch(e){return false}};
+const COACH_ICON_ON='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const COACH_ICON_OFF='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6"/></svg>';
+function coachSet(v){
+  try{localStorage.setItem('sportapp.coach',v?'1':'0')}catch(e){}
+  const b=document.getElementById('runCoachBtn');
+  if(b){b.innerHTML=v?COACH_ICON_ON:COACH_ICON_OFF;b.setAttribute('aria-pressed',v?'true':'false');b.title=v?'Coach vocal activé':'Coach vocal coupé'}
+  if(!v)coachCancel();
+}
+function coachToggle(){coachSet(!COACH_ON())}
+function coachCancel(){try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}}
+function coachSay(parts){
+  if(!COACH_ON()||!('speechSynthesis' in window))return;
+  try{
+    const vs=speechSynthesis.getVoices?speechSynthesis.getVoices():[];
+    const fr=vs.find(v=>/^fr/i.test(v.lang));
+    parts.forEach(t=>{const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';if(fr)u.voice=fr;u.rate=0.95;speechSynthesis.speak(u)});
+  }catch(e){}
+}
+function coachStep(){
+  if(!run||!run.s)return;
+  coachCancel();
+  const list=run.s.s,st=list[run.k],ex=Bonhomme._X&&Bonhomme._X[st[0]];
+  const name=st[3]||(ex&&ex.n)||'';
+  const cues=((ex&&ex.c)||[]).map(c=>String(c).replace(/<[^>]+>/g,''));
+  const head=run.k===0?"C'est parti. Premier mouvement, ":(run.k===list.length-1?'Dernier mouvement, ':'Mouvement suivant, ');
+  coachSay([head+name+'.',...cues,'3','2','1']);
+}
+coachSet(COACH_ON());
 </script>
 </body>
 </html>
