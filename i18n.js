@@ -1,4 +1,420 @@
 const I18N_DICT={
+"1 banane mûre": {
+"en": "1 ripe banana",
+"de": "1 reife Banane"
+},
+"1 c. à café d'huile d'olive": {
+"en": "1 tsp olive oil",
+"de": "1 TL Olivenöl"
+},
+"1 c. à café de beurre doux": {
+"en": "1 tsp unsalted butter",
+"de": "1 TL Butter (ungesalzen)"
+},
+"1 c. à café de curry en poudre": {
+"en": "1 tsp curry powder",
+"de": "1 TL Currypulver"
+},
+"1 c. à café de miel (facultatif)": {
+"en": "1 tsp honey (optional)",
+"de": "1 TL Honig (optional)"
+},
+"1 c. à soupe d'huile d'olive": {
+"en": "1 tbsp olive oil",
+"de": "1 EL Olivenöl"
+},
+"1 c. à soupe de pâte de curry jaune": {
+"en": "1 tbsp yellow curry paste",
+"de": "1 EL gelbe Currypaste"
+},
+"1 c. à soupe de sauce soja": {
+"en": "1 tbsp soy sauce",
+"de": "1 EL Sojasauce"
+},
+"1 oignon rouge moyen": {
+"en": "1 medium red onion",
+"de": "1 mittelgroße rote Zwiebel"
+},
+"1 pincée de poivre noir fraîchement moulu": {
+"en": "1 pinch freshly ground black pepper",
+"de": "1 Prise frisch gemahlener schwarzer Pfeffer"
+},
+"1 pincée de sel": {
+"en": "1 pinch of salt",
+"de": "1 Prise Salz"
+},
+"10 feuilles de menthe fraîche": {
+"en": "10 fresh mint leaves",
+"de": "10 frische Minzblätter"
+},
+"100 g d'oignon": {
+"en": "100 g onion",
+"de": "100 g Zwiebel"
+},
+"100 g d'épinards cuits": {
+"en": "100 g cooked spinach",
+"de": "100 g gekochter Spinat"
+},
+"100 g de fromage de chèvre frais": {
+"en": "100 g fresh goat cheese",
+"de": "100 g frischer Ziegenkäse"
+},
+"100 g de fruits rouges (frais ou surgelés)": {
+"en": "100 g red berries (fresh or frozen)",
+"de": "100 g rote Beeren (frisch oder tiefgekühlt)"
+},
+"100 g de quinoa blanc cru": {
+"en": "100 g raw white quinoa",
+"de": "100 g roher weißer Quinoa"
+},
+"120 g de petits pois surgelés": {
+"en": "120 g frozen peas",
+"de": "120 g TK-Erbsen"
+},
+"140 g de fromage blanc 0 %": {
+"en": "140 g 0% fat fromage blanc",
+"de": "140 g Magerquark 0 %"
+},
+"15 g de noix de cajou": {
+"en": "15 g cashew nuts",
+"de": "15 g Cashewkerne"
+},
+"160 g de riz basmati (cru)": {
+"en": "160 g basmati rice (raw)",
+"de": "160 g Basmatireis (roh)"
+},
+"2 c. à café de basilic frais": {
+"en": "2 tsp fresh basil",
+"de": "2 TL frischer Basilikum"
+},
+"2 c. à café de ciboulette fraîche": {
+"en": "2 tsp fresh chives",
+"de": "2 TL frischer Schnittlauch"
+},
+"2 c. à café de jus de citron vert": {
+"en": "2 tsp lime juice",
+"de": "2 TL Limettensaft"
+},
+"2 c. à café de persil frais haché": {
+"en": "2 tsp chopped fresh parsley",
+"de": "2 TL gehackte frische Petersilie"
+},
+"2 c. à café de zeste de citron": {
+"en": "2 tsp lemon zest",
+"de": "2 TL Zitronenschale"
+},
+"2 c. à soupe d'huile": {
+"en": "2 tbsp oil",
+"de": "2 EL Öl"
+},
+"2 carottes moyennes": {
+"en": "2 medium carrots",
+"de": "2 mittelgroße Karotten"
+},
+"2 cm de gingembre frais": {
+"en": "2 cm fresh ginger",
+"de": "2 cm frischer Ingwer"
+},
+"2 courgettes": {
+"en": "2 courgettes",
+"de": "2 Zucchini"
+},
+"2 feuilles de menthe fraîche": {
+"en": "2 fresh mint leaves",
+"de": "2 frische Minzblätter"
+},
+"2 gousses d'ail": {
+"en": "2 garlic cloves",
+"de": "2 Knoblauchzehen"
+},
+"20 g de flocons d'avoine ou de granola": {
+"en": "20 g oat flakes or granola",
+"de": "20 g Haferflocken oder Granola"
+},
+"200 g de blancs d'œufs (environ 6)": {
+"en": "200 g egg whites (about 6)",
+"de": "200 g Eiweiß (etwa 6)"
+},
+"200 g de skyr nature (ou fromage blanc 0 %)": {
+"en": "200 g plain skyr (or 0% fat fromage blanc)",
+"de": "200 g Natur-Skyr (oder Magerquark 0 %)"
+},
+"3 jaunes d'œufs": {
+"en": "3 egg yolks",
+"de": "3 Eigelb"
+},
+"30 g de feta": {
+"en": "30 g feta",
+"de": "30 g Feta"
+},
+"300 g de brocoli": {
+"en": "300 g broccoli",
+"de": "300 g Brokkoli"
+},
+"4 c. à café d'huile de tournesol": {
+"en": "4 tsp sunflower oil",
+"de": "4 TL Sonnenblumenöl"
+},
+"4 c. à soupe de petits pois cuits": {
+"en": "4 tbsp cooked peas",
+"de": "4 EL gekochte Erbsen"
+},
+"400 g de chou-fleur": {
+"en": "400 g cauliflower",
+"de": "400 g Blumenkohl"
+},
+"500 g d'escalopes ou de filets de poulet blanc": {
+"en": "500 g chicken breast cutlets or fillets",
+"de": "500 g Hähnchenschnitzel oder -filets"
+},
+"500 g de filet de poulet cru, haché": {
+"en": "500 g raw minced chicken fillet",
+"de": "500 g rohes Hähnchenfilet, gehackt"
+},
+"6 blancs d'œufs": {
+"en": "6 egg whites",
+"de": "6 Eiweiß"
+},
+"60 ml d'eau": {
+"en": "60 ml water",
+"de": "60 ml Wasser"
+},
+"60 ml de lait demi-écrémé": {
+"en": "60 ml semi-skimmed milk",
+"de": "60 ml fettarme Milch"
+},
+"900 g d'asperges vertes": {
+"en": "900 g green asparagus",
+"de": "900 g grüner Spargel"
+},
+"920 g de saumon cru (8 filets)": {
+"en": "920 g raw salmon (8 fillets)",
+"de": "920 g rohes Lachsfilet (8 Filets)"
+},
+"¾ c. à café de cumin": {
+"en": "¾ tsp cumin",
+"de": "¾ TL Kreuzkümmel"
+},
+"¾ c. à café d'herbes et d'ail en poudre": {
+"en": "¾ tsp mixed herbs and garlic powder",
+"de": "¾ TL Kräuter-Knoblauch-Pulver"
+},
+"½ c. à café de paprika fumé": {
+"en": "½ tsp smoked paprika",
+"de": "½ TL geräuchertes Paprikapulver"
+},
+"Sel et poivre": {
+"en": "Salt and pepper",
+"de": "Salz und Pfeffer"
+},
+"Poivre et sel": {
+"en": "Pepper and salt",
+"de": "Pfeffer und Salz"
+},
+"Ajoute l'ail, le gingembre et la pâte de curry, et laisse cuire environ 1 minute.": {
+"en": "Add the garlic, ginger and curry paste, and cook for about 1 minute.",
+"de": "Knoblauch, Ingwer und Currypaste hinzufügen und etwa 1 Minute garen."
+},
+"Ajoute le chou-fleur en fleurettes, les courgettes coupées en dés de 2 cm et 125 ml d'eau. Sale, poivre, couvre et fais cuire 6 à 8 minutes en remuant.": {
+"en": "Add the cauliflower florets, the courgettes cut into 2 cm cubes and 125 ml water. Season with salt and pepper, cover and cook for 6 to 8 minutes, stirring.",
+"de": "Blumenkohlröschen, Zucchini in 2 cm große Würfel geschnitten und 125 ml Wasser hinzufügen. Mit Salz und Pfeffer würzen, zudecken und 6 bis 8 Minuten garen, dabei umrühren."
+},
+"Ajoute le quinoa cuit et le poulet coupé en fines lanières. Fais cuire 1 à 2 minutes pour bien réchauffer, puis assaisonne.": {
+"en": "Add the cooked quinoa and the chicken cut into thin strips. Cook for 1 to 2 minutes to heat through, then season.",
+"de": "Den gekochten Quinoa und das in feine Streifen geschnittene Hähnchen hinzufügen. 1 bis 2 Minuten erhitzen, dann würzen."
+},
+"Ajoute les carottes, le brocoli, les petits pois et l'eau, et laisse cuire environ 2 minutes.": {
+"en": "Add the carrots, broccoli, peas and water, and cook for about 2 minutes.",
+"de": "Karotten, Brokkoli, Erbsen und Wasser hinzufügen und etwa 2 Minuten garen."
+},
+"Ajoute les fruits rouges, le reste de la banane en rondelles, les flocons et le miel si tu en veux.": {
+"en": "Add the red berries, the rest of the banana in slices, the flakes and the honey if you like.",
+"de": "Rote Beeren, den Rest der Banane in Scheiben, die Flocken und nach Wunsch den Honig hinzufügen."
+},
+"Ajoute les épinards et fais-les revenir 1 à 2 minutes.": {
+"en": "Add the spinach and sauté for 1 to 2 minutes.",
+"de": "Spinat hinzufügen und 1 bis 2 Minuten anbraten."
+},
+"Dans le jus de cuisson, fais revenir l'oignon 2 à 3 minutes à feu moyen.": {
+"en": "In the cooking juices, sauté the onion for 2 to 3 minutes over medium heat.",
+"de": "Die Zwiebel im Bratfond 2 bis 3 Minuten bei mittlerer Hitze anbraten."
+},
+"Dans un autre bol, bats les blancs et les jaunes ensemble.": {
+"en": "In another bowl, whisk the whites and yolks together.",
+"de": "In einer anderen Schüssel Eiweiß und Eigelb miteinander verquirlen."
+},
+"Dans un petit bol, mélange le lait et le fromage jusqu'à obtenir une crème lisse. Ajoute les herbes hachées et mets de côté.": {
+"en": "In a small bowl, mix the milk and cheese until smooth. Add the chopped herbs and set aside.",
+"de": "In einer kleinen Schüssel Milch und Käse zu einer glatten Creme verrühren. Die gehackten Kräuter hinzufügen und beiseitestellen."
+},
+"Dans un wok très chaud, fais revenir le poulet haché avec un peu d'huile, puis mets-le de côté.": {
+"en": "In a very hot wok, sauté the minced chicken with a little oil, then set it aside.",
+"de": "Im sehr heißen Wok das Hackfleisch mit etwas Öl anbraten und beiseitestellen."
+},
+"Dépose la crème de fromage au centre. Quand l'omelette est presque cuite, replie-la en deux et poursuis la cuisson 3 à 5 minutes. Coupe en quatre, assaisonne et sers aussitôt.": {
+"en": "Place the cheese cream in the centre. When the omelette is almost cooked, fold it in half and continue cooking for 3 to 5 minutes. Cut into four, season and serve immediately.",
+"de": "Die Käsecreme in die Mitte geben. Wenn das Omelett fast gar ist, zur Hälfte zusammenklappen und weitere 3 bis 5 Minuten garen. In vier Stücke schneiden, würzen und sofort servieren."
+},
+"Enfourne la plaque d'asperges sur la grille du bas et celle du saumon sur la grille du haut. Fais cuire 10 à 12 minutes, jusqu'à ce que les asperges soient tendres et que le saumon se détache facilement à la fourchette.": {
+"en": "Put the asparagus tray on the lower rack and the salmon tray on the upper rack. Bake for 10 to 12 minutes, until the asparagus is tender and the salmon flakes easily with a fork.",
+"de": "Das Spargelblech auf das untere Gitter und das Lachsblech auf das obere Gitter schieben. 10 bis 12 Minuten backen, bis der Spargel zart ist und sich der Lachs leicht mit der Gabel zerteilen lässt."
+},
+"Fais chauffer l'huile dans une grande poêle à feu moyen. Fais revenir l'oignon émincé pendant 4 minutes, ajoute le curry et laisse cuire 1 minute.": {
+"en": "Heat the oil in a large pan over medium heat. Sauté the sliced onion for 4 minutes, add the curry and cook for 1 minute.",
+"de": "Das Öl in einer großen Pfanne bei mittlerer Hitze erhitzen. Die geschnittene Zwiebel 4 Minuten anbraten, das Curry hinzufügen und 1 Minute garen."
+},
+"Fais chauffer l'huile dans une poêle antiadhésive à feu moyen.": {
+"en": "Heat the oil in a non-stick pan over medium heat.",
+"de": "Das Öl in einer beschichteten Pfanne bei mittlerer Hitze erhitzen."
+},
+"Fais cuire le riz. Pendant ce temps, épluche et émince l'oignon, coupe les carottes en dés et détaille le brocoli en petits bouquets. Épluche le gingembre et hache-le finement avec l'ail.": {
+"en": "Cook the rice. Meanwhile, peel and slice the onion, dice the carrots and cut the broccoli into small florets. Peel the ginger and finely chop it with the garlic.",
+"de": "Reis kochen. Inzwischen die Zwiebel schälen und schneiden, die Karotten würfeln und den Brokkoli in kleine Röschen teilen. Ingwer schälen und zusammen mit dem Knoblauch fein hacken."
+},
+"Huile légèrement une grande poêle et chauffe-la à feu moyen. Fais fondre le beurre, verse les œufs battus et incline la poêle pour les étaler. Laisse cuire jusqu'à ce que les bords commencent à se raffermir.": {
+"en": "Lightly oil a large pan and heat it over medium heat. Melt the butter, pour in the beaten eggs and tilt the pan to spread them. Cook until the edges start to set.",
+"de": "Eine große Pfanne leicht einölen und bei mittlerer Hitze erhitzen. Die Butter schmelzen, die verquirlten Eier hineingeben und die Pfanne schwenken, damit sie sich verteilen. Garen, bis sich die Ränder festigen."
+},
+"Les restes se conservent jusqu'à 3 jours au réfrigérateur.": {
+"en": "Leftovers keep for up to 3 days in the fridge.",
+"de": "Reste halten sich bis zu 3 Tage im Kühlschrank."
+},
+"Mets le skyr dans un bol.": {
+"en": "Put the skyr in a bowl.",
+"de": "Den Skyr in eine Schüssel geben."
+},
+"Mélange le fromage blanc avec la menthe ciselée, et sers avec le curry.": {
+"en": "Mix the fromage blanc with the finely chopped mint, and serve with the curry.",
+"de": "Den Magerquark mit der fein geschnittenen Minze mischen und zum Curry servieren."
+},
+"Parsème de coriandre et de noix de cajou, puis sers.": {
+"en": "Sprinkle with coriander and cashew nuts, then serve.",
+"de": "Mit Koriander und Cashewkernen bestreuen und servieren."
+},
+"Préchauffe le four à 230 °C, avec deux grilles, une en haut et une en bas.": {
+"en": "Preheat the oven to 230 °C, with two racks, one at the top and one at the bottom.",
+"de": "Den Ofen auf 230 °C vorheizen, mit zwei Gitterrosten, einem oben und einem unten."
+},
+"Remets le riz et le poulet dans le wok, ajoute le jus de citron vert et la sauce soja, puis fais cuire environ 2 minutes.": {
+"en": "Return the rice and chicken to the wok, add the lime juice and soy sauce, then cook for about 2 minutes.",
+"de": "Reis und Hähnchen zurück in den Wok geben, Limettensaft und Sojasauce hinzufügen und etwa 2 Minuten garen."
+},
+"Retire le couvercle, ajoute les petits pois et laisse cuire 1 à 2 minutes, jusqu'à ce que le liquide s'évapore.": {
+"en": "Remove the lid, add the peas and cook for 1 to 2 minutes, until the liquid has evaporated.",
+"de": "Den Deckel abnehmen, die Erbsen hinzufügen und 1 bis 2 Minuten garen, bis die Flüssigkeit verdampft ist."
+},
+"Rince et égoutte le quinoa. Fais-le cuire dans une poêle avec 175 ml d'eau bouillante, puis retire du feu, couvre et laisse reposer 12 minutes. Égoutte et réserve.": {
+"en": "Rinse and drain the quinoa. Cook it in a pan with 175 ml of boiling water, then remove from the heat, cover and leave to rest for 12 minutes. Drain and set aside.",
+"de": "Quinoa abspülen und abtropfen lassen. In einer Pfanne mit 175 ml kochendem Wasser garen, dann vom Herd nehmen, zudecken und 12 Minuten ruhen lassen. Abgießen und beiseitestellen."
+},
+"Sur l'autre plaque, pose une feuille de papier aluminium et les filets de saumon. Mélange les épices dans un petit bol et badigeonne le saumon.": {
+"en": "On the other tray, place a sheet of foil and the salmon fillets. Mix the spices in a small bowl and brush the salmon with them.",
+"de": "Auf das andere Blech eine Folie legen und die Lachsfilets darauf verteilen. Die Gewürze in einer kleinen Schüssel mischen und den Lachs damit bestreichen."
+},
+"Sur une grande plaque, mélange les asperges, l'huile et le zeste de citron, puis sale et poivre.": {
+"en": "On a large tray, toss the asparagus with the oil and lemon zest, then season with salt and pepper.",
+"de": "Den Spargel auf einem großen Blech mit Öl und Zitronenschale vermengen, dann salzen und pfeffern."
+},
+"Verse les blancs battus, sale et poivre, puis remue doucement jusqu'à ce qu'ils prennent.": {
+"en": "Pour in the beaten whites, season with salt and pepper, then stir gently until they set.",
+"de": "Das geschlagene Eiweiß hineingießen, mit Salz und Pfeffer würzen und vorsichtig rühren, bis es stockt."
+},
+"Émiette la feta par-dessus et sers aussitôt.": {
+"en": "Crumble the feta on top and serve immediately.",
+"de": "Die Feta darüber bröseln und sofort servieren."
+},
+"Écrase la moitié de la banane et mélange-la au skyr.": {
+"en": "Mash half of the banana and mix it into the skyr.",
+"de": "Die Hälfte der Banane zerdrücken und unter den Skyr mischen."
+},
+"Blancs d'œufs brouillés aux épinards et feta": {
+"en": "Scrambled egg whites with spinach and feta",
+"de": "Eiweißrührei mit Spinat und Feta"
+},
+"Bol de skyr aux fruits rouges": {
+"en": "Skyr bowl with red berries",
+"de": "Skyr-Bowl mit roten Beeren"
+},
+"Curry de poulet au quinoa": {
+"en": "Chicken curry with quinoa",
+"de": "Hähnchen-Curry mit Quinoa"
+},
+"Omelette au chèvre et aux herbes": {
+"en": "Goat cheese and herb omelette",
+"de": "Omelette mit Ziegenkäse und Kräutern"
+},
+"Poulet à l'indienne, brocoli et riz": {
+"en": "Indian-style chicken, broccoli and rice",
+"de": "Hähnchen indisch, Brokkoli und Reis"
+},
+"Saumon et asperges vertes au four": {
+"en": "Baked salmon and green asparagus",
+"de": "Lachs und grüner Spargel aus dem Ofen"
+},
+"Recette maison": {
+"en": "Homemade recipe",
+"de": "Eigenes Rezept"
+},
+"Recette prévue pour 8 portions. Pour moins de personnes, divise les quantités. La source ne précise pas bien la proportion d'herbes et d'ail en poudre.": {
+"en": "Recipe made for 8 servings. For fewer people, divide the quantities. The source does not clearly specify the amount of herbs and garlic powder.",
+"de": "Rezept für 8 Portionen. Für weniger Personen die Mengen teilen. Die Quelle gibt die Menge der Kräuter und des Knoblauchpulvers nicht genau an."
+},
+"Vérifie la quantité d'huile : la source indique 2 c. à soupe dans la liste et 2 c. à café dans la préparation.": {
+"en": "Check the amount of oil: the source lists 2 tbsp in the ingredients and 2 tsp in the method.",
+"de": "Ölmenge prüfen: Die Quelle nennt in der Zutatenliste 2 EL und in der Zubereitung 2 TL."
+},
+"Prêt pour ta prochaine séance ?": {
+"en": "Ready for your next workout?",
+"de": "Bereit für dein nächstes Training?"
+},
+"Chaque séance compte, même une petite.": {
+"en": "Every workout counts, even a short one.",
+"de": "Jedes Training zählt, auch ein kurzes."
+},
+"Tu es plus fort qu'hier. Prouve-le aujourd'hui.": {
+"en": "You're stronger than yesterday. Prove it today.",
+"de": "Du bist stärker als gestern. Beweise es heute."
+},
+"Le plus dur, c'est de commencer. Tu y es déjà.": {
+"en": "The hardest part is starting. You're already there.",
+"de": "Das Schwerste ist der Anfang. Du bist schon dabei."
+},
+"Une séance aujourd'hui, un progrès demain.": {
+"en": "One workout today, progress tomorrow.",
+"de": "Ein Training heute, Fortschritt morgen."
+},
+"La régularité bat l'intensité. Reste constant.": {
+"en": "Consistency beats intensity. Stay steady.",
+"de": "Beständigkeit schlägt Intensität. Bleib dran."
+},
+"Pas besoin d'être parfait, juste de revenir.": {
+"en": "No need to be perfect, just come back.",
+"de": "Du musst nicht perfekt sein, komm einfach zurück."
+},
+"Chaque répétition te rapproche de ton objectif.": {
+"en": "Every rep brings you closer to your goal.",
+"de": "Jede Wiederholung bringt dich deinem Ziel näher."
+},
+"Ta série t'attend. Fais un pas de plus.": {
+"en": "Your streak is waiting. Take one more step.",
+"de": "Deine Serie wartet. Geh noch einen Schritt weiter."
+},
+"Aujourd'hui, tu choisis de te dépasser.": {
+"en": "Today, you choose to push yourself.",
+"de": "Heute entscheidest du dich, über dich hinauszuwachsen."
+},
+"10 minutes valent mieux que zéro. Lance-toi.": {
+"en": "10 minutes beats zero. Get started.",
+"de": "10 Minuten sind besser als nichts. Leg los."
+},
+"Bonjour !": {
+"en": "Hello!",
+"de": "Hallo!"
+},
+"Une poignée de coriandre fraîche, hachée": {
+"en": "A handful of fresh coriander, chopped",
+"de": "Eine Handvoll frischer Koriander, gehackt"
+},
 "Idée ou recommandation": {
 "en": "Idea or suggestion",
 "de": "Idee oder Empfehlung"
@@ -996,6 +1412,7 @@ try{
 
 // Phrases avec des nombres : modèles reconnus par expression régulière
 const PATTERNS=[
+[/^Bonjour, (.+) !$/, m=>({en:'Hello, '+m[1]+'!',de:'Hallo, '+m[1]+'!'})],
 [/^Synchronisé à (.+)$/, m=>({en:'Synced at '+m[1],de:'Synchronisiert um '+m[1]})],
 [/^Pour (\d+) portions?$/, m=>({en:'For '+m[1]+(m[1]==='1'?' serving':' servings'),de:'Für '+m[1]+(m[1]==='1'?' Portion':' Portionen')})],
 [/^(\d+) séances? par semaine$/, m=>({en:m[1]+(m[1]==='1'?' workout':' workouts')+' per week',de:m[1]+(m[1]==='1'?' Training':' Trainings')+' pro Woche'})],
