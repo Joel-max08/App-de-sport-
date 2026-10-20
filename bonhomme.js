@@ -329,7 +329,7 @@ function mount(el,name,opt){
 <path d="M8 ${G+.5}H232" class="bh-g"/><g class="bh-stat">${ex.stat||''}</g><g class="bh-back"></g>
 <g class="bh-far"></g><g class="bh-torso"></g><ellipse class="bh-head" rx="6.6" ry="8.4"/><g class="bh-near"></g><path class="bh-mu"/><g class="bh-front"></g></svg>
 <ul class="bh-cues">${ex.c.map(c=>`<li>${c}</li>`).join('')}</ul>
-<div class="bh-ad"><div class="chips"><button type="button" class="on" data-l="s">Standard</button><button type="button" data-l="f">Facile</button><button type="button" data-l="d">Difficile</button></div><p class="bh-adt mut"></p></div>
+${el.dataset.noad?'':'<div class="bh-ad"><div class="chips"><button type="button" class="on" data-l="s">Standard</button><button type="button" data-l="f">Facile</button><button type="button" data-l="d">Difficile</button></div><p class="bh-adt mut"></p></div>'}
 <div class="mut bh-mus"><i></i>Muscles travaillés : ${ex.m}</div></div>`;
   const q=s=>el.querySelector(s),svg=q('svg');
   const far=q('.bh-far'),tor=q('.bh-torso'),head=q('.bh-head'),near=q('.bh-near'),mu=q('.bh-mu'),back=q('.bh-back'),front=q('.bh-front'),btn=q('button');

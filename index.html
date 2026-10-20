@@ -222,6 +222,12 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 .rem-day input{width:auto;display:inline-block;margin:0;accent-color:var(--teal)}
 #nudge{position:fixed;left:16px;right:16px;top:calc(12px + env(safe-area-inset-top));z-index:40;background:var(--teal);color:var(--tealink);border-radius:14px;padding:12px 14px;font-weight:700;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.2)}
 #nudge.hide{display:none}
+#runCard{position:relative}
+.runTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#runMenuBtn{width:46px;height:46px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:14px;flex:0 0 auto}
+#runMenu{position:absolute;right:18px;top:58px;width:270px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:60}
+#runMenu.hide{display:none}
+#runMenu .chips button.on{background:var(--teal);color:var(--tealink)}
 </style>
 </head>
 <body>
@@ -282,14 +288,19 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
     <div id="sessList"></div>
   </div>
   <div class="card hide" id="runCard">
-    <div class="mut" id="runProg"></div>
+    <div class="runTop"><div class="mut" id="runProg"></div><button class="sec" type="button" id="runMenuBtn" onclick="runMenu()" aria-label="Menu de la séance"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
+    <div id="runMenu" class="hide">
+      <div class="mut" style="font-size:14px;margin-bottom:6px">Niveau</div>
+      <div class="chips"><button type="button" class="on" data-rl="s" onclick="runLvl('s')">Standard</button><button type="button" data-rl="f" onclick="runLvl('f')">Facile</button><button type="button" data-rl="d" onclick="runLvl('d')">Difficile</button></div>
+      <button class="del" type="button" onclick="runMenu(false);runStop()" style="margin-top:12px;width:100%">Arrêter la séance</button>
+    </div>
     <h3 id="runName" style="margin:6px 0 10px"></h3>
-    <div id="runDemo"></div>
+    <div id="runDemo" data-noad="1"></div>
+    <p class="mut" id="runAdt" style="font-size:15px;line-height:1.4;margin:8px 0 0;color:var(--ink)"></p>
     <div class="tm-big" id="runTm"></div>
     <div class="mut" id="runPhase" style="text-align:center"></div>
     <div class="row hide" id="runIn"><input id="runKg" type="number" inputmode="decimal" step="any" placeholder="kg" aria-label="Charge en kg"><input id="runReps" type="number" inputmode="numeric" placeholder="Répétitions" aria-label="Répétitions"></div>
     <div class="row"><button class="sec" type="button" id="runPauseBtn" onclick="runPause()">Pause</button><button type="button" id="runSkipBtn" onclick="runSkip()">Passer</button></div>
-    <div class="row"><button class="del" type="button" onclick="runStop()">Retour aux séances</button></div>
   </div>
   <div class="card hide" id="doneCard" style="text-align:center">
     <svg class="crown" viewBox="0 0 120 84" aria-hidden="true">
@@ -923,6 +934,7 @@ function stepStart(){
   $('runProg').textContent=st[5]?`${st[5]} · ${run.s.n}`:`Exercice ${run.k+1} sur ${run.s.s.length} · ${run.s.n}`;
   $('runName').textContent=st[3]||Bonhomme._X[id].n;
   Bonhomme.mount($('runDemo'),st[3]||id);
+  $('runMenu').classList.add('hide');runLvl('s');
   if(st[4]){$('runKg').value=st[4].kg;$('runReps').value=st[4].reps;$('runKg').classList.toggle('hide',!st[4].hasKg)}
   phaseUI();
 }
@@ -1005,6 +1017,14 @@ function confettiBurst(){
 function doneClose(){
   $('doneCard').classList.add('hide');$('pre').classList.remove('hide');
   if(window.pAfterRun)pAfterRun();
+}
+function runMenu(force){const m=$('runMenu');const show=typeof force==='boolean'?force:m.classList.contains('hide');m.classList.toggle('hide',!show)}
+function runLvl(l){
+  document.querySelectorAll('#runMenu [data-rl]').forEach(x=>x.classList.toggle('on',x.dataset.rl===l));
+  const st=run&&run.s?run.s.s[run.k]:null,ex=st&&window.Bonhomme&&Bonhomme._X?Bonhomme._X[st[0]]:null;
+  const cues=$('runDemo').querySelector('.bh-cues'),adt=$('runAdt');
+  if(l==='s'||!ex||!ex.ad){if(cues)cues.classList.remove('hide');adt.textContent=''}
+  else{if(cues)cues.classList.add('hide');adt.textContent=(l==='f'?'Version facile : ':'Version difficile : ')+ex.ad[l]}
 }
 function runStop(){
   clearInterval(rTick);endWork();run=null;
