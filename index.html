@@ -291,7 +291,7 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <div id="sessList"></div>
   </div>
   <div class="card hide" id="runCard">
-    <div class="runTop"><div class="mut" id="runProg"></div><div class="runBtns"><button class="sec" type="button" id="runCoachBtn" onclick="coachToggle()" aria-label="Coach vocal"></button><button class="sec" type="button" id="runMenuBtn" onclick="runMenu()" aria-label="Menu de la séance"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div>
+    <div class="runTop"><div class="mut" id="runProg" style="flex:1;min-width:0"></div><div class="runBtns"><button class="sec" type="button" id="runCoachBtn" onclick="coachToggle()" aria-label="Coach vocal"></button><button class="sec" type="button" id="runMenuBtn" onclick="runMenu()" aria-label="Menu de la séance"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div>
     <div id="runMenu" class="hide">
       <div class="mut" style="font-size:14px;margin-bottom:6px">Niveau</div>
       <div class="chips"><button type="button" class="on" data-rl="s" onclick="runLvl('s')">Standard</button><button type="button" data-rl="f" onclick="runLvl('f')">Facile</button><button type="button" data-rl="d" onclick="runLvl('d')">Difficile</button></div>
@@ -1288,13 +1288,14 @@ function coachSet(v){
   if(b){b.innerHTML=v?COACH_ICON_ON:COACH_ICON_OFF;b.setAttribute('aria-pressed',v?'true':'false');b.title=v?'Coach vocal activé':'Coach vocal coupé'}
   if(!v)coachCancel();
 }
-function coachToggle(){coachSet(!COACH_ON())}
+function coachToggle(){coachSet(!COACH_ON());if(COACH_ON()&&run&&run.s)coachStep()}
 function coachCancel(){try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}}
 function coachSay(parts){
   if(!COACH_ON()||!('speechSynthesis' in window))return;
   try{
     const vs=speechSynthesis.getVoices?speechSynthesis.getVoices():[];
     const fr=vs.find(v=>/^fr/i.test(v.lang));
+    try{speechSynthesis.resume()}catch(e){}
     parts.forEach(t=>{const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';if(fr)u.voice=fr;u.rate=0.95;speechSynthesis.speak(u)});
   }catch(e){}
 }
