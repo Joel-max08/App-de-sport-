@@ -1,4 +1,156 @@
 const I18N_DICT={
+"Idée ou recommandation": {
+"en": "Idea or suggestion",
+"de": "Idee oder Empfehlung"
+},
+"Bug (quelque chose ne marche pas)": {
+"en": "Bug (something isn't working)",
+"de": "Fehler (etwas funktioniert nicht)"
+},
+"Exercice à ajouter": {
+"en": "Exercise to add",
+"de": "Übung hinzufügen"
+},
+"Autre": {
+"en": "Other",
+"de": "Anderes"
+},
+"Bonjour, [prénom] !": {
+"en": "Hello, [first name]!",
+"de": "Hallo, [Vorname]!"
+},
+"Ton corps s'adapte à chaque effort. Continue.": {
+"en": "Your body adapts to every effort. Keep going.",
+"de": "Dein Körper passt sich jeder Belastung an. Weiter so."
+},
+"Cette semaine est faite. Reviens la semaine prochaine pour prolonger ta série.": {
+"en": "This week is done. Come back next week to extend your streak.",
+"de": "Diese Woche ist geschafft. Komm nächste Woche zurück, um deine Serie zu verlängern."
+},
+"3 à 6 séances par semaine": {
+"en": "3 to 6 workouts per week",
+"de": "3 bis 6 Trainings pro Woche"
+},
+"kg de volume": {
+"en": "kg of volume",
+"de": "kg Volumen"
+},
+"séries": {
+"en": "sets",
+"de": "Sätze"
+},
+"QUANTITÉS": {
+"en": "INGREDIENTS",
+"de": "ZUTATEN"
+},
+"PRÉPARATION": {
+"en": "STEPS",
+"de": "ZUBEREITUNG"
+},
+"Pour 1 portion": {
+"en": "For 1 serving",
+"de": "Für 1 Portion"
+},
+"Connecté :": {
+"en": "Signed in as:",
+"de": "Angemeldet als:"
+},
+"Synchroniser maintenant": {
+"en": "Sync now",
+"de": "Jetzt synchronisieren"
+},
+"Se déconnecter": {
+"en": "Sign out",
+"de": "Abmelden"
+},
+"Rappels": {
+"en": "Reminders",
+"de": "Erinnerungen"
+},
+"Notifications autorisées.": {
+"en": "Notifications allowed.",
+"de": "Benachrichtigungen erlaubt."
+},
+"Autoriser les notifications": {
+"en": "Allow notifications",
+"de": "Benachrichtigungen erlauben"
+},
+"Boire de l'eau toutes les": {
+"en": "Drink water every",
+"de": "Wasser trinken alle"
+},
+"Séance à": {
+"en": "Workout at",
+"de": "Training um"
+},
+"Lun": {
+"en": "Mon",
+"de": "Mo"
+},
+"Mar": {
+"en": "Tue",
+"de": "Di"
+},
+"Mer": {
+"en": "Wed",
+"de": "Mi"
+},
+"Jeu": {
+"en": "Thu",
+"de": "Do"
+},
+"Ven": {
+"en": "Fri",
+"de": "Fr"
+},
+"Sam": {
+"en": "Sat",
+"de": "Sa"
+},
+"Dim": {
+"en": "Sun",
+"de": "So"
+},
+"lundi": {
+"en": "Monday",
+"de": "Montag"
+},
+"mardi": {
+"en": "Tuesday",
+"de": "Dienstag"
+},
+"mercredi": {
+"en": "Wednesday",
+"de": "Mittwoch"
+},
+"jeudi": {
+"en": "Thursday",
+"de": "Donnerstag"
+},
+"vendredi": {
+"en": "Friday",
+"de": "Freitag"
+},
+"samedi": {
+"en": "Saturday",
+"de": "Samstag"
+},
+"dimanche": {
+"en": "Sunday",
+"de": "Sonntag"
+},
+"Peser-toi le": {
+"en": "Weigh yourself on",
+"de": "Wiegen am"
+},
+"à": {
+"en": "at",
+"de": "um"
+},
+"Rappel de boire pendant la séance (toutes les 15 min)": {
+"en": "Drink reminder during workout (every 15 min)",
+"de": "Trinkerinnerung während des Trainings (alle 15 Min.)"
+},
 "Accueil": {
 "en": "Home",
 "de": "Start"
@@ -844,6 +996,9 @@ try{
 
 // Phrases avec des nombres : modèles reconnus par expression régulière
 const PATTERNS=[
+[/^Synchronisé à (.+)$/, m=>({en:'Synced at '+m[1],de:'Synchronisiert um '+m[1]})],
+[/^Pour (\d+) portions?$/, m=>({en:'For '+m[1]+(m[1]==='1'?' serving':' servings'),de:'Für '+m[1]+(m[1]==='1'?' Portion':' Portionen')})],
+[/^(\d+) séances? par semaine$/, m=>({en:m[1]+(m[1]==='1'?' workout':' workouts')+' per week',de:m[1]+(m[1]==='1'?' Training':' Trainings')+' pro Woche'})],
   [/^(\d+) semaines? de suite$/,m=>({en:`${m[1]} week${m[1]==='1'?'':'s'} in a row`,de:`${m[1]} Woche${m[1]==='1'?'':'n'} in Folge`})],
   [/^(\d+) verres? sur 8 · environ ([\d.,]+) L$/,m=>({en:`${m[1]} of 8 glasses · about ${m[2]} L`,de:`${m[1]} von 8 Gläsern · etwa ${m[2]} L`})],
   [/^(\d+) exercices? · environ (\d+) min$/,m=>({en:`${m[1]} exercise${m[1]==='1'?'':'s'} · about ${m[2]} min`,de:`${m[1]} Übung${m[1]==='1'?'':'en'} · etwa ${m[2]} Min.`})],
