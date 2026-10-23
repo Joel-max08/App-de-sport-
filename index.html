@@ -150,6 +150,7 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .sl-tips li{margin:0 0 10px}
 .sl-note{font-size:13px;margin:6px 0 0}
 .cat-h{font-size:15px;margin:18px 0 2px;color:var(--teal)}
+#stretchCard{margin-top:16px}
 .water{padding:16px 18px}
 .glasses{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .gl{background:none;border:0;padding:4px 0;box-shadow:none;cursor:pointer}
@@ -229,7 +230,7 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 #runMenu{position:absolute;right:18px;top:58px;width:270px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:60}
 #runMenu.hide{display:none}
 #runMenu .chips button.on{background:var(--teal);color:var(--tealink)}
-body.inrun .top,body.inrun nav,body.inrun #pre,body.inrun #progBox{display:none!important}
+body.inrun .top,body.inrun nav,body.inrun #pre,body.inrun #stretchCard,body.inrun #progBox{display:none!important}
 body.inrun{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
 </style>
@@ -290,6 +291,11 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <h3>Séances toutes faites</h3>
     <p class="mut" style="margin-top:0">Choisis une séance : le bonhomme te montre chaque exercice.</p>
     <div id="sessList"></div>
+  </div>
+  <div class="card hide" id="stretchCard">
+    <h3>Étirements</h3>
+    <p class="mut" style="margin-top:0">Pour après la course ou le vélo.</p>
+    <div id="stretchList"></div>
   </div>
   <div class="card hide" id="runCard">
     <div class="runTop"><div class="mut" id="runProg" style="flex:1;min-width:0"></div><div class="runBtns"><button class="sec" type="button" id="runCoachBtn" onclick="coachToggle()" aria-label="Coach vocal"></button><button class="sec" type="button" id="runMenuBtn" onclick="runMenu()" aria-label="Menu de la séance"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div>
@@ -906,9 +912,9 @@ function sessCard(x,i){const T=x.s.reduce((a,st)=>a+PREP+st[1]+st[2],0);return `
 function sessList(){
   const main=SESS.map((x,i)=>[x,i]).filter(([x])=>!x.cat);
   const stretch=SESS.map((x,i)=>[x,i]).filter(([x])=>x.cat==='Étirements');
-  let h=main.map(([x,i])=>sessCard(x,i)).join('');
-  if(stretch.length)h+=`<h4 class="cat-h">Étirements</h4>`+stretch.map(([x,i])=>sessCard(x,i)).join('');
-  $('sessList').innerHTML=h;
+  $('sessList').innerHTML=main.map(([x,i])=>sessCard(x,i)).join('');
+  $('stretchList').innerHTML=stretch.map(([x,i])=>sessCard(x,i)).join('');
+  $('stretchCard').classList.toggle('hide',!stretch.length);
 }
 // Liste des exercices d'une séance avec leur dessin (dessins créés seulement à l'ouverture)
 function sessShow(i,el){
@@ -925,7 +931,7 @@ function vib(){try{if(navigator.vibrate)navigator.vibrate(200)}catch(_){}}
 function startSess(i){
   clearInterval(rTick);
   run={s:SESS[i],k:0,ph:'prep',left:PREP,paused:false};
-  $('pre').classList.add('hide');$('runCard').classList.remove('hide');
+  $('pre').classList.add('hide');$('stretchCard').classList.add('hide');$('runCard').classList.remove('hide');
   $('runPauseBtn').textContent='Pause';
   scrollTo(0,0);
   stepStart();
@@ -998,7 +1004,7 @@ function finish(){
   if(window.pOnFinish)pOnFinish();
   clearInterval(rTick);run=null;
   Bonhomme.mount($('runDemo'),'');
-  $('runCard').classList.add('hide');$('pre').classList.add('hide');
+  $('runCard').classList.add('hide');$('pre').classList.add('hide');$('stretchCard').classList.add('hide');
   const cnt={};
   const rows=log.map(r=>{cnt[r.ex]=(cnt[r.ex]||0)+1;
     const poids=r.sec!=null?'—':(r.hk?r.kg+' kg':'poids du corps');
@@ -1022,7 +1028,7 @@ function confettiBurst(){
   setTimeout(()=>box.remove(),4800);
 }
 function doneClose(){
-  $('doneCard').classList.add('hide');$('pre').classList.remove('hide');
+  $('doneCard').classList.add('hide');$('pre').classList.remove('hide');$('stretchCard').classList.toggle('hide',!$('stretchList').innerHTML);
   if(window.pAfterRun)pAfterRun();
 }
 function runMenu(force){const m=$('runMenu');const show=typeof force==='boolean'?force:m.classList.contains('hide');m.classList.toggle('hide',!show)}
@@ -1036,7 +1042,7 @@ function runLvl(l){
 function runStop(){coachCancel();
   clearInterval(rTick);endWork();run=null;
   Bonhomme.mount($('runDemo'),'');
-  $('runCard').classList.add('hide');$('pre').classList.remove('hide');
+  $('runCard').classList.add('hide');$('pre').classList.remove('hide');$('stretchCard').classList.toggle('hide',!$('stretchList').innerHTML);
   if(window.pAfterRun)pAfterRun();
 }
 sessList();

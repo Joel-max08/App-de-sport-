@@ -1,4 +1,8 @@
 const I18N_DICT={
+"Pour après la course ou le vélo.": {
+"en": "For after running or cycling",
+"de": "Für nach dem Laufen oder Radfahren"
+},
 "1 banane mûre": {
 "en": "1 ripe banana",
 "de": "1 reife Banane"
