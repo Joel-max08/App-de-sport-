@@ -259,15 +259,17 @@ const cap=(a,b,ra,rb,c='')=>{
 };
 const dot=(q,r)=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${r}"/>`;
 // Jambe (cuisse épaisse, genou, mollet, cheville, pied) et bras (bras, coude, avant-bras, main)
+const mid=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
 function limbsSVG(s){
-  return cap(s.hip,s.knee,6,4)+dot(s.knee,4)+cap(s.knee,s.ank,4,2.6)+dot(s.ank,2.6)+cap(s.ank,s.toe,2.6,2.2,'bh-shoe')
-    +cap(s.sh,s.elb,4.2,3.2)+dot(s.elb,3.2)+cap(s.elb,s.hand,3.2,2.2)+dot(s.hand,3);
+  // Tenue : short noir sur le haut de la cuisse, manche jaune sur le haut du bras
+  return cap(s.hip,s.knee,6,4)+cap(s.hip,mid(s.hip,s.knee,.5),6.2,5.6,'bh-short')+dot(s.knee,4)+cap(s.knee,s.ank,4,2.6)+dot(s.ank,2.6)+cap(s.ank,s.toe,2.6,2.2,'bh-shoe')
+    +cap(s.sh,s.elb,4.2,3.2)+cap(s.sh,mid(s.sh,s.elb,.45),4.8,4.4,'bh-shirt')+dot(s.elb,3.2)+cap(s.elb,s.hand,3.2,2.2)+dot(s.hand,3);
 }
 // Buste : bassin, épaules, cou (et largeur des épaules/hanches de face)
 function torsoSVG(J,p){
   const w=[(J.hip[0]+J.sh[0])/2,(J.hip[1]+J.sh[1])/2];
-  let s=cap(J.hip,w,8.2,6.8)+cap(w,J.sh,6.8,9.8)+cap(J.sh,J.neck,4.4,3.6,'bh-sk');
-  if(p.front)s+=cap(J.n.sh,J.f.sh,6.5,6.5)+cap(J.n.hip,J.f.hip,8,8);
+  let s=cap(J.hip,w,8.2,6.8,'bh-short')+cap(w,J.sh,6.8,9.8,'bh-shirt')+cap(J.sh,J.neck,4.4,3.6,'bh-sk');
+  if(p.front)s+=cap(J.n.sh,J.f.sh,6.5,6.5,'bh-shirt')+cap(J.n.hip,J.f.hip,8,8,'bh-short');
   return s;
 }
 
@@ -287,6 +289,8 @@ function css(){
 .bh svg{display:block;width:100%;max-width:260px;height:auto;margin:0 auto;background:var(--field);border-radius:16px}
 .bh-g{stroke:var(--line);stroke-width:2}
 .bh-torso{fill:var(--ink)}
+.bh-shirt{fill:#FFC400;stroke:rgba(90,60,0,.35);stroke-width:.6}
+.bh-short{fill:#15222C}
 .bh-near,.bh-far{fill:var(--skin,#EDB48F);stroke:rgba(15,43,61,.25);stroke-width:.8}
 .bh-sk{fill:var(--skin,#EDB48F)}
 .bh-shoe{fill:var(--ink)}
