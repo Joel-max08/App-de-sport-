@@ -312,6 +312,7 @@ function css(){
 .bh-propl{stroke:var(--mut);stroke-width:4;opacity:.55;fill:none}
 .bh-bar{stroke:var(--ink);stroke-width:4;stroke-linecap:round;fill:none}
 .bh-cable{stroke:var(--mut);stroke-width:1.5;fill:none}
+.bh-band{fill:none;stroke:var(--teal);stroke-width:2.6;stroke-linecap:round}
 .bh-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .bh-hd b{font-size:16px}
 .bh-hd button{flex:none;padding:8px 14px;font-size:14px}
@@ -398,6 +399,67 @@ ${el.dataset.noad?'':'<div class="bh-ad"><div class="chips"><button type="button
   running={stop(){dead=true;cancelAnimationFrame(raf)}};
   return true;
 }
+
+// ---------- Exercices par matériel (ajout) ----------
+const bandL=(a,b)=>`<path d="${P(a,b)}" class="bh-band"/>`;
+const ringAt=q=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="7" class="bh-band"/>`;
+Object.assign(X,{
+elpont:{ad:{f:"Bande plus légère, ou pieds plus près des fesses.",d:"Pause de 2 secondes en haut, avec une bande plus forte."},n:'Pont fessier élastique',m:'Fessiers, ischios',
+  c:['Bande juste au-dessus des genoux','Pousse dans les talons et monte le bassin','Écarte légèrement les genoux contre la bande'],
+  mu:[['thigh',0,.35],['torso',0,.2]],k:X.pont.k,back:J=>ringAt(J.n.knee)},
+elrow:{ad:{f:"Bande plus légère, ou tire moins loin.",d:"Bande plus forte, pause de 1 seconde à fond."},n:'Rowing assis élastique',m:'Dos, biceps',
+  c:['Assis, jambes tendues, bande autour des pieds','Tire les coudes vers l\'arrière, poitrine haute','Reviens lentement, bras presque tendus'],
+  mu:[['torso',.4,.95],['ua',0,1]],
+  k:[{d:1300,h:250,p:{hip:[100,137],t:-12,ft:[150,140],kb:-1,ht:[138,100],eb:1}},{d:1100,h:400,p:{hip:[100,137],t:-12,ft:[150,140],kb:-1,ht:[108,116],eb:1}}],
+  back:J=>bandL([150,140],J.n.hand)},
+elpull:{ad:{f:"Bande plus légère, ou mains plus écartées.",d:"Bande plus forte, pause de 1 seconde en bas."},n:'Tirage élastique',m:'Dos, biceps',
+  c:['Bande accrochée en hauteur, bras tendus vers le haut','Tire les mains vers le haut de la poitrine','Coudes vers le bas et les côtés, poitrine sortie'],
+  mu:[['torso',.4,.95],['ua',0,1]],
+  k:[{d:1300,h:250,p:{hip:[120,93],t:0,ft:[121,146],kb:-1,ht:[132,8],eb:1}},{d:1100,h:400,p:{hip:[120,93],t:-6,ft:[121,146],kb:-1,ht:[142,70],eb:1}}],
+  back:J=>bandL([140,-8],J.n.hand)},
+elapart:{ad:{f:"Bande plus légère, bras moins écartés.",d:"Bande plus forte, pause de 2 secondes en position ouverte."},n:'Écarté élastique',m:'Épaules, dos',
+  c:['Bande tendue devant toi, bras presque tendus','Écarte les bras sur les côtés, coudes légèrement fléchis','Serre les omoplates en fin de mouvement'],
+  mu:[['ua',0,1]],
+  k:[{d:1000,h:300,p:{front:true,hip:[120,93],t:0,ft:[114,146],kb:-1,ht:[125,66],eb:1}},{d:1100,h:300,p:{front:true,hip:[120,93],t:0,ft:[114,146],kb:-1,ua:90,fa:90}}],
+  back:J=>bandL(J.n.hand,J.f.hand)},
+elpress:{ad:{f:"Bande plus légère, pousse moins haut.",d:"Pause de 2 secondes en haut, bande plus forte."},n:'Développé épaules élastique',m:'Épaules, triceps',
+  c:['Debout sur la bande, poignées au niveau des épaules','Pousse vers le haut jusqu\'à bras tendus','Redescends lentement sans cambrer le dos'],
+  mu:[['ua',0,.45]],k:X.militaire.k,back:J=>bandL([121,146],J.n.hand)},
+eltriceps:{ad:{f:"Bande plus légère, coudes bien collés.",d:"Bande plus forte, descente lente sur 3 secondes."},n:'Extension triceps élastique',m:'Triceps',
+  c:['Bande accrochée derrière et au-dessus de toi','Coudes fixes, pointés vers le plafond','Tends les bras sans bouger les coudes'],
+  mu:[['ua',0,1]],k:X.triceps.k,back:J=>bandL([118,-6],J.n.hand)},
+elsquat:{ad:{f:"Bande plus légère, descends moins bas.",d:"Pause de 2 secondes en bas, bande plus forte."},n:'Squat élastique',m:'Cuisses, fessiers',
+  c:['Bande juste au-dessus des genoux','Genoux poussés vers l\'extérieur pendant tout le mouvement','Descends en gardant les talons au sol'],
+  mu:[['thigh',0,1]],k:X.squatpdc.k,back:J=>ringAt(J.n.knee)},
+pullover:{ad:{f:"Haltère plus léger, descends moins loin.",d:"Descends lentement sur 3 secondes, pause en bas."},n:'Pull-over haltère',m:'Dos, pectoraux, dentelé',
+  c:['Allongé sur le banc, haltère tenu à deux mains','Bras tendus, descends l\'haltère derrière la tête','Remonte en gardant les coudes presque tendus'],
+  mu:[['torso',.6,.95],['ua',0,1]],
+  k:[{d:1300,h:300,p:{hip:[95,105],t:90,hd:0,ft:[74,146],kb:-1,ua:0,fa:0}},{d:1400,h:300,p:{hip:[95,105],t:90,hd:0,ft:[74,146],kb:-1,ua:90,fa:90}}],
+  stat:bench,back:J=>dumb(J.n.hand)},
+bancstep:{ad:{f:"Banc plus bas, ou sans charge.",d:"Haltères en mains, pied posé plus haut, descente lente."},n:'Montée sur banc',m:'Cuisses, fessiers',
+  c:['Un pied entier posé sur le banc','Pousse dans le talon du pied du banc pour monter','Redescends lentement, le pied arrière touche à peine le sol'],
+  mu:[['thigh',0,1]],
+  k:[{d:1100,h:300,p:{hip:[120,93],t:2,ft:[121,146],kb:-1,ua:180,fa:180}},{d:1300,h:400,p:{hip:[126,74],t:2,ft:[128,110],fft:[112,128],kb:-1,ua:180,fa:180}}],
+  stat:bench},
+hang:{ad:{f:"Jambes plus tendues, sans rien aux pieds.",d:"Pause de 2 secondes en tirant les omoplates, ou lest."},n:'Suspension active',m:'Dos, avant-bras, épaules',
+  c:['Mains plus larges que les épaules, bras tendus','Épaules basses, sans haussement','Tire les omoplates vers le bas, puis relâche'],
+  mu:[['torso',.45,.95],['ua',0,1]],
+  k:[{d:1500,h:500,p:{hip:[118,103],t:2,th:172,sh:220,ht:[120,14],eb:1}},{d:900,h:400,p:{hip:[118,97],t:4,th:172,sh:220,ht:[120,14],eb:1}}],
+  stat:`<path d="M80 12H160" class="bh-bar"/>`},
+swing:{ad:{f:"Kettlebell plus légère, mouvement plus court.",d:"Kettlebell plus lourde, une seule main, relâche la hauteur."},n:'Swing kettlebell',m:'Fessiers, ischios, dos, épaules',
+  c:['Pieds écartés, kettlebell entre les jambes','Pousse les hanches en arrière, dos plat','Projette les hanches vers l\'avant, bras tendus devant'],
+  mu:[['thigh',0,.7],['torso',0,.4]],
+  k:[{d:1100,h:250,p:{hip:[104,100],t:68,ft:[121,146],kb:-1,ht:[124,137],eb:1}},{d:1000,h:300,p:{hip:[120,93],t:2,ft:[121,146],kb:-1,ht:[162,60],eb:1}}],
+  front:J=>plate(J.n.hand,7)},
+goodmorning:{ad:{f:"Sans charge, bâton ou barre légère sur les épaules.",d:"Barre plus lourde, descente plus lente."},n:'Good morning barre',m:'Ischios, bas du dos, fessiers',
+  c:['Barre sur les trapèzes, dos plat','Pousse les fesses en arrière, genoux légèrement fléchis','Remonte en serrant les fessiers'],
+  mu:[['thigh',0,.7]],
+  k:[{d:1200,h:300,p:{hip:[120,93],t:2,ft:[121,146],htr:[-16,8],eb:-1}},{d:1500,h:250,p:{hip:[103,100],t:70,ft:[121,146],htr:[-16,8],eb:-1}}],
+  back:J=>plate([J.sh[0]-2,J.sh[1]+1],6)},
+hipbarre:{ad:{f:"Sans charge, pieds plus près des fesses.",d:"Pause de 2 secondes en haut, barre plus lourde."},n:'Pont fessier à la barre',m:'Fessiers, ischios',
+  c:['Haut du dos calé sur le banc, barre sur le bassin','Pieds à plat, près des fesses','Pousse dans les talons et monte le bassin, serre les fessiers'],
+  mu:[['thigh',0,.35],['torso',0,.2]],k:X.pont.k,stat:bench,front:J=>plate([J.hip[0],J.hip[1]-7],7)}
+});
 
 window.Bonhomme={find,mount,names:()=>Object.values(X).map(e=>e.n),_X:X,_solve:solve,_mix:mix};
 })();

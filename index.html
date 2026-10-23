@@ -1347,8 +1347,8 @@ coachSet(COACH_ON());
 (function(){
   // Matériel possible pour chaque exercice (liste d'options : il suffit d'en avoir une complète)
   const EQ={squat:[['Barre']],squatpdc:[[]],goblet:[['Haltères'],['Kettlebell']],couche:[['Barre','Banc'],['Haltères','Banc']],
-    pompes:[[]],tractions:[['Barre de traction']],rowing:[['Haltères'],['Élastique'],['Barre']],militaire:[['Haltères'],['Barre']],
-    sdt:[['Barre'],['Haltères'],['Kettlebell']],rdl:[['Haltères'],['Barre'],['Kettlebell']],fente:[[]],dipschaise:[['Chaise']],
+    pompes:[[]],tractions:[['Barre de traction']],elpont:[['Élastique']],elrow:[['Élastique']],elpull:[['Élastique']],elapart:[['Élastique']],elpress:[['Élastique']],eltriceps:[['Élastique']],elsquat:[['Élastique']],pullover:[['Haltères','Banc']],bancstep:[['Banc']],hang:[['Barre de traction']],swing:[['Kettlebell']],goodmorning:[['Barre']],hipbarre:[['Barre','Banc']],rowing:[['Haltères'],['Élastique'],['Barre']],militaire:[['Haltères'],['Barre']],
+    sdt:[['Barre'],['Haltères'],['Kettlebell']],rdl:[['Haltères'],['Barre'],['Kettlebell']],fente:[[]],dipschaise:[['Chaise'],['Banc']],
     triceps:[['Haltères'],['Élastique']],curl:[['Haltères'],['Élastique'],['Barre']],laterale:[['Haltères'],['Élastique']],
     pont:[[]],crunch:[[]],gainage:[[]],mountain:[[]],pompesinc:[[]],bulgare:[['Chaise']],pont1j:[[]],jacks:[[]],superman:[[]]};
   const ITEMS=['Haltères','Élastique','Barre','Banc','Barre de traction','Kettlebell','Chaise'];
@@ -1376,14 +1376,19 @@ coachSet(COACH_ON());
   const grp=id=>(Bonhomme._X[id].m||'').split(/[ ,(]/)[0];
   window.persoGen=function(){
     const owned=eqGet();
-    const pool=Object.keys(EQ).filter(id=>Bonhomme._X[id]&&EQ[id].some(opt=>opt.every(x=>owned.includes(x))));
+    const ok=id=>Bonhomme._X[id]&&EQ[id].some(opt=>opt.every(x=>owned.includes(x)));
+    const all=Object.keys(EQ).filter(ok);
     const msg=document.getElementById('persoMsg');
-    if(!pool.length){msg.textContent='Aucun exercice possible avec ce matériel. Coche au moins un élément, ou choisis « poids du corps ».';return}
+    if(!all.length){msg.textContent='Aucun exercice possible avec ce matériel. Coche au moins un élément, ou choisis « poids du corps ».';return}
     msg.textContent='';
-    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+    const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+    const eqPool=shuffle(all.filter(id=>EQ[id].some(opt=>opt.length&&opt.every(x=>owned.includes(x)))));
+    const bodyPool=shuffle(all.filter(id=>!eqPool.includes(id)));
     const cap=Math.max(2,Math.ceil(persoLen/3)),cnt={},pick=[];
-    for(const id of pool){if(pick.length>=persoLen)break;const g=grp(id);if((cnt[g]||0)>=cap)continue;cnt[g]=(cnt[g]||0)+1;pick.push(id)}
-    for(const id of pool){if(pick.length>=persoLen)break;if(!pick.includes(id))pick.push(id)}
+    const take=(list,useCap)=>{for(const id of list){if(pick.length>=persoLen)break;if(pick.includes(id))continue;const g=grp(id);if(useCap&&(cnt[g]||0)>=cap)continue;cnt[g]=(cnt[g]||0)+1;pick.push(id)}};
+    take(eqPool,true);take(eqPool,false);take(bodyPool,true);take(bodyPool,false);
+    const nEq=pick.filter(id=>eqPool.includes(id)).length;
+    msg.textContent=nEq?`${nEq} exercice(s) avec ton matériel, ${pick.length-nEq} au poids du corps.`:(owned.length?'Aucun exercice avec ce matériel : séance au poids du corps.':'');
     const st=pick.map((id,k)=>[id,40,k===pick.length-1?0:20]);
     const sess={n:`Séance perso (${pick.length} exercices)`,cat:'Perso',s:st};
     if(persoI===null){persoI=SESS.length;SESS.push(sess)}else SESS[persoI]=sess;
