@@ -230,6 +230,10 @@ button.fd span{display:block;font-size:12.5px;color:var(--mut);margin-top:3px}
 #runMenu{position:absolute;right:18px;top:58px;width:270px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:60}
 #runMenu.hide{display:none}
 #runMenu .chips button.on{background:var(--teal);color:var(--tealink)}
+#persoBox .chips button.on{background:var(--teal);color:var(--tealink)}
+#eqChips button{display:inline-flex;align-items:center;gap:6px}
+#eqChips svg{flex:0 0 auto}
+#persoBox .perso-empty{color:var(--mut)}
 body.inrun .top,body.inrun nav,body.inrun #pre,body.inrun #stretchCard,body.inrun #progBox{display:none!important}
 body.inrun{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
@@ -290,6 +294,15 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
   <div class="card" id="pre">
     <h3>Séances toutes faites</h3>
     <p class="mut" style="margin-top:0">Choisis une séance : le bonhomme te montre chaque exercice.</p>
+    <div class="perso" id="persoBox">
+      <h4 class="cat-h">Séance personnalisée</h4>
+      <p class="mut" style="margin-top:0">Coche ton matériel, puis génère une séance adaptée.</p>
+      <div class="chips" id="eqChips"></div>
+      <div class="chips" id="persoLenChips" style="margin-top:10px"></div>
+      <div class="row"><button type="button" onclick="persoGen()">Générer une séance</button></div>
+      <p class="mut" id="persoMsg" style="margin:8px 0 0"></p>
+      <div id="persoList"></div>
+    </div>
     <div id="sessList"></div>
   </div>
   <div class="card hide" id="stretchCard">
@@ -1329,6 +1342,55 @@ function coachStep(){
   }
 }
 coachSet(COACH_ON());
+</script>
+<script>
+(function(){
+  // Matériel possible pour chaque exercice (liste d'options : il suffit d'en avoir une complète)
+  const EQ={squat:[['Barre']],squatpdc:[[]],goblet:[['Haltères'],['Kettlebell']],couche:[['Barre','Banc'],['Haltères','Banc']],
+    pompes:[[]],tractions:[['Barre de traction']],rowing:[['Haltères'],['Élastique'],['Barre']],militaire:[['Haltères'],['Barre']],
+    sdt:[['Barre'],['Haltères'],['Kettlebell']],rdl:[['Haltères'],['Barre'],['Kettlebell']],fente:[[]],dipschaise:[['Chaise']],
+    triceps:[['Haltères'],['Élastique']],curl:[['Haltères'],['Élastique'],['Barre']],laterale:[['Haltères'],['Élastique']],
+    pont:[[]],crunch:[[]],gainage:[[]],mountain:[[]],pompesinc:[[]],bulgare:[['Chaise']],pont1j:[[]],jacks:[[]],superman:[[]]};
+  const ITEMS=['Haltères','Élastique','Barre','Banc','Barre de traction','Kettlebell','Chaise'];
+  const ICO={
+    'Haltères':'<path d="M2 9v6M5 7v10M19 7v10M22 9v6M5 12h14"/>',
+    'Élastique':'<ellipse cx="12" cy="12" rx="9" ry="5"/><path d="M12 7v10" opacity=".35"/>',
+    'Barre':'<path d="M2 12h20M5 8v8M19 8v8M2 9v6M22 9v6"/>',
+    'Banc':'<path d="M3 11h18M6 11v7M18 11v7M6 8h12v3"/>',
+    'Barre de traction':'<path d="M2 3h20M7 3v4M17 3v4M12 7v4M9 17l3-6 3 6"/>',
+    'Kettlebell':'<path d="M8 10a4 4 0 0 1 8 0"/><path d="M6 11h12a1 1 0 0 1 1 1v3a6 6 0 0 1-14 0v-3a1 1 0 0 1 1-1z"/>',
+    'Chaise':'<path d="M6 3v10h12V3"/><path d="M6 13v8M18 13v8"/>'
+  };
+  const icon=it=>`<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICO[it]||''}</svg>`;
+  const LENS=[['Courte',6],['Moyenne',10],['Longue',14]];
+  let persoLen=10,persoI=null;
+  const eqGet=()=>{try{return JSON.parse(localStorage.getItem('sportapp.equip')||'[]')}catch(e){return[]}};
+  const eqSet=v=>{try{localStorage.setItem('sportapp.equip',JSON.stringify(v))}catch(e){}};
+  window.eqToggle=function(it){const v=eqGet();const k=v.indexOf(it);k>=0?v.splice(k,1):v.push(it);eqSet(v);renderEq()};
+  window.persoSetLen=function(n){persoLen=n;renderEq()};
+  function renderEq(){
+    const owned=eqGet();
+    document.getElementById('eqChips').innerHTML=ITEMS.map(it=>`<button type="button" class="${owned.includes(it)?'on':''}" onclick="eqToggle('${it}')">${icon(it)}<span>${it}</span></button>`).join('');
+    document.getElementById('persoLenChips').innerHTML=LENS.map(([l,n])=>`<button type="button" class="${persoLen===n?'on':''}" onclick="persoSetLen(${n})">${l} (${n} exercices)</button>`).join('');
+  }
+  const grp=id=>(Bonhomme._X[id].m||'').split(/[ ,(]/)[0];
+  window.persoGen=function(){
+    const owned=eqGet();
+    const pool=Object.keys(EQ).filter(id=>Bonhomme._X[id]&&EQ[id].some(opt=>opt.every(x=>owned.includes(x))));
+    const msg=document.getElementById('persoMsg');
+    if(!pool.length){msg.textContent='Aucun exercice possible avec ce matériel. Coche au moins un élément, ou choisis « poids du corps ».';return}
+    msg.textContent='';
+    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+    const cap=Math.max(2,Math.ceil(persoLen/3)),cnt={},pick=[];
+    for(const id of pool){if(pick.length>=persoLen)break;const g=grp(id);if((cnt[g]||0)>=cap)continue;cnt[g]=(cnt[g]||0)+1;pick.push(id)}
+    for(const id of pool){if(pick.length>=persoLen)break;if(!pick.includes(id))pick.push(id)}
+    const st=pick.map((id,k)=>[id,40,k===pick.length-1?0:20]);
+    const sess={n:`Séance perso (${pick.length} exercices)`,cat:'Perso',s:st};
+    if(persoI===null){persoI=SESS.length;SESS.push(sess)}else SESS[persoI]=sess;
+    document.getElementById('persoList').innerHTML=sessCard(sess,persoI);
+  };
+  renderEq();
+})();
 </script>
 </body>
 </html>
