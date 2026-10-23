@@ -1,4 +1,4 @@
-const CACHE = 'kinetra-v75';
+const CACHE = 'kinetra-v76';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './badge-96.png', './firebase-config.js', './bonhomme.js', './programs.js', './i18n.js', './pickers.js'];
 
 self.addEventListener('install', e => {
@@ -20,6 +20,17 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   const ok = url.origin === self.location.origin || url.hostname === 'www.gstatic.com';
   if (!ok) return;
+  // Application (même origine) : réseau d'abord, pour recevoir tout de suite les nouvelles versions ;
+  // le cache ne sert que hors connexion. Scripts Firebase (gstatic) : cache d'abord.
+  if (url.origin === self.location.origin) {
+    e.respondWith(
+      fetch(req).then(r => {
+        if (r && r.ok) caches.open(CACHE).then(c => c.put(req, r.clone()));
+        return r;
+      }).catch(() => caches.match(req).then(hit => hit || caches.match('./index.html')))
+    );
+    return;
+  }
   e.respondWith(
     caches.open(CACHE).then(async c => {
       const hit = await c.match(req);
@@ -27,7 +38,7 @@ self.addEventListener('fetch', e => {
         if (r && r.ok) c.put(req, r.clone());
         return r;
       }).catch(() => null);
-      return hit || (await net) || c.match('./index.html');
+      return hit || (await net);
     })
   );
 });
