@@ -145,7 +145,7 @@ fente:{ad:{f:"Fais la fente en t'appuyant sur une chaise ou un mur, et descends 
 dipschaise:{ad:{f:"Plie moins les coudes et garde les pieds plus près de la chaise.",d:"Pieds posés plus loin pour charger davantage les bras, avec une pause en bas."},n:'Dips sur chaise',m:'Triceps, épaules',
   c:['Mains au bord de la chaise, doigts vers l\'avant','Descends en pliant les coudes vers l\'arrière','Garde le dos proche de la chaise'],
   mu:[['ua',0,1]],
-  k:[{d:1000,h:300,p:{hip:[99,100],t:-4,th:132,sh:132,ht:[93,104],eb:-1}},{d:1300,h:250,p:{hip:[104,124],t:-6,th:111,sh:111,ht:[93,104],eb:-1}}],
+  k:[{d:1000,h:300,p:{hip:[100,104],t:-4,th:143,sh:143,ht:[93,104],eb:-1}},{d:1300,h:250,p:{hip:[104,118],t:-6,th:122,sh:122,ht:[93,104],eb:1}}],
   stat:`<rect x="56" y="104" width="40" height="7" rx="2" class="bh-prop"/><path d="M60 111V${G}M92 111V${G}M58 104V64" class="bh-propl"/>`},
 dipsbarres:{ad:{f:"Dips sur chaise ou banc, coudes moins pliés.",d:"Dips aux barres avec un lest, ou pause de 2 secondes en bas."},n:'Dips (barres)',m:'Triceps, pectoraux',
   c:['Bras tendus, épaules basses','Descends jusqu\'à ce que les coudes fassent 90°','Remonte sans verrouiller brutalement'],
