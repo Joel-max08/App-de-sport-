@@ -1,4 +1,64 @@
 const I18N_DICT={
+"Étirement des triceps": {
+"en": "Triceps stretch",
+"de": "Trizeps-Dehnung"
+},
+"Étirement des épaules": {
+"en": "Shoulder stretch",
+"de": "Schulterdehnung"
+},
+"Triceps": {
+"en": "Triceps",
+"de": "Trizeps"
+},
+"Épaules, haut du dos": {
+"en": "Shoulders, upper back",
+"de": "Schultern, oberer Rücken"
+},
+"Bras levé, coude pointé vers le ciel": {
+"en": "Arm raised, elbow pointing to the sky",
+"de": "Arm nach oben, Ellbogen zeigt zum Himmel"
+},
+"Plie le coude et pose la main entre les omoplates": {
+"en": "Bend the elbow and place the hand between the shoulder blades",
+"de": "Ellbogen beugen und die Hand zwischen die Schulterblätter legen"
+},
+"Pousse doucement le coude vers l'arrière, puis change de bras": {
+"en": "Gently push the elbow back, then switch arms",
+"de": "Den Ellbogen sanft nach hinten drücken, dann die Seite wechseln"
+},
+"Bras tendu devant toi, à hauteur d'épaule": {
+"en": "Arm stretched in front of you, at shoulder height",
+"de": "Arm vor dir ausgestreckt, auf Schulterhöhe"
+},
+"Garde les épaules basses, sans les lever": {
+"en": "Keep shoulders down, don't lift them",
+"de": "Schultern unten lassen, nicht hochziehen"
+},
+"Respire calmement, puis change de bras": {
+"en": "Breathe calmly, then switch arms",
+"de": "Ruhig atmen, dann die Seite wechseln"
+},
+"Garde le coude plus haut et tire moins fort, ou tiens le coude avec l'autre main.": {
+"en": "Keep the elbow higher and pull less, or hold the elbow with the other hand.",
+"de": "Ellbogen höher halten und weniger ziehen, oder den Ellbogen mit der anderen Hand halten."
+},
+"Tire le coude un peu plus fort vers l'arrière et tiens 45 secondes.": {
+"en": "Pull the elbow a little further back and hold for 45 seconds.",
+"de": "Den Ellbogen etwas stärker nach hinten ziehen und 45 Sekunden halten."
+},
+"Garde le bras plus bas et ne force pas.": {
+"en": "Keep the arm lower and don't force it.",
+"de": "Den Arm tiefer halten und nicht erzwingen."
+},
+"Tire le bras plus loin vers l'opposé en gardant le dos droit, et tiens 30 secondes.": {
+"en": "Pull the arm further across with your back straight, and hold for 30 seconds.",
+"de": "Den Arm weiter zur Gegenseite ziehen, Rücken gerade halten, und 30 Sekunden halten."
+},
+"Étirements après la musculation": {
+"en": "Stretches after strength training",
+"de": "Dehnung nach dem Krafttraining"
+},
 "Pour après la course ou le vélo.": {
 "en": "For after running or cycling",
 "de": "Für nach dem Laufen oder Radfahren"
