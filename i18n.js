@@ -1,4 +1,68 @@
 const I18N_DICT={
+"Séance personnalisée": {
+"en": "Custom workout",
+"de": "Individuelles Training"
+},
+"Coche ton matériel, puis génère une séance adaptée.": {
+"en": "Tick your equipment, then generate a suitable workout.",
+"de": "Hake dein Equipment an und erstelle dann ein passendes Training."
+},
+"Haltères": {
+"en": "Dumbbells",
+"de": "Kurzhanteln"
+},
+"Élastique": {
+"en": "Resistance band",
+"de": "Widerstandsband"
+},
+"Barre": {
+"en": "Barbell",
+"de": "Langhantel"
+},
+"Banc": {
+"en": "Bench",
+"de": "Bank"
+},
+"Barre de traction": {
+"en": "Pull-up bar",
+"de": "Klimmzugstange"
+},
+"Kettlebell": {
+"en": "Kettlebell",
+"de": "Kettlebell"
+},
+"Chaise": {
+"en": "Chair",
+"de": "Stuhl"
+},
+"Générer une séance": {
+"en": "Generate a workout",
+"de": "Training erstellen"
+},
+"Courte (6 exercices)": {
+"en": "Short (6 exercises)",
+"de": "Kurz (6 Übungen)"
+},
+"Moyenne (10 exercices)": {
+"en": "Medium (10 exercises)",
+"de": "Mittel (10 Übungen)"
+},
+"Longue (14 exercices)": {
+"en": "Long (14 exercises)",
+"de": "Lang (14 Übungen)"
+},
+"Autorise les notifications pour recevoir les rappels.": {
+"en": "Allow notifications to receive reminders.",
+"de": "Erlaube Benachrichtigungen, um Erinnerungen zu erhalten."
+},
+"Tester une notification dans 1 minute": {
+"en": "Test a notification in 1 minute",
+"de": "Benachrichtigung in 1 Minute testen"
+},
+"Ajoute ta taille et ton poids pour voir ton IMC.": {
+"en": "Add your height and weight to see your BMI.",
+"de": "Gib deine Größe und dein Gewicht ein, um deinen BMI zu sehen."
+},
 "Étirement des triceps": {
 "en": "Triceps stretch",
 "de": "Trizeps-Dehnung"
@@ -1476,6 +1540,7 @@ try{
 
 // Phrases avec des nombres : modèles reconnus par expression régulière
 const PATTERNS=[
+[/^(\d+) exercice\(s\) avec ton matériel, (\d+) au poids du corps\.$/, m=>({en:`${m[1]} exercise(s) with your equipment, ${m[2]} bodyweight.`,de:`${m[1]} Übung(en) mit deinem Equipment, ${m[2]} mit Körpergewicht.`})],
 [/^Bonjour, (.+) !$/, m=>({en:'Hello, '+m[1]+'!',de:'Hallo, '+m[1]+'!'})],
 [/^Synchronisé à (.+)$/, m=>({en:'Synced at '+m[1],de:'Synchronisiert um '+m[1]})],
 [/^Pour (\d+) portions?$/, m=>({en:'For '+m[1]+(m[1]==='1'?' serving':' servings'),de:'Für '+m[1]+(m[1]==='1'?' Portion':' Portionen')})],
