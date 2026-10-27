@@ -1,3 +1,17 @@
+// ----- Icônes : silhouette de face, zone travaillée en sarcelle
+const PICO_BASE='<circle cx="20" cy="7" r="5.5" fill="#C9D6DE"/><path d="M13 14H27Q30 14 30 18V34Q30 37 27 37H13Q10 37 10 34V18Q10 14 13 14Z" fill="#C9D6DE"/><path d="M9 17L5 30L4 40M31 17L35 30L36 40" fill="none" stroke="#C9D6DE" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 38L14 50L14 58M25 38L26 50L26 58" fill="none" stroke="#C9D6DE" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+const PICO_ZONE={
+  sh:'<circle cx="10" cy="16" r="4.6" fill="#00A99D"/><circle cx="30" cy="16" r="4.6" fill="#00A99D"/>',
+  abs:'<rect x="14" y="21" width="12" height="12" rx="2" fill="#00A99D"/>',
+  chest:'<rect x="13" y="15" width="14" height="8" rx="3" fill="#00A99D"/>',
+  arms:'<path d="M9 17L5 30L4 40M31 17L35 30L36 40" fill="none" stroke="#00A99D" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>',
+  legs:'<path d="M15 38L14 50L14 58M25 38L26 50L26 58" fill="none" stroke="#00A99D" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
+};
+const PICO_BY_ID={epaules:['sh'],'abdos-deb':['abs'],'abdos-int':['abs'],'bas-deb':['legs'],'bas-int':['legs'],'bras-deb':['arms'],'bras-int':['arms'],'haut-int':['chest','sh','arms']};
+function pIcon(id){
+  const z=PICO_BY_ID[id];if(!z)return'';
+  return `<svg class="pg-ico" viewBox="0 0 40 60" width="24" height="36" aria-hidden="true">${PICO_BASE}${z.map(k=>PICO_ZONE[k]).join('')}</svg>`;
+}
 // ===== Kinetra : programmes d'entraînement =====
 // Dépend de : D, $, save, day, esc, fmt, render, rest, go (dans index.html) et Bonhomme (bonhomme.js)
 const X=(n,s,r,t,b)=>({n,s,r,t:t||90,b:!!b});
@@ -128,7 +142,7 @@ function pCard(p,custom){
   const tags=custom?`<span class="pg-tag">${p.sessions.length} ${p.sessions.length>1?'séances':'séance'}</span>`:`<span class="pg-tag">${esc(p.lvl)}</span><span class="pg-tag">${esc(p.where)}</span><span class="pg-tag">${esc(p.freq)}</span>`;
   const acts=`<div class="row"><button onclick='pStart(${id})'>${on?'Recommencer au début':'Commencer ce programme'}</button></div><div class="row">`
     +(custom?`<button class="sec" onclick='pEdit(${id})'>Modifier</button><button class="del" onclick='pDel(${id})'>Supprimer</button>`:`<button class="sec" onclick='pCustomize(${id})'>Personnaliser</button>`)+`</div>`;
-  return `<details class="pg-prog" data-id="${esc(p.id)}"><summary><span class="pg-pt">${esc(p.name)}${on?' <span class="pg-tag pg-on">En cours</span>':''}</span><span class="pg-tags">${tags}</span></summary><div class="pg-pb">`
+  return `<details class="pg-prog" data-id="${esc(p.id)}"><summary><span class="pg-pt">${pIcon(p.id)}${esc(p.name)}${on?' <span class="pg-tag pg-on">En cours</span>':''}</span><span class="pg-tags">${tags}</span></summary><div class="pg-pb">`
     +(p.desc?`<p class="mut" style="margin:0">${esc(p.desc)}</p>`:'')
     +p.sessions.map(s=>`<div class="pg-sname">${esc(s.n)}</div><ul class="pg-exl">${s.ex.map(pExLine).join('')}</ul>`).join('')+acts+`</div></details>`;
 }
