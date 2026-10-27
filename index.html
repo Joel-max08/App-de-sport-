@@ -137,7 +137,7 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .done-t th,.done-t td{padding:8px 4px;border-top:1px solid var(--line);text-align:left}
 .done-t th{color:var(--mut);font-weight:600;font-size:13px}
 .done-t td.num,.done-t th.num{text-align:right}
-.crown{display:block;width:96px;height:auto;margin:0 auto 2px}
+.crown{display:block;width:120px;height:auto;margin:0 auto 4px}
 .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
 .confetti i{position:absolute;top:-20px;border-radius:2px;animation-name:cfall;animation-timing-function:cubic-bezier(.25,.6,.4,1);animation-fill-mode:both}
 @keyframes cfall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
@@ -326,25 +326,7 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <div class="row"><button class="sec" type="button" id="runPauseBtn" onclick="runPause()">Pause</button><button type="button" id="runSkipBtn" onclick="runSkip()">Passer</button></div>
   </div>
   <div class="card hide" id="doneCard" style="text-align:center">
-    <svg class="crown" viewBox="0 0 120 84" aria-hidden="true">
-      <defs>
-        <linearGradient id="crG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF176"/><stop offset="1" stop-color="#FFC400"/></linearGradient>
-      </defs>
-      <path d="M8 66 L4 26 L34 46 L60 12 L86 46 L116 26 L112 66 Z" fill="url(#crG)" stroke="#E08E00" stroke-width="2" stroke-linejoin="round"/>
-      <rect x="8" y="60" width="104" height="11" rx="3" fill="#E08E00"/>
-      <circle cx="4" cy="26" r="4" fill="#FFF59D" stroke="#E08E00" stroke-width="1.5"/>
-      <circle cx="60" cy="10" r="4" fill="#FFF59D" stroke="#E08E00" stroke-width="1.5"/>
-      <circle cx="116" cy="26" r="4" fill="#FFF59D" stroke="#E08E00" stroke-width="1.5"/>
-      <g transform="translate(37 17) scale(0.18)" fill="#D00036">
-        <rect x="0" y="62" width="22" height="26" rx="6"/>
-        <rect x="234" y="62" width="22" height="26" rx="6"/>
-        <rect x="20" y="44" width="24" height="62" rx="6"/>
-        <rect x="212" y="44" width="24" height="62" rx="6"/>
-        <rect x="46" y="14" width="42" height="122" rx="8"/>
-        <rect x="168" y="14" width="42" height="122" rx="8"/>
-        <rect x="84" y="62" width="88" height="26"/>
-      </g>
-    </svg>
+    <img class="crown" src="crown.png" alt="" aria-hidden="true">
     <h3 style="margin:4px 0 4px">Bien joué !</h3>
     <p class="mut" style="margin:0 0 10px">Voici ce que tu as fait pendant cette séance.</p>
     <div id="doneTable" style="text-align:left"></div>
