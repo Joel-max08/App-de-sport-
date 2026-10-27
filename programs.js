@@ -127,6 +127,7 @@ function pRunStart(){
   const steps=pSteps(c.p,c.i);if(!steps.length)return;
   run={s:{n:c.p.name+' · '+c.p.sessions[c.i].n,s:steps},k:0,ph:'prep',left:PREP,paused:false,pid:c.p.id,pi:c.i};
   window.pRunning=true;
+  if(typeof sessLoad==='function')sessLoad(run.s.n);
   $('pre').classList.add('hide');$('progBox').classList.add('hide');$('runCard').classList.remove('hide');
   $('runPauseBtn').textContent='Pause';scrollTo(0,0);
   stepStart();

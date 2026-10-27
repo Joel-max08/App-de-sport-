@@ -1819,6 +1819,14 @@ const I18N_DICT={
 "en": "Heavy biceps and triceps work, with pull-ups and diamond push-ups.",
 "de": "Schweres Bizeps- und Trizeps-Training mit Klimmzügen und Diamant-Liegestützen."
 },
+"Ton coach sport, dans ta poche": {
+"en": "Your sports coach, in your pocket",
+"de": "Dein Sport-Coach, immer dabei"
+},
+"Préparation de la séance": {
+"en": "Getting your workout ready",
+"de": "Dein Training wird vorbereitet"
+},
 };
 /* Kinetra — langues : français (par défaut), anglais, allemand.
    Les textes sont reconnus par leur version française (clé) ; le moteur remplace le texte affiché
