@@ -2,32 +2,53 @@
 // Dépend de : D, $, save, day, esc, fmt, render, rest, go (dans index.html) et Bonhomme (bonhomme.js)
 const X=(n,s,r,t,b)=>({n,s,r,t:t||90,b:!!b});
 const PRESETS=[
-{id:'fb3',name:'Full body 3 jours',lvl:'Débutant',where:'Salle',freq:'3 séances par semaine',
- desc:'Tout le corps à chaque séance, en alternant A et B. Le plus simple pour apprendre les mouvements.',
+{id:'epaules',name:"Gagner en largeur d'épaules",lvl:'Tous niveaux',where:'Salle',freq:'2 séances par semaine',
+ desc:"Épaules larges et dos qui s'élargit : élévations latérales, développé et tirages. Deux séances à alterner.",
  sessions:[
-  {n:'Full body A',ex:[X('Squat',3,'6-8',120),X('Développé couché',3,'6-8',120),X('Rowing barre',3,'8-10',90),X('Développé militaire',2,'8-10',90),X('Gainage',3,'30-45 s',45,1)]},
-  {n:'Full body B',ex:[X('Soulevé de terre roumain',3,'8-10',120),X('Développé incliné haltères',3,'8-10',90),X('Tirage vertical',3,'8-10',90),X('Fentes',2,'10-12',60),X('Curl biceps',2,'10-12',45)]}
+  {n:'Épaules A',ex:[X('Élévations latérales',3,'12-15',60),X('Développé militaire',3,'8-10',90),X('Élévations frontales',3,'12-15',60),X('Tirage vertical',3,'10-12',60),X('Rowing menton',3,'10-12',60)]},
+  {n:'Épaules B',ex:[X('Développé Arnold',3,'8-10',90),X('Élévations latérales',3,'12-15',60),X('Face pull',3,'12-15',45),X('Pompes pieds surélevés',3,'8-12',60),X('Élévations frontales',2,'12-15',45)]}
  ]},
-{id:'ul4',name:'Haut / bas 4 jours',lvl:'Intermédiaire',where:'Salle',freq:'4 séances par semaine',
- desc:'Deux séances haut du corps, deux séances bas du corps. Par exemple lundi haut, mardi bas, jeudi haut, vendredi bas.',
+{id:'abdos-deb',name:'Abdos débutant',lvl:'Débutant',where:'Maison',freq:'2 séances par semaine',
+ desc:'Un gainage et des crunchs doux pour installer la ceinture abdominale. Commence par les versions faciles.',
  sessions:[
-  {n:'Haut A',ex:[X('Développé couché',4,'6-8',120),X('Rowing barre',4,'6-8',120),X('Développé militaire',3,'8-10',90),X('Tirage vertical',3,'8-10',60),X('Curl biceps',2,'10-12',45),X('Extension triceps poulie',2,'10-12',45)]},
-  {n:'Bas A',ex:[X('Squat',4,'6-8',120),X('Soulevé de terre roumain',3,'8-10',120),X('Presse à cuisses',3,'10-12',90),X('Leg curl',3,'10-12',60),X('Mollets debout',4,'10-15',45)]},
-  {n:'Haut B',ex:[X('Développé incliné haltères',4,'8-10',90),X('Tractions',4,'6-10',120),X('Rowing haltère',3,'8-10',60),X('Élévations latérales',3,'12-15',45),X('Face pull',3,'12-15',45),X('Curl marteau',2,'10-12',45)]},
-  {n:'Bas B',ex:[X('Soulevé de terre',3,'5',150),X('Fentes bulgares',3,'8-10',90),X('Hip thrust',3,'8-12',90),X('Leg extension',3,'12-15',60),X('Mollets assis',4,'12-15',45)]}
+  {n:'Abdos A',ex:[X('Crunch',3,'15',45),X('Gainage (planche)',3,'30 s',45,1),X('Dead bug',3,'10 par côté',45),X('Mountain climbers',3,'30 s',45,1),X('Superman',3,'12',45)]},
+  {n:'Abdos B',ex:[X('Relevé de jambes',3,'10',60),X('Bird dog',3,'8 par côté',45),X('Gainage latéral',3,'20 s par côté',45,1),X('Crunch',3,'15',45),X('Gainage (planche)',3,'30 s',45,1)]}
  ]},
-{id:'ppl',name:'Push / Pull / Legs',lvl:'Intermédiaire',where:'Salle',freq:'3 à 6 séances par semaine',
- desc:'Trois séances qui se répètent : pousser, tirer, jambes. Une fois chacune pour 3 jours par semaine, ou deux fois pour 6 jours.',
+{id:'bas-deb',name:'Bas du corps débutant',lvl:'Débutant',where:'Maison',freq:'2 séances par semaine',
+ desc:'Squats, ponts et fentes au poids du corps, pour apprendre à bien placer les genoux et les hanches.',
  sessions:[
-  {n:'Push',ex:[X('Développé couché',4,'6-8',120),X('Développé militaire',3,'8-10',90),X('Développé incliné haltères',3,'8-10',90),X('Élévations latérales',3,'12-15',45),X('Extension triceps poulie',3,'10-12',45)]},
-  {n:'Pull',ex:[X('Rowing barre',4,'6-8',120),X('Tractions',3,'6-10',120),X('Rowing poulie assis',3,'10-12',60),X('Face pull',3,'12-15',45),X('Curl biceps',3,'10-12',45),X('Curl marteau',2,'10-12',45)]},
-  {n:'Legs',ex:[X('Squat',4,'6-8',120),X('Soulevé de terre roumain',3,'8-10',120),X('Presse à cuisses',3,'10-12',90),X('Leg curl',3,'10-12',60),X('Mollets debout',4,'10-15',45)]}
+  {n:'Bas A',ex:[X('Squat poids du corps',3,'15',60),X('Pont fessier',3,'15',60),X('Fentes',3,'10 par jambe',60),X('Montée sur banc',3,'10',60),X('Mollets debout',3,'15',45)]},
+  {n:'Bas B',ex:[X('Squat gobelet',3,'10',60),X('Pont fessier à une jambe',3,'8 par jambe',60),X('Montée sur banc',3,'10',60),X('Fentes',3,'8 par jambe',60),X('Mollets debout',3,'15',45)]}
  ]},
-{id:'home',name:'Maison, sans matériel',lvl:'Débutant',where:'Maison',freq:'3 séances par semaine',
- desc:'Aucun matériel : une chaise et un mur suffisent. Alterne A et B. Quand les séries deviennent faciles, ajoute des répétitions.',
+{id:'bras-deb',name:'Bras débutant',lvl:'Débutant',where:'Maison',freq:'2 séances par semaine',
+ desc:'Biceps et triceps avec ton poids du corps, une chaise et des élastiques si tu en as.',
  sessions:[
-  {n:'Maison A',ex:[X('Squat au poids du corps',3,'12-15',45,1),X('Pompes',3,'8-12',60,1),X('Fentes arrière',3,'10-12',45,1),X('Pont fessier',3,'12-15',45,1),X('Gainage',3,'30-45 s',45,1)]},
-  {n:'Maison B',ex:[X('Squat bulgare (pied sur une chaise)',3,'8-10',60,1),X('Pompes inclinées (mains sur une chaise)',3,'10-15',45,1),X('Pont fessier à une jambe',3,'8-12',45,1),X('Superman',3,'12-15',45,1),X('Gainage latéral',3,'20-30 s',45,1)]}
+  {n:'Bras A',ex:[X('Curl biceps',3,'12',60),X('Extension triceps',3,'12',60),X('Dips sur chaise',3,'8-10',60),X('Curl marteau',3,'12',60),X('Pompes',3,'8-10',60)]},
+  {n:'Bras B',ex:[X('Extension triceps élastique',3,'12',45),X('Curl élastique',3,'12',45),X('Dips sur chaise',3,'8-10',60),X('Curl marteau',3,'10',60),X('Pompes inclinées',3,'8-10',60)]}
+ ]},
+{id:'abdos-int',name:'Abdos intermédiaire',lvl:'Intermédiaire',where:'Maison',freq:'2 séances par semaine',
+ desc:'Relevés de jambes, crunchs en V et gainages plus longs, pour une ceinture abdominale plus solide.',
+ sessions:[
+  {n:'Abdos A',ex:[X('Crunch en V',3,'10',60),X('Relevé de jambes',3,'12',60),X('Gainage latéral',3,'30 s par côté',45,1),X('Mountain climbers',3,'40 s',45,1),X('Superman',3,'12',45)]},
+  {n:'Abdos B',ex:[X('Dead bug',3,'12 par côté',45),X('Gainage (planche)',3,'60 s',60,1),X('Crunch',3,'20',45),X('Crunch en V',3,'12',60),X('Bird dog',3,'10 par côté',45)]}
+ ]},
+{id:'haut-int',name:'Haut du corps intermédiaire',lvl:'Intermédiaire',where:'Salle',freq:'2 séances par semaine',
+ desc:'Deux séances : une de poussée (pectoraux, épaules, triceps) et une de tirage (dos, biceps). Alterne-les.',
+ sessions:[
+  {n:'Poussée',ex:[X('Développé couché',4,'6-8',120),X('Développé militaire',3,'8-10',90),X('Dips barres',3,'8-10',90),X('Élévations latérales',3,'12-15',60),X('Pompes',3,'10-15',60)]},
+  {n:'Tirage',ex:[X('Tractions',4,'6-10',120),X('Rowing barre',3,'8-10',90),X('Tirage vertical',3,'10-12',60),X('Pull-over haltère',3,'10-12',60),X('Face pull',3,'12-15',45)]}
+ ]},
+{id:'bas-int',name:'Bas du corps intermédiaire',lvl:'Intermédiaire',where:'Salle',freq:'2 séances par semaine',
+ desc:'Squats, soulevés de terre et fentes bulgares, avec une séance axée sur les jambes et une séance axée sur les fessiers.',
+ sessions:[
+  {n:'Bas A',ex:[X('Squat',4,'6-8',120),X('Soulevé de terre roumain',3,'8-10',120),X('Fentes bulgares',3,'8-10',90),X('Mollets debout',4,'10-15',45),X('Montée sur banc',3,'10',60)]},
+  {n:'Bas B',ex:[X('Soulevé de terre',3,'5',150),X('Hip thrust',3,'8-12',90),X('Squat gobelet',3,'10',90),X('Montée sur banc',3,'10',60),X('Mollets assis',3,'12-15',45)]}
+ ]},
+{id:'bras-int',name:'Bras intermédiaire',lvl:'Intermédiaire',where:'Salle',freq:'2 séances par semaine',
+ desc:'Biceps et triceps chargés, avec des tractions et des pompes diamant pour renforcer les bras.',
+ sessions:[
+  {n:'Bras A',ex:[X('Curl barre',4,'8-10',75),X('Extension triceps barre au front',3,'10',60),X('Curl marteau',3,'10',60),X('Dips barres',3,'8-10',90),X('Extension triceps poulie',3,'12',45)]},
+  {n:'Bras B',ex:[X('Tractions',4,'6-8',120),X('Pompes diamant',3,'10',60),X('Curl concentré',3,'10',60),X('Extension triceps au-dessus de la tête',3,'10',60),X('Curl élastique',3,'12',45)]}
  ]}
 ];
 

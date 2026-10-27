@@ -461,5 +461,53 @@ hipbarre:{ad:{f:"Sans charge, pieds plus près des fesses.",d:"Pause de 2 second
   mu:[['thigh',0,.35],['torso',0,.2]],k:X.pont.k,stat:bench,front:J=>plate([J.hip[0],J.hip[1]-7],7)}
 });
 
+/* NEW-EX-START */
+const _NEX=(id,ad,n,m,c,mu,k,extra)=>Object.assign({ad,n,m,c,mu,k},extra||{});
+Object.assign(X,{
+frontale:{ad:{f:"Plus léger, un bras après l'autre.",d:"Monte lentement jusqu'à hauteur des yeux, sans élan."},n:'Élévations frontales',m:'Épaules (faisceau avant)',
+  c:['Bras tendus, léger recul du buste','Monte devant toi jusqu\'à hauteur des épaules','Redescends lentement, sans te balancer'],
+  mu:[['ua',0,.5]],
+  k:[{d:1200,h:250,p:{hip:[120,93],t:0,ft:[121,146],ua:178,fa:178}},{d:1000,h:350,p:{hip:[120,93],t:0,ft:[121,146],ua:92,fa:92}}],
+  front:J=>dumb(J.n.hand)},
+rowmenton:{ad:{f:"Prise plus large, monte moins haut.",d:"Pause 1 seconde en haut, descente lente sur 3 secondes."},n:'Rowing menton',m:'Épaules, trapèzes, biceps',
+  c:['Barre serrée près du corps, mains écartées de la largeur des épaules','Tire la barre vers le menton, coudes plus hauts que les mains','Redescends lentement, bras presque tendus'],
+  mu:[['ua',0,.7]],
+  k:[{d:1200,h:250,p:{hip:[120,93],t:0,ft:[121,146],ht:[128,100],eb:-1}},{d:1000,h:350,p:{hip:[120,93],t:0,ft:[121,146],ht:[126,62],eb:-1}}],
+  front:null},
+legraise:{ad:{f:"Genoux pliés, ou relève seulement le bassin.",d:"Pause 2 secondes en haut, descente lente sans toucher le sol."},n:'Relevé de jambes',m:'Abdominaux bas, psoas',
+  c:['Allongé, bras le long du corps, dos plaqué au sol','Relève les jambes tendues jusqu\'à la verticale','Descends lentement sans cambrer le bas du dos'],
+  mu:[['torso',.1,.5]],
+  k:[{d:1200,h:250,p:{hip:[112,141],t:-90,hd:0,ft:[165,144],kb:-1,ua:-90,fa:-90}},{d:1000,h:350,p:{hip:[112,141],t:-90,hd:0,ft:[113,88],kb:-1,ua:-90,fa:-90}},{d:1000,h:350,p:{hip:[112,141],t:-90,hd:0,ft:[149,104],kb:-1,ua:-90,fa:-90}}]},
+deadbug:{ad:{f:"Ne bouge que les bras, ou pose seulement les talons.",d:"Garde le bas du dos collé au sol, mouvement lent et contrôlé."},n:'Dead bug',m:'Abdominaux, gainage',
+  c:['Allongé, bras vers le plafond, cuisses à la verticale','Descends le bras opposé et la jambe opposée sans toucher le sol','Garde le bas du dos plaqué au sol pendant tout le mouvement'],
+  mu:[['torso',.1,.5]],
+  k:[{d:1200,h:250,p:{hip:[112,141],t:-90,hd:0,ft:[86,114],kb:-1,ua:-90,fa:-90,fft:[86,114],fua:-90,ffa:-90}},{d:1000,h:350,p:{hip:[112,141],t:-90,hd:0,ft:[86,114],kb:-1,ua:-90,fa:-90,fft:[165,130],fua:-30,ffa:-30}}]},
+birddog:{ad:{f:"Tiens seulement le bras ou seulement la jambe.",d:"Tiens 2 secondes en extension, dos plat."},n:'Bird dog',m:'Gainage, lombaires, fessiers',
+  c:['À quatre pattes, mains sous les épaules, genoux sous les hanches','Étends le bras et la jambe opposés à l\'horizontale','Garde le dos plat et le bassin stable'],
+  mu:[['torso',.2,.6]],
+  k:[{d:1200,h:250,p:{hip:[110,119],t:62,ft:[84,146],kb:-1,ht:[147,146],eb:1,fft:[84,146],fua:178,ffa:178}},{d:1000,h:350,p:{hip:[110,119],t:62,ft:[84,146],kb:-1,ua:90,fa:90,fft:[57,119],fua:178,ffa:178,ht:null}}]},
+vup:{ad:{f:"Plie les genoux, ou monte seulement le buste.",d:"Tiens 1 seconde en haut, puis redescends lentement."},n:'Crunch en V',m:'Abdominaux',
+  c:['Allongé, bras tendus au-dessus de la tête','Relève buste et jambes en même temps pour former un V','Redescends lentement sans poser les talons ni les épaules'],
+  mu:[['torso',.1,.6],['thigh',0,.5]],
+  k:[{d:1200,h:250,p:{hip:[112,141],t:-90,hd:0,ft:[165,144],kb:-1,ua:-90,fa:-90}},{d:1000,h:350,p:{hip:[112,141],t:-48,hd:0,ft:[153,106],kb:-1,ua:-40,fa:-40}}]},
+gainlat:{ad:{f:"Genou posé au sol, ou tiens la position sans monter le bassin.",d:"Tiens 20 secondes par côté, bassin haut et aligné."},n:'Gainage latéral',m:'Obliques, épaules, gainage',
+  c:['Allongé sur le côté, appui sur l\'avant-bras, coude sous l\'épaule','Monte le bassin : corps droit de la tête aux pieds','Garde le bassin haut sans le laisser tomber'],
+  mu:[['torso',.2,.7]],
+  k:[{d:1200,h:250,p:{front:1,hip:[120,118],t:90,hd:0,ft:[70,144],kb:-1,ht:[162,146],eb:1}},{d:1000,h:350,p:{front:1,hip:[120,118],t:90,hd:0,ft:[70,144],kb:-1,ht:[162,146],eb:1}}]},
+});
+RULES.unshift([/arnold/,'militaire']);
+RULES.unshift([/pull.?over/,'pullover']);
+RULES.unshift([/montee sur banc|step.?up|bancstep/,'bancstep']);
+RULES.unshift([/triceps.*elastique|elastique.*triceps/,'eltriceps']);
+RULES.unshift([/curl.*elastique|elastique.*curl/,'curl']);
+RULES.unshift([/frontale|elevation.*avant|front raise/,'frontale']);
+RULES.unshift([/rowing menton|menton|upright row/,'rowmenton']);
+RULES.unshift([/relevé de jambes|releve de jambes|leg raise/,'legraise']);
+RULES.unshift([/dead ?bug/,'deadbug']);
+RULES.unshift([/bird ?dog/,'birddog']);
+RULES.unshift([/crunch en v|v-?up/,'vup']);
+RULES.unshift([/gainage lat|planche lat|side plank/,'gainlat']);
+
+/* NEW-EX-END */
 window.Bonhomme={find,mount,names:()=>Object.values(X).map(e=>e.n),_X:X,_solve:solve,_mix:mix};
 })();

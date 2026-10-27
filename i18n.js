@@ -1522,7 +1522,303 @@ const I18N_DICT={
 "Verre 8": {
 "en": "Glass 8",
 "de": "Glas 8"
-}
+},
+"Élévations frontales": {
+"en": "Front raises",
+"de": "Frontheben"
+},
+"Épaules (faisceau avant)": {
+"en": "Shoulders (front delts)",
+"de": "Schultern (vordere Delta)"
+},
+"Plus léger, un bras après l'autre.": {
+"en": "Lighter weight, one arm at a time.",
+"de": "Leichteres Gewicht, ein Arm nach dem anderen."
+},
+"Monte lentement jusqu'à hauteur des yeux, sans élan.": {
+"en": "Raise slowly to eye level, without swinging.",
+"de": "Langsam bis auf Augenhöhe heben, ohne Schwung."
+},
+"Bras tendus, léger recul du buste": {
+"en": "Arms straight, chest slightly back",
+"de": "Arme gestreckt, Oberkörper leicht zurück"
+},
+"Monte devant toi jusqu'à hauteur des épaules": {
+"en": "Raise in front of you to shoulder height",
+"de": "Vor dir bis auf Schulterhöhe heben"
+},
+"Redescends lentement, sans te balancer": {
+"en": "Lower slowly, without swinging",
+"de": "Langsam absenken, ohne zu schwingen"
+},
+"Rowing menton": {
+"en": "Upright row",
+"de": "Aufrechtes Rudern"
+},
+"Épaules, trapèzes, biceps": {
+"en": "Shoulders, traps, biceps",
+"de": "Schultern, Trapez, Bizeps"
+},
+"Prise plus large, monte moins haut.": {
+"en": "Wider grip, lift less high.",
+"de": "Breiterer Griff, weniger hoch ziehen."
+},
+"Pause 1 seconde en haut, descente lente sur 3 secondes.": {
+"en": "Pause 1 second at the top, lower slowly over 3 seconds.",
+"de": "1 Sekunde oben halten, 3 Sekunden langsam absenken."
+},
+"Barre serrée près du corps, mains écartées de la largeur des épaules": {
+"en": "Bar close to the body, hands shoulder-width apart",
+"de": "Stange nah am Körper, Hände schulterbreit"
+},
+"Tire la barre vers le menton, coudes plus hauts que les mains": {
+"en": "Pull the bar to your chin, elbows higher than your hands",
+"de": "Stange zum Kinn ziehen, Ellbogen höher als die Hände"
+},
+"Redescends lentement, bras presque tendus": {
+"en": "Lower slowly, arms almost straight",
+"de": "Langsam absenken, Arme fast gestreckt"
+},
+"Genoux pliés, ou relève seulement le bassin.": {
+"en": "Knees bent, or only lift the hips.",
+"de": "Knie gebeugt, oder nur das Becken anheben."
+},
+"Pause 2 secondes en haut, descente lente sans toucher le sol.": {
+"en": "Pause 2 seconds at the top, lower slowly without touching the floor.",
+"de": "2 Sekunden oben halten, langsam absenken ohne den Boden zu berühren."
+},
+"Allongé, bras le long du corps, dos plaqué au sol": {
+"en": "Lie down, arms by your sides, back flat on the floor",
+"de": "Hinlegen, Arme am Körper, Rücken flach auf dem Boden"
+},
+"Relève les jambes tendues jusqu'à la verticale": {
+"en": "Lift straight legs up to vertical",
+"de": "Gestreckte Beine bis zur Senkrechten heben"
+},
+"Descends lentement sans cambrer le bas du dos": {
+"en": "Lower slowly without arching your lower back",
+"de": "Langsam absenken, ohne das Kreuz zu überstrecken"
+},
+"Abdominaux bas, psoas": {
+"en": "Lower abs, hip flexors",
+"de": "Unterer Bauch, Hüftbeuger"
+},
+"Ne bouge que les bras, ou pose seulement les talons.": {
+"en": "Move only the arms, or only touch the heels down.",
+"de": "Nur die Arme bewegen, oder nur die Fersen absetzen."
+},
+"Garde le bas du dos plaqué au sol pendant tout le mouvement": {
+"en": "Keep your lower back pressed to the floor throughout",
+"de": "Unterer Rücken während der ganzen Bewegung am Boden halten"
+},
+"Allongé, bras vers le plafond, cuisses à la verticale": {
+"en": "Lie down, arms toward the ceiling, thighs vertical",
+"de": "Hinlegen, Arme zur Decke, Oberschenkel senkrecht"
+},
+"Descends le bras opposé et la jambe opposée sans toucher le sol": {
+"en": "Lower the opposite arm and leg without touching the floor",
+"de": "Gegenüberliegenden Arm und Bein absenken, ohne den Boden zu berühren"
+},
+"Abdominaux, gainage": {
+"en": "Abs, core",
+"de": "Bauch, Rumpf"
+},
+"Tiens seulement le bras ou seulement la jambe.": {
+"en": "Hold only the arm or only the leg.",
+"de": "Nur den Arm oder nur das Bein halten."
+},
+"Tiens 2 secondes en extension, dos plat.": {
+"en": "Hold 2 seconds extended, back flat.",
+"de": "2 Sekunden gestreckt halten, Rücken flach."
+},
+"À quatre pattes, mains sous les épaules, genoux sous les hanches": {
+"en": "On all fours, hands under shoulders, knees under hips",
+"de": "Vierfüßlerstand, Hände unter den Schultern, Knie unter den Hüften"
+},
+"Étends le bras et la jambe opposés à l'horizontale": {
+"en": "Extend the opposite arm and leg horizontally",
+"de": "Gegenüberliegenden Arm und Bein waagerecht ausstrecken"
+},
+"Garde le dos plat et le bassin stable": {
+"en": "Keep your back flat and hips stable",
+"de": "Rücken flach und Becken stabil halten"
+},
+"Gainage, lombaires, fessiers": {
+"en": "Core, lower back, glutes",
+"de": "Rumpf, Lendenwirbel, Gesäß"
+},
+"Plie les genoux, ou monte seulement le buste.": {
+"en": "Bend the knees, or only lift the torso.",
+"de": "Knie beugen, oder nur den Oberkörper heben."
+},
+"Tiens 1 seconde en haut, puis redescends lentement.": {
+"en": "Hold 1 second at the top, then lower slowly.",
+"de": "1 Sekunde oben halten, dann langsam absenken."
+},
+"Crunch en V": {
+"en": "V-up",
+"de": "V-Crunch"
+},
+"Allongé, bras tendus au-dessus de la tête": {
+"en": "Lie down, arms straight above your head",
+"de": "Hinlegen, Arme über dem Kopf gestreckt"
+},
+"Relève buste et jambes en même temps pour former un V": {
+"en": "Lift torso and legs together to form a V",
+"de": "Oberkörper und Beine gleichzeitig zu einem V heben"
+},
+"Redescends lentement sans poser les talons ni les épaules": {
+"en": "Lower slowly without setting heels or shoulders down",
+"de": "Langsam absenken, ohne Fersen oder Schultern abzulegen"
+},
+"Obliques, épaules, gainage": {
+"en": "Obliques, shoulders, core",
+"de": "Seitliche Bauchmuskeln, Schultern, Rumpf"
+},
+"Genou posé au sol, ou tiens la position sans monter le bassin.": {
+"en": "Knee on the floor, or hold the position without lifting the hips.",
+"de": "Knie auf dem Boden, oder Position halten ohne das Becken zu heben."
+},
+"Tiens 20 secondes par côté, bassin haut et aligné.": {
+"en": "Hold 20 seconds per side, hips high and aligned.",
+"de": "20 Sekunden pro Seite halten, Becken hoch und in einer Linie."
+},
+"Allongé sur le côté, appui sur l'avant-bras, coude sous l'épaule": {
+"en": "Lie on your side, supported on your forearm, elbow under the shoulder",
+"de": "Seitlich liegen, auf dem Unterarm abgestützt, Ellbogen unter der Schulter"
+},
+"Monte le bassin : corps droit de la tête aux pieds": {
+"en": "Lift the hips: body straight from head to feet",
+"de": "Becken anheben: Körper gerade von Kopf bis Fuß"
+},
+"Garde le bassin haut sans le laisser tomber": {
+"en": "Keep the hips up without letting them drop",
+"de": "Becken oben halten, nicht absinken lassen"
+},
+"Relevé de jambes": {
+"en": "Leg raise",
+"de": "Beinheben"
+},
+"Dead bug": {
+"en": "Dead bug",
+"de": "Dead Bug"
+},
+"Bird dog": {
+"en": "Bird dog",
+"de": "Bird Dog"
+},
+"Pompes pieds surélevés": {
+"en": "Decline push-ups",
+"de": "Liegestütze mit erhöhten Füßen"
+},
+"Développé Arnold": {
+"en": "Arnold press",
+"de": "Arnold-Press"
+},
+"Gagner en largeur d'épaules": {
+"en": "Build wider shoulders",
+"de": "Breitere Schultern aufbauen"
+},
+"Épaules A": {
+"en": "Shoulders A",
+"de": "Schultern A"
+},
+"Épaules B": {
+"en": "Shoulders B",
+"de": "Schultern B"
+},
+"Abdos débutant": {
+"en": "Beginner abs",
+"de": "Bauch für Einsteiger"
+},
+"Abdos intermédiaire": {
+"en": "Intermediate abs",
+"de": "Bauch für Fortgeschrittene"
+},
+"Bas du corps débutant": {
+"en": "Beginner lower body",
+"de": "Beine & Po für Einsteiger"
+},
+"Bas du corps intermédiaire": {
+"en": "Intermediate lower body",
+"de": "Beine & Po für Fortgeschrittene"
+},
+"Bras débutant": {
+"en": "Beginner arms",
+"de": "Arme für Einsteiger"
+},
+"Bras intermédiaire": {
+"en": "Intermediate arms",
+"de": "Arme für Fortgeschrittene"
+},
+"Haut du corps intermédiaire": {
+"en": "Intermediate upper body",
+"de": "Oberkörper für Fortgeschrittene"
+},
+"Poussée": {
+"en": "Push",
+"de": "Drücken"
+},
+"Tirage": {
+"en": "Pull",
+"de": "Ziehen"
+},
+"Abdos A": {
+"en": "Abs A",
+"de": "Bauch A"
+},
+"Abdos B": {
+"en": "Abs B",
+"de": "Bauch B"
+},
+"Bras A": {
+"en": "Arms A",
+"de": "Arme A"
+},
+"Bras B": {
+"en": "Arms B",
+"de": "Arme B"
+},
+"Tous niveaux": {
+"en": "All levels",
+"de": "Alle Niveaus"
+},
+"2 séances par semaine": {
+"en": "2 sessions a week",
+"de": "2 Einheiten pro Woche"
+},
+"Épaules larges et dos qui s'élargit : élévations latérales, développé et tirages. Deux séances à alterner.": {
+"en": "Wider shoulders and a wider back: lateral raises, presses and pulls. Alternate the two sessions.",
+"de": "Breitere Schultern und ein breiterer Rücken: seitliches Heben, Drücken und Ziehen. Beide Einheiten abwechseln."
+},
+"Un gainage et des crunchs doux pour installer la ceinture abdominale. Commence par les versions faciles.": {
+"en": "Core work and gentle crunches to build your midsection. Start with the easier versions.",
+"de": "Core-Training und sanfte Crunches für eine starke Körpermitte. Beginne mit den leichteren Varianten."
+},
+"Squats, ponts et fentes au poids du corps, pour apprendre à bien placer les genoux et les hanches.": {
+"en": "Bodyweight squats, bridges and lunges to learn good knee and hip position.",
+"de": "Kniebeugen, Brücken und Ausfallschritte mit dem Körpergewicht, um Knie- und Hüftposition zu lernen."
+},
+"Biceps et triceps avec ton poids du corps, une chaise et des élastiques si tu en as.": {
+"en": "Biceps and triceps with bodyweight, a chair and bands if you have them.",
+"de": "Bizeps und Trizeps mit dem Körpergewicht, einem Stuhl und Bändern, falls vorhanden."
+},
+"Relevés de jambes, crunchs en V et gainages plus longs, pour une ceinture abdominale plus solide.": {
+"en": "Leg raises, V-ups and longer planks for a stronger core.",
+"de": "Beinheben, V-Crunches und längere Planks für einen stärkeren Rumpf."
+},
+"Deux séances : une de poussée (pectoraux, épaules, triceps) et une de tirage (dos, biceps). Alterne-les.": {
+"en": "Two sessions: a push session (chest, shoulders, triceps) and a pull session (back, biceps). Alternate them.",
+"de": "Zwei Einheiten: eine Drückeinheit (Brust, Schultern, Trizeps) und eine Zieheinheit (Rücken, Bizeps). Abwechseln."
+},
+"Squats, soulevés de terre et fentes bulgares, avec une séance axée sur les jambes et une séance axée sur les fessiers.": {
+"en": "Squats, deadlifts and Bulgarian split squats: one session focused on legs, one on glutes.",
+"de": "Kniebeugen, Kreuzheben und bulgarische Split-Kniebeugen: eine Einheit für die Beine, eine für den Po."
+},
+"Biceps et triceps chargés, avec des tractions et des pompes diamant pour renforcer les bras.": {
+"en": "Heavy biceps and triceps work, with pull-ups and diamond push-ups.",
+"de": "Schweres Bizeps- und Trizeps-Training mit Klimmzügen und Diamant-Liegestützen."
+},
 };
 /* Kinetra — langues : français (par défaut), anglais, allemand.
    Les textes sont reconnus par leur version française (clé) ; le moteur remplace le texte affiché
