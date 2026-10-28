@@ -268,17 +268,38 @@ const cap=(a,b,ra,rb,c='')=>{
 const dot=(q,r)=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="${r}"/>`;
 // Jambe (cuisse épaisse, genou, mollet, cheville, pied) et bras (bras, coude, avant-bras, main)
 const mid=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
+// Silhouette unique : un contour commun posé sous toutes les formes, puis les couleurs par-dessus (pas de jonctions visibles)
+function geom(sh,d,cls){
+  if(sh.k==='c')return `<circle class="${cls}" cx="${sh.p[0].toFixed(1)}" cy="${sh.p[1].toFixed(1)}" r="${(sh.r+d).toFixed(1)}"/>`;
+  return cap(sh.a,sh.b,sh.ra+d,sh.rb+d,cls);
+}
+function sil(shapes){
+  return `<g class="bh-ol">`+shapes.map(x=>geom(x,1.2,'')).join('')+`</g>`+shapes.map(x=>geom(x,0,x.cls||'')).join('');
+}
 function limbsSVG(s){
-  // Tenue : short noir sur le haut de la cuisse, manche jaune sur le haut du bras
-  return cap(s.hip,s.knee,6,4)+cap(s.hip,mid(s.hip,s.knee,.5),6.2,5.6,'bh-short')+dot(s.knee,4)+cap(s.knee,s.ank,4,2.6)+dot(s.ank,2.6)+cap(s.ank,s.toe,2.6,2.2,'bh-shoe')
-    +cap(s.sh,s.elb,4.2,3.2)+cap(s.sh,mid(s.sh,s.elb,.45),4.8,4.4,'bh-shirt')+dot(s.elb,3.2)+cap(s.elb,s.hand,3.2,2.2)+dot(s.hand,3);
+  // Jambe : cuisse qui s'élargit vers la hanche, mollet renflé, cheville fine, pied. Bras : biceps, avant-bras, main.
+  return sil([
+    {a:s.hip,b:s.knee,ra:8.2,rb:5.4},
+    {k:'c',p:mid(s.knee,s.ank,.3),r:4.9},
+    {a:s.knee,b:s.ank,ra:5.2,rb:3.2},
+    {a:s.ank,b:s.toe,ra:3.8,rb:2.9,cls:'bh-shoe'},
+    {a:s.sh,b:s.elb,ra:6.0,rb:4.4},
+    {a:s.elb,b:s.hand,ra:4.4,rb:3.0},
+    {k:'c',p:s.hand,r:3.6},
+    {a:s.hip,b:mid(s.hip,s.knee,.5),ra:8.6,rb:7.8,cls:'bh-short'},
+    {a:s.sh,b:mid(s.sh,s.elb,.45),ra:6.6,rb:6.0,cls:'bh-shirt'}
+  ]);
 }
 // Buste : bassin, épaules, cou (et largeur des épaules/hanches de face)
 function torsoSVG(J,p){
   const w=[(J.hip[0]+J.sh[0])/2,(J.hip[1]+J.sh[1])/2];
-  let s=cap(J.hip,w,8.2,6.8,'bh-short')+cap(w,J.sh,6.8,9.8,'bh-shirt')+cap(J.sh,J.neck,4.4,3.6,'bh-sk');
-  if(p.front)s+=cap(J.n.sh,J.f.sh,6.5,6.5,'bh-shirt')+cap(J.n.hip,J.f.hip,8,8,'bh-short');
-  return s;
+  const sh=[
+    {a:J.sh,b:J.neck,ra:4.4,rb:3.6,cls:'bh-sk'},
+    {a:w,b:J.sh,ra:6.8,rb:9.8,cls:'bh-shirt'},
+    {a:J.hip,b:w,ra:8.2,rb:6.8,cls:'bh-short'}
+  ];
+  if(p.front)sh.push({a:J.n.sh,b:J.f.sh,ra:6.5,rb:6.5,cls:'bh-shirt'},{a:J.n.hip,b:J.f.hip,ra:8,rb:8,cls:'bh-short'});
+  return sil(sh);
 }
 
 function limbs(s){return P(s.hip,s.knee)+P(s.knee,s.ank)+P(s.ank,s.toe)+P(s.sh,s.elb)+P(s.elb,s.hand)}
@@ -297,14 +318,15 @@ function css(){
 .bh svg{display:block;width:100%;max-width:260px;height:auto;margin:0 auto;background:var(--field);border-radius:16px}
 .bh-g{stroke:var(--line);stroke-width:2}
 .bh-torso{fill:var(--ink)}
-.bh-shirt{fill:#FFC400;stroke:rgba(90,60,0,.35);stroke-width:.6}
-.bh-short{fill:#15222C}
-.bh-near,.bh-far{fill:var(--skin,#EDB48F);stroke:rgba(15,43,61,.25);stroke-width:.8}
+.bh-shirt{fill:#FFC400;stroke:none}
+.bh-ol{fill:rgba(120,70,40,.6);stroke:none}
+.bh-short{fill:#15222C;stroke:none}
+.bh-near,.bh-far{fill:var(--skin,#F4B08C);stroke:none}
 .bh-sk{fill:var(--skin,#EDB48F)}
-.bh-shoe{fill:var(--ink)}
+.bh-shoe{fill:#1F2328;stroke:none}
 .bh-far{opacity:.3}
 .bh-isfront .bh-far{opacity:1}
-.bh-head{fill:var(--skin,#EDB48F);stroke:rgba(15,43,61,.25);stroke-width:.8}
+.bh-head{fill:var(--skin,#F4B08C);stroke:rgba(120,70,40,.6);stroke-width:1}
 .bh-mu{fill:none;stroke:var(--teal);stroke-width:5;stroke-linecap:round;opacity:.95}
 .bh-plate{fill:var(--warm);stroke:var(--ink);stroke-width:2}
 .bh-hub{fill:var(--ink)}
@@ -340,7 +362,7 @@ function mount(el,name,opt){
   el.innerHTML=`<div class="bh"><div class="bh-hd"><b>${ex.n}</b><button class="sec" type="button">Pause</button></div>
 <svg viewBox="0 -12 240 170" role="img" aria-label="Bonhomme qui montre le mouvement : ${ex.n}">
 <path d="M8 ${G+.5}H232" class="bh-g"/><g class="bh-stat">${ex.stat||''}</g><g class="bh-back"></g>
-<g class="bh-far"></g><g class="bh-torso"></g><ellipse class="bh-head" rx="6.6" ry="8.4"/><g class="bh-near"></g><path class="bh-mu"/><g class="bh-front"></g></svg>
+<g class="bh-far"></g><g class="bh-torso"></g><ellipse class="bh-head" rx="8.6" ry="10.2"/><g class="bh-near"></g><path class="bh-mu"/><g class="bh-front"></g></svg>
 <ul class="bh-cues">${ex.c.map(c=>`<li>${c}</li>`).join('')}</ul>
 ${el.dataset.noad?'':'<div class="bh-ad"><div class="chips"><button type="button" class="on" data-l="s">Standard</button><button type="button" data-l="f">Facile</button><button type="button" data-l="d">Difficile</button></div><p class="bh-adt mut"></p></div>'}
 <div class="mut bh-mus"><i></i>Muscles travaillés : ${ex.m}</div></div>`;
