@@ -67,7 +67,15 @@ canvas{display:block;width:100%;height:200px;margin-top:12px}
 #runCard{position:fixed;inset:0;z-index:30;margin:0;border:0;border-radius:0;overflow-y:auto;background:var(--bg);padding:calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
 #runCard h3{font-size:22px}
 #runCard .bh-hd{display:none}
-#runCard .bh svg{max-width:min(80vw,400px)}
+#runCard:not(.hide){display:flex;flex-direction:column;height:100vh;height:100dvh;box-sizing:border-box}
+#runCard:not(.hide)>.runTop{flex:0 0 auto}
+#runCard:not(.hide)>#runName{flex:0 0 auto}
+#runCard:not(.hide)>#runDemo{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;margin-top:4px}
+#runCard:not(.hide)>#runDemo .bh{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+#runCard:not(.hide)>#runDemo .bh svg{flex:1 1 0;min-height:0;width:100%;height:auto;max-width:none;max-height:none;margin:0}
+#runCard:not(.hide)>#runDemo .bh-cues,#runCard:not(.hide)>#runDemo .bh-mus{flex:0 0 auto}
+#runCard:not(.hide)>.tm-big,#runCard:not(.hide)>#runPhase,#runCard:not(.hide)>.row{flex:0 0 auto}
+#runCard:not(.hide)>#runAdt{flex:0 0 auto}
 #runCard .bh-cues li{font-size:17px}
 #runCard .tm-big{font-size:64px;margin:12px 0 4px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
@@ -980,7 +988,7 @@ function sessShow(i,el){
   el.dataset.done='1';
   const st=SESS[i].s;
   el.querySelector('.sl-list').innerHTML=st.map((x,k)=>{const nm=x[3]||(Bonhomme._X[x[0]]||{}).n||x[0];return `<div class="sl-row"><div class="sl-thumb" id="slt${i}_${k}"></div><div class="sl-txt"><b>${esc(nm)}</b><span class="mut">${x[1]} s d'effort · ${x[2]} s de repos</span></div></div>`}).join('');
-  st.forEach((x,k)=>{const t=document.getElementById(`slt${i}_${k}`);if(t)Bonhomme.mount(t,x[0])});
+  st.forEach((x,k)=>{const t=document.getElementById(`slt${i}_${k}`);if(t){t.dataset.noad='1';Bonhomme.mount(t,x[0])}});
 }
 let run=null,rTick=null;
 const PREP=10;
