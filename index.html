@@ -161,6 +161,12 @@ details.pg-prog summary::-webkit-details-marker{display:none}
 .sl-note{font-size:13px;margin:6px 0 0}
 .cat-h{font-size:15px;margin:18px 0 2px;color:var(--teal)}
 #stretchCard{margin-top:16px}
+.sec-sum{font-size:20px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:44px;padding:4px 0}
+.sec-sum::-webkit-details-marker{display:none}
+.sec-sum::after{content:'+';color:var(--teal);font-size:26px;font-weight:400;line-height:1}
+details[open]>.sec-sum::after{content:'\2212'}
+.secdet{margin:0}
+.secdet[open]{padding-bottom:6px}
 .water{padding:16px 18px}
 .glasses{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .gl{background:none;border:0;padding:4px 0;box-shadow:none;cursor:pointer}
@@ -328,25 +334,31 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <h3>Séances toutes faites</h3>
     <p class="mut" style="margin-top:0">Choisis une séance : le bonhomme te montre chaque exercice.</p>
     <div class="perso" id="persoBox">
-      <h4 class="cat-h">Séance personnalisée</h4>
-      <p class="mut" style="margin-top:0">Coche ton matériel, puis génère une séance adaptée.</p>
-      <div class="chips" id="eqChips"></div>
-      <div class="chips" id="persoLenChips" style="margin-top:10px"></div>
-      <div class="row"><button type="button" onclick="persoGen()">Générer une séance</button></div>
-      <p class="mut" id="persoMsg" style="margin:8px 0 0"></p>
-      <div id="persoList"></div>
+      <details class="secdet">
+        <summary class="sec-sum">Séance personnalisée</summary>
+        <p class="mut" style="margin-top:0">Coche ton matériel, puis génère une séance adaptée.</p>
+        <div class="chips" id="eqChips"></div>
+        <div class="chips" id="persoLenChips" style="margin-top:10px"></div>
+        <div class="row"><button type="button" onclick="persoGen()">Générer une séance</button></div>
+        <p class="mut" id="persoMsg" style="margin:8px 0 0"></p>
+        <div id="persoList"></div>
+      </details>
     </div>
     <div id="sessList"></div>
   </div>
   <div class="card hide" id="challCard">
-    <h3>Défis</h3>
-    <p class="mut" style="margin-top:0">Sans matériel. Chaque défi dure environ 20 minutes.</p>
-    <div id="challList"></div>
+    <details class="secdet">
+      <summary class="sec-sum">Défis</summary>
+      <p class="mut" style="margin-top:0">Sans matériel. Chaque défi dure environ 20 minutes.</p>
+      <div id="challList"></div>
+    </details>
   </div>
   <div class="card hide" id="stretchCard">
-    <h3>Étirements</h3>
-    <p class="mut" style="margin-top:0">Pour après la course ou le vélo.</p>
-    <div id="stretchList"></div>
+    <details class="secdet">
+      <summary class="sec-sum">Étirements</summary>
+      <p class="mut" style="margin-top:0">Pour après la course ou le vélo.</p>
+      <div id="stretchList"></div>
+    </details>
   </div>
   <div class="card hide" id="runCard">
     <div class="runTop"><div class="mut" id="runProg" style="flex:1;min-width:0"></div><div class="runBtns"><button class="sec" type="button" id="runCoachBtn" onclick="coachToggle()" aria-label="Coach vocal"></button><button class="sec" type="button" id="runMenuBtn" onclick="runMenu()" aria-label="Menu de la séance"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div>
