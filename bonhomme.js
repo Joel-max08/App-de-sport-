@@ -546,5 +546,21 @@ crabkick:{ad:{f:"Pose les pieds plus près des mains, ou ne lève pas la jambe."
 });
 
 /* NEW-EX-END */
+/* PLANCHE-V2-START */
+(function(){
+const HP={hip:[104,135],t:79,ft:[51,145],fo:205,ht:[138,146],eb:1};
+const over=(id,k)=>{ if(X[id]) X[id]=Object.assign({},X[id],{k}); };
+// Planche jacks : pieds joints puis écartés (vue de côté, pied du fond décalé)
+over('pjacks',[{d:600,h:200,p:Object.assign({},HP)},{d:600,h:200,p:Object.assign({},HP,{ft:[40,146],fft:[66,146]})}]);
+// Planche diagonale : bras droit devant, jambe gauche tendue derrière
+over('pdiag',[{d:1000,h:300,p:Object.assign({},HP)},{d:1000,h:300,p:Object.assign({},HP,{fht:[192,128],fft:[62,118]})}]);
+// Planche lever de bras : un bras soulevé devant à hauteur d'épaule
+over('plever',[{d:1000,h:300,p:Object.assign({},HP)},{d:1000,h:300,p:Object.assign({},HP,{ht:[182,112]})}]);
+// Planche avec bassin qui descend : hanches basses d'un côté
+over('phipdip',[{d:600,h:200,p:Object.assign({},HP)},{d:600,h:200,p:{hip:[102,141],t:74,ft:[51,145],fo:205,ht:[138,146],eb:1}}]);
+// Planche jambe levée : jambe tendue derrière, bien au-dessus du sol
+over('plegup',[{d:1000,h:300,p:Object.assign({},HP)},{d:1000,h:300,p:Object.assign({},HP,{fft:[66,112]})}]);
+})();
+/* PLANCHE-V2-END */
 window.Bonhomme={find,mount,names:()=>Object.values(X).map(e=>e.n),_X:X,_solve:solve,_mix:mix};
 })();
