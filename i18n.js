@@ -1827,6 +1827,215 @@ const I18N_DICT={
 "en": "Getting your workout ready",
 "de": "Dein Training wird vorbereitet"
 },
+
+"Défis": {
+"en": "Challenges",
+"de": "Herausforderungen"
+},
+"Sans matériel. Chaque défi dure environ 20 minutes.": {
+"en": "No equipment. Each challenge takes about 20 minutes.",
+"de": "Ohne Equipment. Jede Herausforderung dauert etwa 20 Minuten."
+},
+"Défi planche": {
+"en": "Plank challenge",
+"de": "Plank-Herausforderung"
+},
+"Défi jambes": {
+"en": "Leg challenge",
+"de": "Bein-Herausforderung"
+},
+"Défi abdos": {
+"en": "Abs challenge",
+"de": "Bauch-Herausforderung"
+},
+"Défi pompes": {
+"en": "Push-up challenge",
+"de": "Liegestütz-Herausforderung"
+},
+"Défi dos": {
+"en": "Back challenge",
+"de": "Rücken-Herausforderung"
+},
+"23 positions de planche, dans l'ordre. Environ 20 minutes.": {
+"en": "23 plank positions, in order. About 20 minutes.",
+"de": "23 Plank-Positionen in dieser Reihenfolge. Etwa 20 Minuten."
+},
+"Deux tours de squats, fentes, ponts et mollets, sans rien. Environ 15 minutes.": {
+"en": "Two rounds of squats, lunges, bridges and calf raises, no equipment. About 15 minutes.",
+"de": "Zwei Runden Kniebeugen, Ausfallschritte, Brücken und Wadenheben, ohne Equipment. Etwa 15 Minuten."
+},
+"Abdos complets : crunchs, relevés de jambes, gainages et V-up. Environ 15 minutes.": {
+"en": "Full abs work: crunches, leg raises, planks and V-ups. About 15 minutes.",
+"de": "Komplettes Bauchtraining: Crunches, Beinheben, Planks und V-Crunches. Etwa 15 Minuten."
+},
+"Haut du corps au poids du corps : pompes, pompes inclinées et dips sur chaise. Environ 15 minutes.": {
+"en": "Upper body with bodyweight: push-ups, incline push-ups and chair dips. About 15 minutes.",
+"de": "Oberkörper mit dem Körpergewicht: Liegestütze, Liegestütze mit erhöhten Händen und Stuhl-Dips. Etwa 15 Minuten."
+},
+"Dos et arrière des épaules : superman, bird dog et tirages au sol. Environ 15 minutes.": {
+"en": "Back and rear shoulders: superman, bird dog. About 15 minutes.",
+"de": "Rücken und hintere Schultern: Superman, Bird Dog. Etwa 15 Minuten."
+},
+"Planche jacks": {
+"en": "Plank jacks",
+"de": "Plank Jacks"
+},
+"Planche sur la gauche": {
+"en": "Side plank left",
+"de": "Seitstütz links"
+},
+"Planche sur la droite": {
+"en": "Side plank right",
+"de": "Seitstütz rechts"
+},
+"Planche lever de bras": {
+"en": "Plank arm lift",
+"de": "Plank mit Armheben"
+},
+"Plank hip dips": {
+"en": "Plank hip dips",
+"de": "Plank Hip Dips"
+},
+"Pont latéral droit": {
+"en": "Right side bridge",
+"de": "Seitliche Brücke rechts"
+},
+"Pont latéral gauche": {
+"en": "Left side bridge",
+"de": "Seitliche Brücke links"
+},
+"Planche avec bras droits": {
+"en": "High plank",
+"de": "Hohe Plank"
+},
+"Planche avec genoux croisés": {
+"en": "Plank with crossed knees",
+"de": "Plank mit gekreuzten Knien"
+},
+"Body saw": {
+"en": "Body saw",
+"de": "Body Saw"
+},
+"Abduction de la jambe gauche": {
+"en": "Left leg abduction",
+"de": "Linkes Bein abduzieren"
+},
+"Abduction de la jambe droite": {
+"en": "Right leg abduction",
+"de": "Rechtes Bein abduzieren"
+},
+"Planche de haut en bas": {
+"en": "Up-down plank",
+"de": "Hoch-runter-Plank"
+},
+"Planche jambe levée": {
+"en": "Plank with leg lift",
+"de": "Plank mit Beinheben"
+},
+"Planche latérale avec coup de pied gauche": {
+"en": "Side plank with left kick",
+"de": "Seitstütz mit Tritt links"
+},
+"Planche latérale avec coup de pied droit": {
+"en": "Side plank with right kick",
+"de": "Seitstütz mit Tritt rechts"
+},
+"In & outs": {
+"en": "In & outs",
+"de": "In & Outs"
+},
+"Coup de pied en crabe vers le haut": {
+"en": "Crab kick up",
+"de": "Krabben-Tritt nach oben"
+},
+"Squat lent (3 secondes en bas)": {
+"en": "Slow squat (3 seconds down)",
+"de": "Langsame Kniebeuge (3 Sekunden unten)"
+},
+"Fentes alternées": {
+"en": "Alternating lunges",
+"de": "Wechselnde Ausfallschritte"
+},
+"Pont fessier, pause en haut": {
+"en": "Glute bridge, pause at top",
+"de": "Gesäßbrücke, Pause oben"
+},
+"Pont fessier à une jambe, côté 2": {
+"en": "Single-leg glute bridge, side 2",
+"de": "Einbeinige Gesäßbrücke, Seite 2"
+},
+"Mollets sur une jambe": {
+"en": "Single-leg calf raises",
+"de": "Einbeinige Wadenheben"
+},
+"Gainage latéral gauche": {
+"en": "Left side plank",
+"de": "Seitstütz links"
+},
+"Gainage latéral droit": {
+"en": "Right side plank",
+"de": "Seitstütz rechts"
+},
+"Pompes lentes (3 secondes en bas)": {
+"en": "Slow push-ups (3 seconds down)",
+"de": "Langsame Liegestütze (3 Sekunden unten)"
+},
+"Pompes inclinées, pieds surélevés": {
+"en": "Incline push-ups, feet raised",
+"de": "Liegestütze mit erhöhten Händen, Füße erhöht"
+},
+"Pompes lentes": {
+"en": "Slow push-ups",
+"de": "Langsame Liegestütze"
+},
+"Superman, bras tendus": {
+"en": "Superman, arms straight",
+"de": "Superman, Arme gestreckt"
+},
+"Superman, pause 3 secondes": {
+"en": "Superman, 3-second pause",
+"de": "Superman, 3 Sekunden Pause"
+},
+"Superman, pause": {
+"en": "Superman, pause",
+"de": "Superman, Pause"
+},
+"Superman, dernier tour": {
+"en": "Superman, last round",
+"de": "Superman, letzte Runde"
+},
+"Bird dog côté droit": {
+"en": "Bird dog right side",
+"de": "Bird Dog rechte Seite"
+},
+"Bird dog côté gauche": {
+"en": "Bird dog left side",
+"de": "Bird Dog linke Seite"
+},
+"Crunch": {
+"en": "Crunch",
+"de": "Crunch"
+},
+"Gainage (planche)": {
+"en": "Plank",
+"de": "Plank"
+},
+"Mountain climbers": {
+"en": "Mountain climbers",
+"de": "Mountain Climbers"
+},
+"Pompes inclinées": {
+"en": "Incline push-ups",
+"de": "Liegestütze mit erhöhten Händen"
+},
+"Dips sur chaise": {
+"en": "Chair dips",
+"de": "Stuhl-Dips"
+},
+"Planche": {
+"en": "Plank",
+"de": "Plank"
+},
 };
 /* Kinetra — langues : français (par défaut), anglais, allemand.
    Les textes sont reconnus par leur version française (clé) ; le moteur remplace le texte affiché

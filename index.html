@@ -331,6 +331,11 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     </div>
     <div id="sessList"></div>
   </div>
+  <div class="card hide" id="challCard">
+    <h3>Défis</h3>
+    <p class="mut" style="margin-top:0">Sans matériel. Chaque défi dure environ 20 minutes.</p>
+    <div id="challList"></div>
+  </div>
   <div class="card hide" id="stretchCard">
     <h3>Étirements</h3>
     <p class="mut" style="margin-top:0">Pour après la course ou le vélo.</p>
@@ -914,7 +919,35 @@ const SESS=[
  {n:'Push (poussée)',s:[['couche',40,30],['militaire',40,30],['dipsbarres',30,40],['laterale',30,30],['triceps',30,30],['pompes',40,30],['pompesinc',40,30],['dipschaise',30,30]]},
  {n:'Pull (tirage)',s:[['tractions',30,50],['rowing',40,30],['tirage',40,30],['curl',30,30],['sdt',40,50],['crunch',30,30],['gainage',30,30],['mountain',30,20]]},
  {n:'Maison, sans matériel',s:[['squatpdc',40,20],['pompes',30,30],['fente',40,20],['dipschaise',30,30],['pont',40,20],['mountain',30,20],['crunch',30,20],['gainage',30,20],['jacks',40,20],['bulgare',40,20]]}
-];// ----- Eau : 8 verres de 250 ml par jour, un clic remplit ou vide
+];
+
+// ----- Défis sans matériel (chaque étape : [dessin, secondes d'effort, nom])
+const DEFIS=[
+ {n:'Défi planche',desc:'23 positions de planche, dans l\'ordre. Environ 20 minutes.',rest:15,s:[
+  ['gainage',30,'Planche'],['pjacks',30,'Planche jacks'],['pdiag',30,'Planche diagonale'],['gainlat',20,'Planche sur la gauche'],['gainlat',20,'Planche sur la droite'],
+  ['plever',30,'Planche lever de bras'],['phipdip',30,'Plank hip dips'],['pontlat',20,'Pont latéral droit'],['pontlat',20,'Pont latéral gauche'],['pompes',30,'Planche avec bras droits'],
+  ['gainage',30,'Planche'],['pknee',30,'Planche avec genoux croisés'],['bodysaw',30,'Body saw'],['mountain',30,'Mountain climbers'],['pabd',20,'Abduction de la jambe gauche'],
+  ['pabd',20,'Abduction de la jambe droite'],['pupdown',30,'Planche de haut en bas'],['plegup',30,'Planche jambe levée'],['pabd',20,'Planche latérale avec coup de pied gauche'],['pabd',20,'Planche latérale avec coup de pied droit'],
+  ['pknee',30,'In & outs'],['crabkick',30,'Coup de pied en crabe vers le haut'],['pompes',30,'Planche avec bras droits']]},
+ {n:'Défi jambes',desc:'Deux tours de squats, fentes, ponts et mollets, sans rien. Environ 15 minutes.',rest:20,s:[
+  ['squatpdc',40,'Squat'],['fente',40,'Fentes'],['pont',40,'Pont fessier'],['pont1j',30,'Pont fessier à une jambe'],['mollets',40,'Mollets debout'],
+  ['squatpdc',40,'Squat lent (3 secondes en bas)'],['fente',40,'Fentes alternées'],['pont',40,'Pont fessier, pause en haut'],['pont1j',30,'Pont fessier à une jambe, côté 2'],['mollets',40,'Mollets sur une jambe'],
+  ['squatpdc',40,'Squat'],['fente',40,'Fentes'],['pont',40,'Pont fessier'],['pont1j',30,'Pont fessier à une jambe'],['mollets',40,'Mollets debout']]},
+ {n:'Défi abdos',desc:'Abdos complets : crunchs, relevés de jambes, gainages et V-up. Environ 15 minutes.',rest:20,s:[
+  ['crunch',40,'Crunch'],['legraise',40,'Relevé de jambes'],['gainage',40,'Gainage (planche)'],['vup',40,'Crunch en V'],['deadbug',40,'Dead bug'],
+  ['gainlat',25,'Gainage latéral gauche'],['gainlat',25,'Gainage latéral droit'],['birddog',40,'Bird dog'],['mountain',40,'Mountain climbers'],['superman',40,'Superman'],
+  ['crunch',40,'Crunch'],['legraise',40,'Relevé de jambes'],['gainage',40,'Gainage (planche)'],['vup',40,'Crunch en V'],['deadbug',40,'Dead bug']]},
+ {n:'Défi pompes',desc:'Haut du corps au poids du corps : pompes, pompes inclinées et dips sur chaise. Environ 15 minutes.',rest:20,s:[
+  ['pompes',40,'Pompes'],['pompesinc',40,'Pompes inclinées'],['dipschaise',40,'Dips sur chaise'],['pompes',40,'Pompes lentes (3 secondes en bas)'],['pompesinc',40,'Pompes inclinées, pieds surélevés'],
+  ['pompes',40,'Pompes'],['dipschaise',40,'Dips sur chaise'],['pompesinc',40,'Pompes inclinées'],['pompes',40,'Pompes lentes'],['dipschaise',40,'Dips sur chaise'],
+  ['pompes',40,'Pompes'],['pompesinc',40,'Pompes inclinées'],['dipschaise',40,'Dips sur chaise'],['pompes',40,'Pompes lentes'],['pompes',40,'Pompes']]},
+ {n:'Défi dos',desc:'Dos et arrière des épaules : superman, bird dog et tirages au sol. Environ 15 minutes.',rest:20,s:[
+  ['superman',40,'Superman'],['birddog',40,'Bird dog côté droit'],['superman',40,'Superman, bras tendus'],['birddog',40,'Bird dog côté gauche'],['superman',40,'Superman, pause 3 secondes'],
+  ['birddog',40,'Bird dog'],['superman',40,'Superman'],['birddog',40,'Bird dog'],['superman',40,'Superman, pause'],['birddog',40,'Bird dog'],
+  ['superman',40,'Superman'],['birddog',40,'Bird dog'],['superman',40,'Superman'],['birddog',40,'Bird dog'],['superman',40,'Superman, dernier tour']]},
+];
+DEFIS.forEach(d=>SESS.push({n:d.n,cat:'Défis',desc:d.desc,s:d.s.map((x,k)=>[x[0],x[1],k<d.s.length-1?d.rest:0,x[2]])}));
+// ----- Eau : 8 verres de 250 ml par jour, un clic remplit ou vide
 var W_GOAL=8;
 function waterToday(){const w=D.water||{};return w.d===day()?(w.n||0):0}
 function waterSet(n){
@@ -937,6 +970,9 @@ function sessList(){
   $('sessList').innerHTML=main.map(([x,i])=>sessCard(x,i)).join('');
   $('stretchList').innerHTML=stretch.map(([x,i])=>sessCard(x,i)).join('');
   $('stretchCard').classList.toggle('hide',!stretch.length);
+  const defis=SESS.map((x,i)=>[x,i]).filter(([x])=>x.cat==='Défis');
+  $('challList').innerHTML=defis.map(([x,i])=>sessCard(x,i)).join('');
+  $('challCard').classList.toggle('hide',!defis.length);
 }
 // Liste des exercices d'une séance avec leur dessin (dessins créés seulement à l'ouverture)
 function sessShow(i,el){

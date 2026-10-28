@@ -507,6 +507,43 @@ RULES.unshift([/dead ?bug/,'deadbug']);
 RULES.unshift([/bird ?dog/,'birddog']);
 RULES.unshift([/crunch en v|v-?up/,'vup']);
 RULES.unshift([/gainage lat|planche lat|side plank/,'gainlat']);
+// ----- Défi planche (dessins créés pour le défi)
+const _PH={hip:[104,135],t:79,ft:[51,145],fo:205,ht:[138,146],eb:1};
+Object.assign(X,{
+pjacks:{ad:{f:"Pieds plus proches, ou seulement un pied qui bouge.",d:"Garde les hanches stables, pieds qui sautent vers l'écart puis reviennent."},n:'Planche jacks',m:'Abdominaux, épaules, cardio',
+  c:['Mains sous les épaules, corps droit','Écarte les pieds puis ramène-les au centre','Garde les hanches stables, sans les faire bouger'],mu:[['torso',.1,.6]],
+  k:[{d:600,h:200,p:{..._PH}},{d:600,h:200,p:{..._PH,ft:[38,142],fft:[60,146]}}]},
+pdiag:{ad:{f:"Tiens seulement le bras, ou seulement la jambe.",d:"Tiens 2 secondes, hanches stables."},n:'Planche diagonale',m:'Gainage, épaules, fessiers',
+  c:['Mains sous les épaules, corps droit','Étends un bras devant et la jambe opposée derrière','Garde les hanches à la même hauteur'],mu:[['torso',.1,.6]],
+  k:[{d:1000,h:300,p:{..._PH}},{d:1000,h:300,p:{hip:[104,135],t:79,ft:[51,145],fo:205,ua:90,fa:90,fht:[138,146],ft:[50,136],fft:[51,145]}}]},
+plever:{ad:{f:"Pose les genoux au sol.",d:"Tiens 2 secondes à chaque bras, bassin stable."},n:'Planche lever de bras',m:'Gainage, épaules',
+  c:['Mains sous les épaules, corps droit','Lève un bras devant toi à hauteur d\'épaule','Repose-le sans bouger le bassin'],mu:[['torso',.1,.6]],
+  k:[{d:1000,h:300,p:{..._PH}},{d:1000,h:300,p:{hip:[104,135],t:79,ft:[51,145],fo:205,ua:90,fa:90,fht:[138,146]}}]},
+phipdip:{ad:{f:"Fais-le à genoux.",d:"Descends le bassin lentement de chaque côté, sans toucher le sol."},n:'Planche avec bassin qui descend',m:'Obliques, gainage',
+  c:['Planche sur les mains, corps aligné','Descends le bassin d\'un côté, puis de l\'autre','Garde les épaules au-dessus des mains'],mu:[['torso',.1,.6]],
+  k:[{d:600,h:200,p:{..._PH}},{d:600,h:200,p:{hip:[104,143],t:82,ft:[51,145],fo:205,ht:[138,146],eb:1}}]},
+pontlat:{ad:{f:"Genou posé au sol, bras du haut le long du corps.",d:"Tiens 20 secondes par côté, bassin haut."},n:'Pont latéral',m:'Obliques, épaules, gainage',
+  c:['Appui sur l\'avant-bras, corps droit de la tête aux pieds','Lève le bras du haut au-dessus de la tête','Garde le bassin haut sans le laisser tomber'],mu:[['torso',.2,.7]],
+  k:[{d:1000,h:300,p:{front:1,hip:[120,118],t:90,hd:0,ft:[70,144],kb:-1,ht:[162,146],eb:1}},{d:1000,h:300,p:{front:1,hip:[120,118],t:90,hd:0,ft:[70,144],kb:-1,ht:[162,146],eb:1,fua:-160,ffa:-160}}]},
+pknee:{ad:{f:"Fais-le lentement, sans sauter.",d:"Alterne les genoux en rythme régulier."},n:'Planche genoux croisés',m:'Abdominaux, obliques',
+  c:['Mains sous les épaules, corps droit','Ramène un genou vers le coude opposé','Repose le pied et alterne, sans cambrer le dos'],mu:[['torso',.1,.6],['thigh',0,.8]],
+  k:[{d:800,h:200,p:{..._PH,ft:[97,146],kb:1}},{d:800,h:200,p:{..._PH}}]},
+bodysaw:{ad:{f:"Plie légèrement les coudes, ou garde le bassin plus bas.",d:"Avance et recule le buste sans bouger les bras."},n:'Body saw',m:'Gainage, épaules',
+  c:['Avant-bras au sol, coudes sous les épaules','Avance le buste vers les avant-bras en gardant le corps droit','Recule sans laisser le bassin tomber'],mu:[['torso',.2,.6]],
+  k:[{d:1000,h:300,p:{hip:[101,130],t:78,ft:[49,143],fo:205,ua:180,fa:90}},{d:1000,h:300,p:{hip:[92,131],t:78,ft:[49,143],fo:205,ua:180,fa:90}}]},
+pabd:{ad:{f:"Jambe du haut posée sur celle du bas, sans la lever.",d:"Tiens 1 seconde en haut, puis descends lentement."},n:'Abduction de la jambe en planche latérale',m:'Fessiers, obliques',
+  c:['Planche sur le côté, appui sur l\'avant-bras','Lève la jambe du haut sans tourner le bassin','Redescends lentement, corps bien aligné'],mu:[['thigh',0,.8],['torso',.2,.7]],
+  k:[{d:1000,h:300,p:{front:1,hip:[120,118],t:90,hd:0,ft:[70,144],kb:-1,ht:[162,146],eb:1}},{d:1000,h:300,p:{front:1,hip:[120,118],t:90,hd:0,ft:[70,144],kb:-1,ht:[162,146],eb:1,fft:[70,100]}}]},
+pupdown:{ad:{f:"Reste sur les avant-bras pendant toute la série.",d:"Enchaîne 10 montées et descentes, sans bouger les hanches."},n:'Planche de haut en bas',m:'Épaules, triceps, gainage',
+  c:['Commence sur les avant-bras, corps droit','Pose une main puis l\'autre pour passer sur les mains','Reviens sur les avant-bras, à tour de rôle'],mu:[['torso',.1,.6],['ua',0,.5]],
+  k:[{d:800,h:200,p:{hip:[101,130],t:78,ft:[49,143],fo:205,ua:180,fa:90}},{d:800,h:200,p:{..._PH}}]},
+plegup:{ad:{f:"Genoux posés au sol, ou jambe levée moins haut.",d:"Tiens 2 secondes, hanches bien horizontales."},n:'Planche jambe levée',m:'Gainage, fessiers',
+  c:['Mains sous les épaules, corps droit','Lève une jambe tendue derrière toi','Garde le bassin horizontal et le dos plat'],mu:[['thigh',0,.8],['torso',.1,.6]],
+  k:[{d:1000,h:300,p:{..._PH}},{d:1000,h:300,p:{..._PH,fft:[64,100]}}]},
+crabkick:{ad:{f:"Pose les pieds plus près des mains, ou ne lève pas la jambe.",d:"Tiens la jambe levée 1 seconde, puis alterne."},n:'Coup de pied en crabe',m:'Fessiers, ischios, épaules',
+  c:['Assis, mains derrière toi, hanches levées','Lève une jambe tendue vers le haut','Garde les hanches hautes pendant tout le mouvement'],mu:[['thigh',0,.8],['torso',.2,.6]],
+  k:[{d:1000,h:300,p:{hip:[127,128],t:-48,hd:0,ft:[160,146],kb:-1,ht:[96,146],eb:1}},{d:1000,h:300,p:{hip:[127,128],t:-48,hd:0,ft:[160,146],kb:-1,ht:[96,146],eb:1,fft:[185,108]}}]}
+});
 
 /* NEW-EX-END */
 window.Bonhomme={find,mount,names:()=>Object.values(X).map(e=>e.n),_X:X,_solve:solve,_mix:mix};
