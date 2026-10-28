@@ -562,5 +562,18 @@ over('phipdip',[{d:700,h:200,p:{hip:[100,131],t:80,ft:[51,145],fo:205,ua:180,fa:
 over('plegup',[{d:1000,h:300,p:Object.assign({},HP)},{d:1000,h:300,p:Object.assign({},HP,{fft:[66,112]})}]);
 })();
 /* PLANCHE-V2-END */
+/* SIDE-PLANK-V3-START */
+(function(){
+// Planche latérale : appui sur l'avant-bras, coude sous l'épaule, corps droit (vue de profil, sans mode face)
+const SP={hip:[100,122],t:90,ft:[58,142],fo:205,ua:180,fa:90,eb:1};
+const over=(id,k)=>{ if(X[id]) X[id]=Object.assign({},X[id],{k}); };
+over('gainlat',[{d:1200,h:250,p:Object.assign({},SP)},{d:1000,h:350,p:Object.assign({},SP)}]);
+// Pont latéral : hanches levées, bras du haut tendu vers le plafond
+over('pontlat',[{d:1000,h:300,p:{hip:[100,112],t:90,ft:[58,142],fo:205,ua:180,fa:90}},{d:1000,h:300,p:{hip:[100,112],t:90,ft:[58,142],fo:205,ua:180,fa:90,fua:0,ffa:0}}]);
+// Abduction en planche latérale : jambe du haut levée au-dessus de l'autre
+over('pabd',[{d:1000,h:300,p:Object.assign({},SP)},{d:1000,h:300,p:Object.assign({},SP,{fft:[80,96]})}]);
+})();
+/* SIDE-PLANK-V3-END */
+
 window.Bonhomme={find,mount,names:()=>Object.values(X).map(e=>e.n),_X:X,_solve:solve,_mix:mix};
 })();
