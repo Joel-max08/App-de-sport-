@@ -555,7 +555,7 @@ over('pjacks',[{d:600,h:200,p:Object.assign({},HP)},{d:600,h:200,p:Object.assign
 // Planche diagonale : bras droit devant, jambe gauche tendue derrière
 over('pdiag',[{d:1000,h:300,p:Object.assign({},HP)},{d:1000,h:300,p:Object.assign({},HP,{fht:[192,128],fft:[62,118]})}]);
 // Planche lever de bras : un bras soulevé devant à hauteur d'épaule
-over('plever',[{d:1000,h:300,p:Object.assign({},HP)},{d:1000,h:300,p:Object.assign({},HP,{ht:[182,112]})}]);
+over('plever',[{d:1000,h:300,p:Object.assign({},HP)},{d:1000,h:300,p:Object.assign({},HP,{ht:[184,124]})}]);
 // Planche avec bassin qui descend : hanches basses d'un côté
 over('phipdip',[{d:700,h:200,p:{hip:[100,131],t:80,ft:[51,145],fo:205,ua:180,fa:90}},{d:700,h:200,p:{hip:[100,139],t:72,ft:[51,145],fo:205,ua:180,fa:90}}]);
 // Planche jambe levée : jambe tendue derrière, bien au-dessus du sol
