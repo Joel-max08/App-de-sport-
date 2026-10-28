@@ -1009,7 +1009,7 @@ function stepStart(){
   run.ph=quick?'work':'prep';run.left=quick?st[1]:PREP;
   $('runProg').textContent=st[5]?`${st[5]} · ${run.s.n}`:`Exercice ${run.k+1} sur ${run.s.s.length} · ${run.s.n}`;
   $('runName').textContent=st[3]||Bonhomme._X[id].n;
-  Bonhomme.mount($('runDemo'),st[3]||id);
+  Bonhomme.mount($('runDemo'),(Bonhomme._X&&Bonhomme._X[id])?id:(st[3]||id));
   $('runMenu').classList.add('hide');runLvl('s');
   coachStep();
   if(st[4]){$('runKg').value=st[4].kg;$('runReps').value=st[4].reps;$('runKg').classList.toggle('hide',!st[4].hasKg)}
