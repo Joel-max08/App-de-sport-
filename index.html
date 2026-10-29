@@ -277,7 +277,16 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
 
 .coach-head{display:flex;gap:12px;align-items:center}
 .coach-face{width:64px;height:64px;flex:none;border-radius:50%}
-.coach-face.talk #coachMouth{animation:talkm .28s steps(1) infinite}
+.coach-face.talk .cm{animation:talkm .28s steps(1) infinite}
+.coach-pick-btn{background:none;border:0;padding:0;margin:0;border-radius:50%;cursor:pointer;flex:none;line-height:0;width:auto;min-height:0;box-shadow:none}
+.coach-pick-btn:focus-visible{outline:3px solid var(--teal,#00A99D);outline-offset:3px}
+.coach-pick{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.coach-pick[hidden]{display:none}
+.coach-pick-t{width:100%;font-size:13px;margin:0 0 2px}
+.coach-opt{background:none;border:2px solid transparent;border-radius:14px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font:inherit;font-size:13px;color:inherit;width:auto;min-height:0;box-shadow:none}
+.coach-opt.on{border-color:var(--teal,#00A99D)}
+.coach-opt:focus-visible{outline:3px solid var(--teal,#00A99D);outline-offset:2px}
+.coach-mini{width:52px;height:52px;border-radius:50%;display:block}
 @keyframes talkm{0%{d:path("M50 78 Q60 84 70 78")}50%{d:path("M50 79 Q60 91 70 79")}}
 .coach-chat{margin:12px 0 8px}
 .coach-bubble{background:rgba(0,169,157,.10);border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.45;color:var(--ink,#0F2B3D);white-space:pre-wrap}
@@ -317,23 +326,13 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
   </div>
   <div class="card coach-card">
     <div class="coach-head">
-      <svg class="coach-face" id="coachFace" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="58" fill="#0F2B3D"/>
-        <ellipse cx="60" cy="60" rx="26" ry="31" fill="#D9936B"/>
-        <path d="M33 50 Q34 24 60 24 Q86 24 87 50 Q80 36 60 36 Q40 36 33 50Z" fill="#1E1812"/>
-        <path d="M34 66 Q38 92 60 94 Q82 92 86 66 Q84 84 72 88 Q60 90 48 88 Q36 84 34 66Z" fill="#1E1812" opacity=".85"/>
-        <path d="M42 46 Q48 42 54 45" stroke="#1E1812" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M66 45 Q72 42 78 46" stroke="#1E1812" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <ellipse cx="49" cy="56" rx="3.2" ry="3.8" fill="#2A1D14"/>
-        <ellipse cx="71" cy="56" rx="3.2" ry="3.8" fill="#2A1D14"/>
-        <path d="M60 60 Q57 68 61 70" stroke="#B5704F" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path id="coachMouth" d="M50 78 Q60 84 70 78" stroke="#6E2A22" stroke-width="3" fill="none" stroke-linecap="round"/>
-      </svg>
+      <button type="button" id="coachBtn" class="coach-pick-btn" title="Changer de coach" aria-label="Changer de coach" aria-expanded="false" aria-controls="coachPick" onclick="toggleCoachPick()"></button>
       <div>
-        <h3 style="margin:0">Allan</h3>
+        <h3 id="coachName" style="margin:0">Allan</h3>
         <div class="mut" style="font-size:14px" id="coachSub">Ton coach. Pose-lui une question.</div>
       </div>
     </div>
+    <div id="coachPick" class="coach-pick" hidden></div>
     <div class="coach-chat">
       <div id="aiA" data-intro="1" class="coach-bubble mut">Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, récupérer, ou manger ? Demande-moi.</div>
     </div>
@@ -1851,29 +1850,87 @@ const COACH_DEFAULT={"fr": "Hmm, je ne suis pas sûr de bien comprendre. Demande
 const COACH_UI={
  "fr": {
   "sub": "Ton coach. Pose-lui une question.",
-  "intro": "Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, comment marche l'app, ou récupérer ? Demande-moi.",
-  "ph": "Écris ta question à Allan",
+  "subF": "Ta coach. Pose-lui une question.",
+  "pick": "Choisis ton coach",
+  "intro": "Salut, moi c'est {n}. Tu veux savoir comment faire un exercice, comment marche l'app, ou récupérer ? Demande-moi.",
+  "ph": "Écris ta question à {n}",
   "send": "Envoyer",
-  "writing": "Allan écrit…",
+  "writing": "{n} écrit…",
   "empty": "Pose-moi une question, je t'écoute."
  },
  "en": {
   "sub": "Your coach. Ask him anything.",
-  "intro": "Hi, I'm Allan. Want to know how to do an exercise, how the app works, or how to recover? Ask me.",
-  "ph": "Type your question for Allan",
+  "subF": "Your coach. Ask her anything.",
+  "pick": "Choose your coach",
+  "intro": "Hi, I'm {n}. Want to know how to do an exercise, how the app works, or how to recover? Ask me.",
+  "ph": "Type your question for {n}",
   "send": "Send",
-  "writing": "Allan is typing…",
+  "writing": "{n} is typing…",
   "empty": "Ask me a question, I'm listening."
  },
  "de": {
   "sub": "Dein Coach. Stell ihm eine Frage.",
-  "intro": "Hey, ich bin Allan. Willst du wissen, wie eine Übung geht, wie die App funktioniert oder wie du dich erholst? Frag mich.",
-  "ph": "Schreib deine Frage an Allan",
+  "subF": "Deine Coach. Stell ihr eine Frage.",
+  "pick": "Wähl deinen Coach",
+  "intro": "Hey, ich bin {n}. Willst du wissen, wie eine Übung geht, wie die App funktioniert oder wie du dich erholst? Frag mich.",
+  "ph": "Schreib deine Frage an {n}",
   "send": "Senden",
-  "writing": "Allan schreibt…",
+  "writing": "{n} schreibt…",
   "empty": "Stell mir eine Frage, ich höre zu."
  }
 };
+/* Coachs : g = genre (m/f), look = dessin du visage */
+const COACHES=[
+ {n:'Allan',g:'m',bg:'#0F2B3D',skin:'#D9936B',mc:'#6E2A22',brow:'#1E1812',bw:4,
+  top:'<path d="M33 50 Q34 24 60 24 Q86 24 87 50 Q80 36 60 36 Q40 36 33 50Z" fill="#1E1812"/>',
+  beard:'<path d="M34 66 Q38 92 60 94 Q82 92 86 66 Q84 84 72 88 Q60 90 48 88 Q36 84 34 66Z" fill="#1E1812" opacity=".85"/>'},
+ {n:'Marc',g:'m',bg:'#1F4E5F',skin:'#F1C7A5',mc:'#8A3B33',brow:'#5A3A22',bw:5,
+  top:'<path d="M34 50 Q35 25 60 26 Q85 25 86 50 Q82 38 70 33 Q56 30 44 36 Q37 40 34 50Z" fill="#5A3A22"/>'},
+ {n:'Théo',g:'m',bg:'#3B3160',skin:'#8D5A3B',mc:'#4A2418',brow:'#120D0A',bw:4,
+  top:'<g fill="#120D0A"><circle cx="38" cy="38" r="8"/><circle cx="48" cy="30" r="8"/><circle cx="60" cy="27" r="8"/><circle cx="72" cy="30" r="8"/><circle cx="82" cy="38" r="8"/></g>',
+  beard:'<path d="M37 66 Q40 88 60 90 Q80 88 83 66 Q80 80 60 81 Q40 80 37 66Z" fill="#120D0A" opacity=".45"/>',
+  acc:'<g fill="none" stroke="#1E1812" stroke-width="2.2"><circle cx="49" cy="56" r="7"/><circle cx="71" cy="56" r="7"/><path d="M56 56 Q60 54 64 56"/></g>'},
+ {n:'Léa',g:'f',bg:'#B0557A',skin:'#F3C9A8',mc:'#B5484F',brow:'#3B2416',bw:3.5,
+  back:'<path d="M30 56 Q28 24 60 22 Q92 24 90 56 L92 98 Q84 102 80 94 L40 94 Q36 102 28 98 Z" fill="#3B2416"/>',
+  top:'<path d="M34 52 Q36 28 60 27 Q84 28 86 52 Q76 40 60 39 Q44 40 34 52Z" fill="#3B2416"/>'},
+ {n:'Inès',g:'f',bg:'#2F6B4F',skin:'#C98A5E',mc:'#9C3B3B',brow:'#1A1410',bw:3.5,
+  back:'<circle cx="60" cy="24" r="11" fill="#1A1410"/>',
+  top:'<path d="M34 52 Q35 28 60 28 Q85 28 86 52 Q80 38 60 37 Q40 38 34 52Z" fill="#1A1410"/>',
+  acc:'<circle cx="33" cy="66" r="2.8" fill="#E8B84A"/><circle cx="87" cy="66" r="2.8" fill="#E8B84A"/>'},
+ {n:'Camille',g:'f',bg:'#5B4B8A',skin:'#E9B896',mc:'#B5484F',brow:'#7A3A20',bw:3.5,
+  back:'<path d="M29 60 Q26 26 60 24 Q94 26 91 60 L90 84 Q80 88 74 80 L46 80 Q40 88 30 84 Z" fill="#9A4A2A"/>',
+  top:'<path d="M33 54 Q38 30 60 30 Q82 30 87 54 Q78 42 66 44 Q52 36 40 46 Q35 48 33 54Z" fill="#9A4A2A"/>'}
+];
+function coachIdx(){try{const v=parseInt(localStorage.getItem('sportapp.coach'),10);return(v>=0&&v<COACHES.length)?v:0}catch(e){return 0}}
+let coachI=coachIdx();
+function coachCur(){return COACHES[coachI]||COACHES[0]}
+function coachSVG(c,cls,id){
+  const brow=`<path d="M42 46 Q48 42 54 45" stroke="${c.brow}" stroke-width="${c.bw}" fill="none" stroke-linecap="round"/><path d="M66 45 Q72 42 78 46" stroke="${c.brow}" stroke-width="${c.bw}" fill="none" stroke-linecap="round"/>`;
+  const eyes='<ellipse cx="49" cy="56" rx="3.2" ry="3.8" fill="#2A1D14"/><ellipse cx="71" cy="56" rx="3.2" ry="3.8" fill="#2A1D14"/>';
+  const nose='<path d="M60 60 Q57 68 61 70" stroke="#B5704F" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  return `<svg${id?` id="${id}"`:''} class="${cls}" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="58" fill="${c.bg}"/>${c.back||''}<ellipse cx="60" cy="60" rx="26" ry="31" fill="${c.skin}"/>${c.top||''}${c.beard||''}${brow}${eyes}${c.acc||''}${nose}<path class="cm" d="M50 78 Q60 84 70 78" stroke="${c.mc}" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+}
+function renderCoach(){
+  const L=coachLang(), u=COACH_UI[L], c=coachCur();
+  const b=document.getElementById('coachBtn'); if(b) b.innerHTML=coachSVG(c,'coach-face','coachFace');
+  const p=document.getElementById('coachPick');
+  if(p) p.innerHTML=`<p class="mut coach-pick-t">${u.pick}</p>`+COACHES.map((x,i)=>`<button type="button" class="coach-opt${i===coachI?' on':''}" aria-pressed="${i===coachI}" onclick="setCoach(${i})">${coachSVG(x,'coach-mini')}<span>${x.n}</span></button>`).join('');
+  const nm=document.getElementById('coachName'); if(nm) nm.textContent=c.n;
+  coachUI();
+}
+function setCoach(i){
+  coachI=i;
+  try{localStorage.setItem('sportapp.coach',String(i))}catch(e){}
+  const p=document.getElementById('coachPick'); if(p) p.hidden=true;
+  const b=document.getElementById('coachBtn'); if(b) b.setAttribute('aria-expanded','false');
+  renderCoach();
+}
+function toggleCoachPick(){
+  const p=document.getElementById('coachPick'), b=document.getElementById('coachBtn');
+  if(!p) return;
+  p.hidden=!p.hidden;
+  if(b) b.setAttribute('aria-expanded',String(!p.hidden));
+}
 
 function coachLang(){const l=(document.documentElement.lang||'fr').slice(0,2);return COACH_UI[l]?l:'fr'}
 function coachTokens(t){return t.split(/[^a-z0-9]+/).filter(Boolean)}
@@ -1891,35 +1948,36 @@ function coachAnswer(q){
     if(sc>score){score=sc;best=c}
   });
   const L=coachLang();
-  return best?(best.a[L]||best.a.fr):COACH_DEFAULT[L];
+  const ans=best?(best.a[L]||best.a.fr):COACH_DEFAULT[L];
+  return ans.replace(/Allan/g,coachCur().n);
 }
 function coachUI(){
-  const L=coachLang(), u=COACH_UI[L];
-  const sub=document.getElementById('coachSub'); if(sub) sub.textContent=u.sub;
-  const q=document.getElementById('aiQ'); if(q) q.placeholder=u.ph;
+  const L=coachLang(), u=COACH_UI[L], c=coachCur();
+  const sub=document.getElementById('coachSub'); if(sub) sub.textContent=c.g==='f'?u.subF:u.sub;
+  const q=document.getElementById('aiQ'); if(q) q.placeholder=u.ph.replace('{n}',c.n);
   const btn=document.getElementById('coachSend'); if(btn) btn.textContent=u.send;
-  const out=document.getElementById('aiA'); if(out && out.dataset.intro!=='0') out.textContent=u.intro;
+  const out=document.getElementById('aiA'); if(out && out.dataset.intro!=='0') out.textContent=u.intro.replace('{n}',c.n);
 }
 let coachTimer=null;
 function aiAsk(){
-  const L=coachLang(), u=COACH_UI[L];
-  const q=$('aiQ').value.trim(), out=$('aiA'), face=$('coachFace');
+  const L=coachLang(), u=COACH_UI[L], c=coachCur();
+  const q=$('aiQ').value.trim(), out=$('aiA'), face=document.getElementById('coachFace');
   if(!q){out.textContent=u.empty;return}
   out.dataset.intro='0';
-  out.textContent=u.writing;
-  face.classList.add('talk');
+  out.textContent=u.writing.replace('{n}',c.n);
+  if(face) face.classList.add('talk');
   clearTimeout(coachTimer);
   const ans=coachAnswer(q);
   coachTimer=setTimeout(()=>{
     out.textContent=ans;
     $('aiQ').value='';
     clearTimeout(coachTimer);
-    coachTimer=setTimeout(()=>face.classList.remove('talk'),Math.min(4000,ans.length*35));
+    coachTimer=setTimeout(()=>{const f=document.getElementById('coachFace');if(f)f.classList.remove('talk')},Math.min(4000,ans.length*35));
   },700+Math.min(900,ans.length*4));
 }
-document.addEventListener('DOMContentLoaded',coachUI);
+document.addEventListener('DOMContentLoaded',renderCoach);
 const _langSel=document.getElementById('lang');
-if(_langSel) _langSel.addEventListener('change',()=>setTimeout(coachUI,0));
+if(_langSel) _langSel.addEventListener('change',()=>setTimeout(renderCoach,0));
 function delMeal(id){D.meals=D.meals.filter(m=>m.id!==id);D.del.push(id);save();renderMeals()}
 function saveGoals(){D.goals={k:parseInt($('gk').value)||0,p:parseInt($('gp').value)||0};D.goalsT=Date.now();save();renderMeals()}
 function renderMeals(){
