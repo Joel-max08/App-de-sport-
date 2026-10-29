@@ -295,6 +295,26 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
 <main>
 
 <section id="v-accueil">
+  <div class="card hm" id="greet"></div>
+  <div class="card" id="streak"></div>
+  <details class="card sleep">
+    <summary><b>Mieux dormir : 7 conseils</b></summary>
+    <ul class="sl-tips">
+      <li><b>Des horaires réguliers.</b> Couche-toi et lève-toi à peu près à la même heure, même le week-end.</li>
+      <li><b>Moins d'écrans le soir.</b> Essaie de poser téléphone et tablette 30 à 60 minutes avant de dormir.</li>
+      <li><b>Une chambre fraîche, calme et sombre.</b> Autour de 16 à 19 °C, avec des rideaux épais si besoin.</li>
+      <li><b>Pas de café l'après-midi.</b> La caféine reste active plusieurs heures : évite-la après 14 h.</li>
+      <li><b>Du sport, mais pas trop tard.</b> L'activité régulière aide à dormir, mais un effort très intense juste avant le coucher peut gêner.</li>
+      <li><b>Un dîner léger.</b> Mange plutôt tôt et limite l'alcool en soirée, qui perturbe le sommeil.</li>
+      <li><b>Si tu n'arrives pas à dormir.</b> Au bout de 20 minutes environ, lève-toi, fais une activité calme avec une lumière faible, puis retourne au lit.</li>
+    </ul>
+    <p class="mut sl-note">Ces conseils sont généraux. Si tes problèmes de sommeil durent plusieurs semaines, parles-en à un médecin.</p>
+  </details>
+  <div class="card water">
+    <h3>Eau aujourd'hui</h3>
+    <p class="mut" id="wTxt" style="margin:0 0 12px"></p>
+    <div class="glasses" id="glasses"></div>
+  </div>
   <div class="card coach-card">
     <div class="coach-head">
       <svg class="coach-face" id="coachFace" viewBox="0 0 120 120" aria-hidden="true">
@@ -321,26 +341,6 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <button id="coachSend" class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Envoyer</button>
   </div>
 
-  <div class="card hm" id="greet"></div>
-  <div class="card" id="streak"></div>
-  <details class="card sleep">
-    <summary><b>Mieux dormir : 7 conseils</b></summary>
-    <ul class="sl-tips">
-      <li><b>Des horaires réguliers.</b> Couche-toi et lève-toi à peu près à la même heure, même le week-end.</li>
-      <li><b>Moins d'écrans le soir.</b> Essaie de poser téléphone et tablette 30 à 60 minutes avant de dormir.</li>
-      <li><b>Une chambre fraîche, calme et sombre.</b> Autour de 16 à 19 °C, avec des rideaux épais si besoin.</li>
-      <li><b>Pas de café l'après-midi.</b> La caféine reste active plusieurs heures : évite-la après 14 h.</li>
-      <li><b>Du sport, mais pas trop tard.</b> L'activité régulière aide à dormir, mais un effort très intense juste avant le coucher peut gêner.</li>
-      <li><b>Un dîner léger.</b> Mange plutôt tôt et limite l'alcool en soirée, qui perturbe le sommeil.</li>
-      <li><b>Si tu n'arrives pas à dormir.</b> Au bout de 20 minutes environ, lève-toi, fais une activité calme avec une lumière faible, puis retourne au lit.</li>
-    </ul>
-    <p class="mut sl-note">Ces conseils sont généraux. Si tes problèmes de sommeil durent plusieurs semaines, parles-en à un médecin.</p>
-  </details>
-  <div class="card water">
-    <h3>Eau aujourd'hui</h3>
-    <p class="mut" id="wTxt" style="margin:0 0 12px"></p>
-    <div class="glasses" id="glasses"></div>
-  </div>
   <div class="card">
     <h3>Envoyer un retour</h3>
     <p class="mut" style="margin-top:0">Une idée, un bug ou un exercice à ajouter ? Écris-le ici : ton application mail s'ouvre avec le message prêt à envoyer au développeur.</p>
