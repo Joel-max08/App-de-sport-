@@ -295,6 +295,32 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
 <main>
 
 <section id="v-accueil">
+  <div class="card coach-card">
+    <div class="coach-head">
+      <svg class="coach-face" id="coachFace" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="58" fill="#0F2B3D"/>
+        <ellipse cx="60" cy="60" rx="26" ry="31" fill="#D9936B"/>
+        <path d="M33 50 Q34 24 60 24 Q86 24 87 50 Q80 36 60 36 Q40 36 33 50Z" fill="#1E1812"/>
+        <path d="M34 66 Q38 92 60 94 Q82 92 86 66 Q84 84 72 88 Q60 90 48 88 Q36 84 34 66Z" fill="#1E1812" opacity=".85"/>
+        <path d="M42 46 Q48 42 54 45" stroke="#1E1812" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M66 45 Q72 42 78 46" stroke="#1E1812" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="49" cy="56" rx="3.2" ry="3.8" fill="#2A1D14"/>
+        <ellipse cx="71" cy="56" rx="3.2" ry="3.8" fill="#2A1D14"/>
+        <path d="M60 60 Q57 68 61 70" stroke="#B5704F" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path id="coachMouth" d="M50 78 Q60 84 70 78" stroke="#6E2A22" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h3 style="margin:0">Allan</h3>
+        <div class="mut" style="font-size:14px">Ton coach. Pose-lui une question.</div>
+      </div>
+    </div>
+    <div class="coach-chat">
+      <div id="aiA" class="coach-bubble mut">Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, récupérer, ou manger ? Demande-moi.</div>
+    </div>
+    <input id="aiQ" placeholder="Écris ta question à Allan" autocomplete="off" aria-label="Question à Allan">
+    <button class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Envoyer</button>
+  </div>
+
   <div class="card hm" id="greet"></div>
   <div class="card" id="streak"></div>
   <details class="card sleep">
@@ -440,30 +466,6 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <h3>Recettes protéinées</h3>
     <div id="recList"></div>
     <div id="recDetail" class="hide"></div>
-  </div>
-  <div class="card coach-card">
-    <div class="coach-head">
-      <svg class="coach-face" id="coachFace" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="58" fill="#0F2B3D"/>
-        <path d="M30 52 Q30 22 60 22 Q90 22 90 52 Q84 38 60 38 Q36 38 30 52Z" fill="#3B2A1E"/>
-        <ellipse cx="60" cy="58" rx="27" ry="31" fill="#F4B08C"/>
-        <ellipse cx="50" cy="56" rx="3.4" ry="4" fill="#2A1D14"/>
-        <ellipse cx="70" cy="56" rx="3.4" ry="4" fill="#2A1D14"/>
-        <path d="M46 47 Q50 44 54 46" stroke="#3B2A1E" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-        <path d="M66 46 Q70 44 74 47" stroke="#3B2A1E" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-        <path d="M60 60 Q58 68 62 69" stroke="#C4836A" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path id="coachMouth" d="M50 78 Q60 84 70 78" stroke="#8A3B2E" stroke-width="3" fill="none" stroke-linecap="round"/>
-      </svg>
-      <div>
-        <h3 style="margin:0">Allan</h3>
-        <div class="mut" style="font-size:14px">Ton coach. Pose-lui une question.</div>
-      </div>
-    </div>
-    <div class="coach-chat">
-      <div id="aiA" class="coach-bubble mut">Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, récupérer, ou manger ? Demande-moi.</div>
-    </div>
-    <input id="aiQ" placeholder="Écris ta question à Allan" autocomplete="off" aria-label="Question à Allan">
-    <button class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Envoyer</button>
   </div>
   <div class="card">
     <h3>Aujourd'hui</h3>
