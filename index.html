@@ -311,14 +311,14 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
       </svg>
       <div>
         <h3 style="margin:0">Allan</h3>
-        <div class="mut" style="font-size:14px">Ton coach. Pose-lui une question.</div>
+        <div class="mut" style="font-size:14px" id="coachSub">Ton coach. Pose-lui une question.</div>
       </div>
     </div>
     <div class="coach-chat">
-      <div id="aiA" class="coach-bubble mut">Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, récupérer, ou manger ? Demande-moi.</div>
+      <div id="aiA" data-intro="1" class="coach-bubble mut">Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, récupérer, ou manger ? Demande-moi.</div>
     </div>
     <input id="aiQ" placeholder="Écris ta question à Allan" autocomplete="off" aria-label="Question à Allan">
-    <button class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Envoyer</button>
+    <button id="coachSend" class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Envoyer</button>
   </div>
 
   <div class="card hm" id="greet"></div>
@@ -914,45 +914,999 @@ function addMeal(){
 // IA : saisie libre des repas et questions au coach (passent par la fonction serveur)
 // Coach local : réponses prévues à l'avance, choisies par mots-clés (aucun réseau, aucun coût)
 const COACH=[
- {k:['douleur','mal ','blessure','blesse','articulation','genou','dos','tendon','vertige','malaise'],
-  a:"Oula, si ça fait mal, on ne force pas. Une douleur qui dure, une blessure ou un malaise, va voir un médecin ou un kiné. Et arrête l'exercice qui te fait mal, tout de suite."},
- {k:['echauff','échauff','avant la seance','avant la séance','avant l\'entrainement','avant l\'entraînement'],
-  a:"Je fais toujours 5 à 10 minutes de mouvement léger avant : un peu de marche rapide, des rotations d'épaules et de hanches. Ensuite une ou deux séries légères de l'exo principal, et c'est parti."},
- {k:['courbature','récup','recup','repos','jour off','lendemain'],
-  a:"Le repos, c'est là que ton corps progresse. Laisse au moins un jour entre deux séances sur le même muscle. Un bon sommeil et une petite marche, ça aide beaucoup."},
- {k:['sommeil','dormir','fatigue'],
-  a:"Franchement, le sommeil, c'est sous-estimé. Si tu dors mal, évite les grosses séances et fais plutôt une séance plus légère. Tu progresseras mieux en étant reposé."},
- {k:['eau','boire','hydrat','soif'],
-  a:"Bois régulièrement dans la journée, et un peu plus les jours où tu t'entraînes. Si tu transpires beaucoup, pense à boire pendant la séance aussi."},
- {k:['protéine','proteine','manger','alimentation','nutrition','repas'],
-  a:"Sur l'alimentation, mon conseil simple : mange assez pour t'entraîner, mets une source de protéines à chaque repas, et privilégie ce qui est peu transformé. Pour un plan précis, un diététicien sera plus utile que moi."},
- {k:['regime','régime','perdre du poids','maigrir','perte de poids'],
-  a:"Je ne te donne pas de régime strict, ce n'est pas bon sur la durée. Mange équilibré, bouge régulièrement, et si tu veux un plan qui te correspond, parles-en à un diététicien."},
- {k:['progresser','progres','progrès','résultat','resultat','motivation','motivé','motive'],
-  a:"Pour progresser, la régularité bat tout. Trois séances par semaine, c'est mieux qu'une grosse séance par mois. Et change une seule chose à la fois : plus de répétitions, ou plus de temps, pas les deux."},
- {k:['planche','gainage'],
-  a:"En planche, pense à une ligne droite de la tête aux talons. Coudes sous les épaules, abdos et fessiers serrés, et respire calmement. Si tu tiens moins longtemps, c'est normal : raccourcis le temps plutôt que de cambrer le dos."},
- {k:['pompe'],
-  a:"Pour les pompes, mains un peu plus larges que les épaules, corps bien droit, et tu descends jusqu'à ce que la poitrine approche du sol. Si c'est trop dur, pose les mains sur une surface haute, ça marche très bien."},
- {k:['squat'],
-  a:"Pour le squat, pieds à la largeur des épaules, pointes un peu ouvertes. Tu envoies les fesses vers l'arrière, dos droit, talons bien au sol. Regarde devant toi, pas tes pieds."},
- {k:['fente'],
-  a:"Pour la fente, grand pas en avant, buste droit, genou avant au-dessus de la cheville. Le genou arrière descend vers le sol. Si tu perds l'équilibre, tiens-toi à un appui, aucun souci."},
- {k:['respir','souffle'],
-  a:"Expire pendant l'effort, inspire pendant le retour. Surtout en gainage, ne bloque pas ta respiration : on tient mieux quand on respire."}
+ {
+  "k": {
+   "fr": [
+    "qui es tu",
+    "qui es-tu",
+    "ton nom",
+    "tu es qui",
+    "présente",
+    "presente"
+   ],
+   "en": [
+    "who are you",
+    "your name",
+    "introduce"
+   ],
+   "de": [
+    "wer bist du",
+    "dein name",
+    "stell dich vor"
+   ]
+  },
+  "a": {
+   "fr": "Moi c'est Allan, ton coach dans Kinetra. Je te dis comment faire un exercice, comment marche l'app, et je te conseille sur la récupération et l'alimentation générale.",
+   "en": "I'm Allan, your coach in Kinetra. I can show you how to do an exercise, explain how the app works, and give you general advice on recovery and eating.",
+   "de": "Ich bin Allan, dein Coach in Kinetra. Ich erkläre dir Übungen und wie die App funktioniert, und gebe dir allgemeine Tipps zu Erholung und Ernährung."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "aide",
+    "help",
+                   ],
+   "en": [
+    "help",
+           ],
+   "de": [
+    "hilfe",
+           ]
+  },
+  "a": {
+   "fr": "Je peux t'aider sur : les séances, les défis, les étirements, les programmes, le journal, la nutrition, l'eau, l'IMC, les rappels et la technique des exercices. Demande-moi ce que tu veux.",
+   "en": "I can help with: workouts, challenges, stretches, programs, the journal, nutrition, water, BMI, reminders and exercise technique. Just ask.",
+   "de": "Ich helfe dir bei: Trainings, Challenges, Dehnübungen, Programmen, Journal, Ernährung, Wasser, BMI, Erinnerungen und Übungstechnik. Frag einfach."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "séance",
+    "seance",
+    "entrainement",
+    "entraînement",
+    "lancer"
+   ],
+   "en": [
+    "workout",
+    "session",
+    "training",
+    "start a workout"
+   ],
+   "de": [
+    "training",
+    "workout",
+    "sitzung",
+    "trainieren"
+   ]
+  },
+  "a": {
+   "fr": "Une séance, c'est la liste d'exercices du jour. Tu la lances avec « Lancer » : l'écran te montre l'exercice, les séries et le temps de repos. Tu peux toujours faire pause.",
+   "en": "A workout is the list of exercises for the day. Tap Start: the screen shows the exercise, the sets and the rest time. You can pause at any time.",
+   "de": "Ein Training ist die Übungsliste für den Tag. Tippe auf Starten: Der Bildschirm zeigt Übung, Sätze und Pausenzeit. Du kannst jederzeit pausieren."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "personnalisée",
+    "personnalisee",
+    "générer",
+    "generer",
+    "matériel",
+    "materiel",
+    "équipement"
+   ],
+   "en": [
+    "custom",
+    "generate",
+    "equipment",
+    "gear"
+   ],
+   "de": [
+    "individuell",
+    "erstellen",
+    "equipment",
+    "ausrüstung"
+   ]
+  },
+  "a": {
+   "fr": "Dans « Séance personnalisée », coche ton matériel (haltères, élastique, barre, banc, chaise…), choisis la longueur, puis génère. Tu obtiens une séance faite pour ce que tu as chez toi.",
+   "en": "In « Custom workout », tick your equipment (dumbbells, band, bar, bench, chair…), pick the length, then generate. You get a workout made for what you have at home.",
+   "de": "Unter « Individuelles Training » wählst du dein Equipment (Kurzhanteln, Band, Langhantel, Bank, Stuhl…), die Länge, und erstellst das Training. Du bekommst eins passend zu dem, was du zu Hause hast."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "défi",
+    "defi",
+    "challenge",
+    "défis"
+   ],
+   "en": [
+    "challenge",
+    "challenges"
+   ],
+   "de": [
+    "challenge",
+    "herausforderung",
+    "challenges"
+   ]
+  },
+  "a": {
+   "fr": "Les défis sont des tests : planche, jambes, abdos, pompes, dos. Lance-en un, suis le compte à rebours et essaie de battre ton record. C'est le meilleur moyen de voir ta progression.",
+   "en": "Challenges are tests: plank, legs, abs, push-ups, back. Start one, follow the countdown and try to beat your record. It's the best way to see your progress.",
+   "de": "Challenges sind Tests: Plank, Beine, Bauch, Liegestütze, Rücken. Starte eine, folge dem Countdown und versuche deinen Rekord zu schlagen. So siehst du am besten deinen Fortschritt."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "étirement",
+    "etirement",
+    "étirements",
+    "stretch",
+    "souplesse"
+   ],
+   "en": [
+    "stretch",
+    "stretches",
+    "flexibility"
+   ],
+   "de": [
+    "dehnung",
+    "dehnen",
+    "dehnübung",
+    "stretching",
+    "beweglichkeit"
+   ]
+  },
+  "a": {
+   "fr": "Les étirements se font en fin de séance, ou quand tu veux relâcher. Tiens chaque position sans rebondir, et respire calmement.",
+   "en": "Stretches go at the end of a workout, or whenever you want to loosen up. Hold each position without bouncing, and breathe calmly.",
+   "de": "Dehnübungen machst du am Ende des Trainings oder wenn du dich lockern willst. Halte jede Position ohne zu wippen und atme ruhig."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "programme",
+    "programmes",
+    "plan"
+   ],
+   "en": [
+    "program",
+    "programs",
+    "plan"
+   ],
+   "de": [
+    "programm",
+    "programme",
+    "plan"
+   ]
+  },
+  "a": {
+   "fr": "Un programme, c'est plusieurs séances organisées sur des semaines. Choisis-en un dans l'onglet Programmes et suis l'ordre : c'est ce qui fait progresser.",
+   "en": "A program is several workouts organised over weeks. Pick one in the Programs tab and follow the order: that's what makes you progress.",
+   "de": "Ein Programm sind mehrere Trainings über Wochen. Wähle eins im Reiter Programme und folge der Reihenfolge, damit kommst du voran."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "série faite",
+    "serie faite",
+    "passer",
+    "pause",
+    "repos",
+    "préparation",
+    "preparation"
+   ],
+   "en": [
+    "set done",
+    "skip",
+    "pause",
+    "rest",
+    "preparation"
+   ],
+   "de": [
+    "satz fertig",
+    "überspringen",
+    "pause",
+    "erholung",
+    "vorbereitung"
+   ]
+  },
+  "a": {
+   "fr": "Pendant la séance : « Série faite » valide ta série, « Passer » saute l'exercice, « Pause » arrête le chrono. Le compte à rebours de préparation te laisse le temps de te placer.",
+   "en": "During a workout: « Set done » logs your set, « Skip » skips the exercise, « Pause » stops the timer. The preparation countdown gives you time to get in position.",
+   "de": "Während des Trainings: « Satz fertig » speichert deinen Satz, « Überspringen » lässt die Übung aus, « Pause » hält die Zeit an. Der Vorbereitungs-Countdown gibt dir Zeit, dich in Position zu bringen."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "facile",
+    "difficile",
+    "standard",
+    "version"
+   ],
+   "en": [
+    "easy",
+    "hard",
+    "difficult",
+    "standard",
+    "version"
+   ],
+   "de": [
+    "leicht",
+    "schwer",
+    "schwierig",
+    "standard",
+    "version"
+   ]
+  },
+  "a": {
+   "fr": "Chaque exercice a une version facile et une version difficile. Commence par « Standard », passe à « Difficile » quand tu tiens bien, et prends « Facile » si tu débutes.",
+   "en": "Every exercise has an easy and a hard version. Start with « Standard », move to « Hard » when you're comfortable, and use « Easy » if you're just starting.",
+   "de": "Jede Übung hat eine leichte und eine schwere Version. Fang mit « Standard » an, wechsle zu « Schwer », wenn es dir gut geht, und nimm « Leicht », wenn du neu anfängst."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "muscle",
+    "muscles",
+    "travaillé",
+    "travaille"
+   ],
+   "en": [
+    "muscle",
+    "muscles",
+    "worked"
+   ],
+   "de": [
+    "muskel",
+    "muskeln",
+    "trainiert"
+   ]
+  },
+  "a": {
+   "fr": "Sous chaque exercice, l'app indique les muscles travaillés. Ça t'aide à choisir ce que tu veux renforcer.",
+   "en": "Under each exercise, the app shows the muscles it works. It helps you choose what to strengthen.",
+   "de": "Unter jeder Übung zeigt die App die trainierten Muskeln. So wählst du leichter, was du stärken willst."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "journal",
+    "historique",
+    "historique"
+   ],
+   "en": [
+    "journal",
+    "history"
+   ],
+   "de": [
+    "journal",
+    "verlauf",
+    "historie"
+   ]
+  },
+  "a": {
+   "fr": "Le journal garde tes séances passées. Tu peux y voir ta progression jour après jour, et repérer les semaines où tu t'es moins entraîné.",
+   "en": "The journal keeps your past workouts. You can see your progress day by day, and spot the weeks when you trained less.",
+   "de": "Das Journal speichert deine bisherigen Trainings. Dort siehst du deinen Fortschritt Tag für Tag und erkennst Wochen mit weniger Training."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "nutrition",
+    "repas",
+    "calorie",
+    "calories",
+    "kcal",
+    "protéine",
+    "proteine",
+    "protéines"
+   ],
+   "en": [
+    "nutrition",
+    "meal",
+    "meals",
+    "calorie",
+    "calories",
+    "protein"
+   ],
+   "de": [
+    "ernährung",
+    "mahlzeit",
+    "mahlzeiten",
+    "kalorie",
+    "kalorien",
+    "protein",
+    "eiweiß"
+   ]
+  },
+  "a": {
+   "fr": "Dans Nutrition, tu ajoutes tes repas avec les kcal et les protéines. Tu peux chercher un aliment dans la liste ou le saisir à la main. Les chiffres sont là pour t'aider à suivre, pas pour te punir.",
+   "en": "In Nutrition, you add your meals with calories and protein. You can search a food in the list or type it in yourself. The numbers are there to help you track, not to judge you.",
+   "de": "Unter Ernährung trägst du deine Mahlzeiten mit Kalorien und Protein ein. Du kannst ein Lebensmittel in der Liste suchen oder selbst eingeben. Die Zahlen sollen dir beim Verfolgen helfen, nicht dich bewerten."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "recette",
+    "recettes"
+   ],
+   "en": [
+    "recipe",
+    "recipes"
+   ],
+   "de": [
+    "rezept",
+    "rezepte"
+   ]
+  },
+  "a": {
+   "fr": "L'onglet Nutrition propose des recettes simples. Tu peux en ajouter une à ton journal d'un clic.",
+   "en": "The Nutrition tab has simple recipes. You can add one to your journal with one tap.",
+   "de": "Im Reiter Ernährung gibt es einfache Rezepte. Mit einem Tipp kannst du eins in dein Journal übernehmen."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "eau",
+    "boire",
+    "verre",
+    "hydrat",
+    "soif"
+   ],
+   "en": [
+    "water",
+    "drink",
+    "glass",
+    "hydrat",
+    "thirsty"
+   ],
+   "de": [
+    "wasser",
+    "trinken",
+    "glas",
+    "hydrat",
+    "durst"
+   ]
+  },
+  "a": {
+   "fr": "Le suivi de l'eau est sur l'accueil : tape sur les verres pour noter ce que tu as bu. Pendant une séance, tu peux aussi activer un rappel de boire toutes les 15 minutes.",
+   "en": "Water tracking is on the home screen: tap the glasses to log what you've drunk. During a workout you can also turn on a reminder to drink every 15 minutes.",
+   "de": "Die Wasser-Erfassung ist auf dem Startbildschirm: Tippe auf die Gläser, um zu notieren, was du getrunken hast. Während des Trainings kannst du auch eine Erinnerung alle 15 Minuten einschalten."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "imc",
+    "bmi",
+    "taille",
+    "poids",
+    "pesée",
+    "pesee"
+   ],
+   "en": [
+    "bmi",
+    "height",
+    "weight",
+    "weigh"
+   ],
+   "de": [
+    "bmi",
+    "größe",
+    "gewicht",
+    "wiegen"
+   ]
+  },
+  "a": {
+   "fr": "Ajoute ta taille et ton poids dans Compte pour voir ton IMC et ta courbe de poids. L'IMC est un indicateur général, il ne dit pas tout de ta forme. Pèse-toi à peu près au même moment de la journée.",
+   "en": "Add your height and weight in Account to see your BMI and weight curve. BMI is a general indicator and doesn't tell the whole story about your fitness. Weigh yourself at about the same time each day.",
+   "de": "Trage Größe und Gewicht unter Konto ein, dann siehst du deinen BMI und deine Gewichtskurve. Der BMI ist nur ein grober Richtwert und sagt nicht alles über deine Fitness. Wiege dich möglichst zur gleichen Tageszeit."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "rappel",
+    "rappels",
+    "notification",
+    "notifications"
+   ],
+   "en": [
+    "reminder",
+    "reminders",
+    "notification",
+    "notifications"
+   ],
+   "de": [
+    "erinnerung",
+    "erinnerungen",
+    "benachrichtigung",
+    "benachrichtigungen"
+   ]
+  },
+  "a": {
+   "fr": "Autorise les notifications pour recevoir tes rappels de séance. Tu peux les régler dans les réglages, et les couper quand tu veux.",
+   "en": "Allow notifications to get your workout reminders. You can set them in the settings and turn them off whenever you like.",
+   "de": "Erlaube Benachrichtigungen, um deine Trainingserinnerungen zu bekommen. Du stellst sie in den Einstellungen ein und kannst sie jederzeit ausschalten."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "compte",
+    "profil",
+    "prénom",
+    "prenom",
+    "réglage",
+    "reglage",
+    "réglages",
+    "reglages",
+    "thème",
+    "theme",
+    "langue",
+    "sombre",
+    "clair"
+   ],
+   "en": [
+    "account",
+    "profile",
+    "name",
+    "settings",
+    "theme",
+    "language",
+    "dark",
+    "light"
+   ],
+   "de": [
+    "konto",
+    "profil",
+    "name",
+    "einstellungen",
+    "design",
+    "sprache",
+    "dunkel",
+    "hell"
+   ]
+  },
+  "a": {
+   "fr": "Dans Compte, tu changes ton prénom, la langue, le thème (clair ou sombre) et tes réglages. Tu peux aussi exporter tes données si tu veux les garder.",
+   "en": "In Account you can change your name, the language, the theme (light or dark) and your settings. You can also export your data if you want to keep it.",
+   "de": "Unter Konto änderst du deinen Namen, die Sprache, das Design (hell oder dunkel) und deine Einstellungen. Du kannst auch deine Daten exportieren, wenn du sie behalten willst."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "série de jours",
+    "serie de jours",
+    "streak",
+    "semaine de suite",
+    "jours de suite",
+    "régularité",
+    "regularite"
+   ],
+   "en": [
+    "streak",
+    "days in a row",
+    "consistency"
+   ],
+   "de": [
+    "serie",
+    "tage in folge",
+    "streak",
+    "regelmäßigkeit",
+    "regelmaessigkeit"
+   ]
+  },
+  "a": {
+   "fr": "Ta série, c'est le nombre de jours d'affilée où tu t'es entraîné. Pas besoin d'être parfait : une séance courte compte autant qu'une longue.",
+   "en": "Your streak is the number of days in a row you trained. You don't need to be perfect: a short workout counts just as much as a long one.",
+   "de": "Deine Serie ist die Anzahl der Tage in Folge, an denen du trainiert hast. Du musst nicht perfekt sein: Ein kurzes Training zählt genauso wie ein langes."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "badge",
+    "badges",
+    "couronne",
+    "trophée",
+    "trophee",
+    "récompense",
+    "recompense"
+   ],
+   "en": [
+    "badge",
+    "badges",
+    "crown",
+    "trophy",
+    "reward"
+   ],
+   "de": [
+    "abzeichen",
+    "krone",
+    "trophäe",
+    "belohnung"
+   ]
+  },
+  "a": {
+   "fr": "Les badges récompensent tes séances et ta régularité. Continue, il y en a d'autres à débloquer.",
+   "en": "Badges reward your workouts and your consistency. Keep going, there are more to unlock.",
+   "de": "Abzeichen belohnen deine Trainings und deine Regelmäßigkeit. Mach weiter, es gibt noch mehr freizuschalten."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "douleur",
+    "mal ",
+    "blessure",
+    "blesse",
+    "articulation",
+    "tendon",
+    "vertige",
+    "malaise"
+   ],
+   "en": [
+    "pain",
+    "hurt",
+    "injury",
+    "injured",
+    "joint",
+    "tendon",
+    "dizzy",
+    "faint"
+   ],
+   "de": [
+    "schmerz",
+    "weh",
+    "verletzung",
+    "verletzt",
+    "gelenk",
+    "sehne",
+    "schwindel"
+   ]
+  },
+  "a": {
+   "fr": "Oula, si ça fait mal, on ne force pas. Une douleur qui dure, une blessure ou un malaise, va voir un médecin ou un kiné. Arrête l'exercice qui te fait mal, tout de suite.",
+   "en": "Whoa, if it hurts, don't push through it. Pain that lasts, an injury or feeling faint: see a doctor or a physio. Stop the exercise that hurts, right away.",
+   "de": "Achtung, wenn es weh tut, quäl dich nicht weiter. Anhaltende Schmerzen, eine Verletzung oder Schwindel: geh zu einem Arzt oder Physiotherapeuten. Hör sofort mit der Übung auf, die weh tut."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "genou",
+    "dos",
+    "épaule",
+    "epaule",
+    "hanche",
+    "cheville"
+   ],
+   "en": [
+    "knee",
+    "back",
+    "shoulder",
+    "hip",
+    "ankle"
+   ],
+   "de": [
+    "knie",
+    "rücken",
+    "ruecken",
+    "schulter",
+    "hüfte",
+    "huefte",
+    "knöchel",
+    "knoechel"
+   ]
+  },
+  "a": {
+   "fr": "Si un genou, un dos, une épaule ou une hanche te gêne pendant l'exercice, arrête-toi et vois un professionnel. Je peux te montrer une variante plus douce, mais pas diagnostiquer.",
+   "en": "If a knee, back, shoulder or hip bothers you during an exercise, stop and see a professional. I can show you a gentler version, but I can't diagnose anything.",
+   "de": "Wenn dir bei einer Übung ein Knie, Rücken, eine Schulter oder Hüfte Probleme macht, hör auf und geh zu einem Fachmann. Ich kann dir eine sanftere Variante zeigen, aber keine Diagnose stellen."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "échauff",
+    "echauff",
+    "avant la seance",
+    "avant la séance",
+    "avant l'entrainement",
+    "avant l'entraînement"
+   ],
+   "en": [
+    "warm up",
+    "warm-up",
+    "warmup",
+    "before the workout"
+   ],
+   "de": [
+    "aufwärmen",
+    "aufwaermen",
+    "warm-up",
+    "vor dem training"
+   ]
+  },
+  "a": {
+   "fr": "Je fais toujours 5 à 10 minutes de mouvement léger avant : un peu de marche rapide, des rotations d'épaules et de hanches. Puis une ou deux séries légères de l'exo principal.",
+   "en": "I always do 5 to 10 minutes of light movement first: a brisk walk, shoulder and hip rotations. Then one or two light sets of your main exercise.",
+   "de": "Ich mache vorher immer 5 bis 10 Minuten leichte Bewegung: etwas zügiges Gehen, Schulter- und Hüftkreisen. Dann ein bis zwei leichte Sätze der Hauptübung."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "courbature",
+    "courbatures",
+    "récup",
+    "recup",
+    "repos",
+    "lendemain",
+    "jour off"
+   ],
+   "en": [
+    "sore",
+    "soreness",
+    "recover",
+    "recovery",
+    "rest day",
+    "tomorrow"
+   ],
+   "de": [
+    "muskelkater",
+    "erholen",
+    "erholung",
+    "ruhetag",
+    "morgen"
+   ]
+  },
+  "a": {
+   "fr": "Le repos, c'est là que ton corps progresse. Laisse au moins un jour entre deux séances sur le même muscle. Un bon sommeil et une petite marche aident beaucoup.",
+   "en": "Rest is when your body actually gets stronger. Leave at least a day between two sessions on the same muscle. Good sleep and a short walk help a lot.",
+   "de": "In der Pause wird dein Körper stärker. Lass mindestens einen Tag zwischen zwei Einheiten für denselben Muskel. Guter Schlaf und ein kleiner Spaziergang helfen sehr."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "sommeil",
+    "dormir",
+    "fatigue",
+    "fatigué",
+    "fatigué"
+   ],
+   "en": [
+    "sleep",
+    "tired",
+    "fatigue"
+   ],
+   "de": [
+    "schlaf",
+    "schlafen",
+    "müde",
+    "muede",
+    "erschöpft"
+   ]
+  },
+  "a": {
+   "fr": "Le sommeil est sous-estimé. Si tu dors mal, fais une séance plus légère plutôt qu'une grosse. Tu progresseras mieux en étant reposé.",
+   "en": "Sleep is underrated. If you slept badly, do a lighter workout instead of a hard one. You'll progress better when you're rested.",
+   "de": "Schlaf wird unterschätzt. Wenn du schlecht geschlafen hast, mach lieber ein leichteres Training. Du kommst besser voran, wenn du ausgeruht bist."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "progresser",
+    "progres",
+    "progrès",
+    "résultat",
+    "resultat",
+    "résultats",
+    "motivation",
+    "motivé",
+    "motive",
+    "motiver"
+   ],
+   "en": [
+    "progress",
+    "results",
+    "motivation",
+    "motivated",
+    "motivate"
+   ],
+   "de": [
+    "fortschritt",
+    "ergebnis",
+    "ergebnisse",
+    "motivation",
+    "motiviert",
+    "motivieren"
+   ]
+  },
+  "a": {
+   "fr": "Pour progresser, la régularité bat tout. Trois séances par semaine valent mieux qu'une grosse par mois. Change une seule chose à la fois : plus de répétitions, ou plus de temps, pas les deux.",
+   "en": "For progress, consistency beats everything. Three workouts a week are better than one big one a month. Change one thing at a time: more reps, or more time, not both.",
+   "de": "Für Fortschritt zählt vor allem Regelmäßigkeit. Drei Einheiten pro Woche sind besser als eine große im Monat. Ändere immer nur eins: mehr Wiederholungen oder mehr Zeit, nicht beides."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "régime",
+    "regime",
+    "perdre du poids",
+    "maigrir",
+    "perte de poids"
+   ],
+   "en": [
+    "diet",
+    "lose weight",
+    "weight loss",
+    "slim"
+   ],
+   "de": [
+    "diät",
+    "diaet",
+    "abnehmen",
+    "gewicht verlieren"
+   ]
+  },
+  "a": {
+   "fr": "Je ne te donne pas de régime strict, ce n'est pas bon sur la durée. Mange équilibré, bouge régulièrement, et si tu veux un plan qui te correspond, parles-en à un diététicien.",
+   "en": "I won't give you a strict diet, it's not good long term. Eat balanced, move regularly, and if you want a plan made for you, talk to a dietitian.",
+   "de": "Eine strenge Diät gebe ich dir nicht, die ist auf Dauer nicht gut. Iss ausgewogen, bewege dich regelmäßig, und für einen persönlichen Plan sprich mit einer Ernährungsberaterin oder einem Ernährungsberater."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "manger",
+    "alimentation",
+    "nutrition",
+    "protéine",
+    "proteine",
+    "protéines"
+   ],
+   "en": [
+    "eat",
+    "eating",
+    "food",
+    "diet tips",
+    "protein"
+   ],
+   "de": [
+    "essen",
+    "ernährung",
+    "lebensmittel",
+    "protein",
+    "eiweiß"
+   ]
+  },
+  "a": {
+   "fr": "Pour l'alimentation générale : mange assez pour t'entraîner, mets une source de protéines à chaque repas, et privilégie ce qui est peu transformé. Pour un plan précis, un diététicien sera plus utile que moi.",
+   "en": "For general eating: eat enough to train, have a protein source at each meal, and favour minimally processed food. For a precise plan, a dietitian will be more useful than me.",
+   "de": "Zur allgemeinen Ernährung: Iss genug, um zu trainieren, nimm bei jeder Mahlzeit eine Eiweißquelle und bevorzuge wenig verarbeitete Lebensmittel. Für einen genauen Plan hilft dir eine Ernährungsberatung besser als ich."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "boire",
+    "eau",
+    "hydrat"
+   ],
+   "en": [
+    "hydrate",
+    "hydration"
+   ],
+   "de": [
+    "hydrieren",
+    "flüssigkeit",
+    "fluessigkeit"
+   ]
+  },
+  "a": {
+   "fr": "Bois régulièrement dans la journée, et un peu plus les jours où tu t'entraînes. Si tu transpires beaucoup, pense à boire pendant la séance aussi.",
+   "en": "Drink regularly through the day, and a bit more on training days. If you sweat a lot, drink during the workout too.",
+   "de": "Trink regelmäßig über den Tag verteilt, und an Trainingstagen etwas mehr. Wenn du viel schwitzt, trink auch während des Trainings."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "planche",
+    "gainage"
+   ],
+   "en": [
+    "plank"
+   ],
+   "de": [
+    "plank",
+    "unterarmstütz",
+    "unterarmstuetz"
+   ]
+  },
+  "a": {
+   "fr": "En planche, une ligne droite de la tête aux talons. Coudes sous les épaules, abdos et fessiers serrés, respire calmement. Si tu tiens moins longtemps, raccourcis plutôt que de cambrer le dos.",
+   "en": "In a plank, a straight line from head to heels. Elbows under your shoulders, abs and glutes tight, breathe calmly. If you can't hold it as long, shorten the time rather than arching your back.",
+   "de": "Beim Unterarmstütz eine gerade Linie vom Kopf bis zu den Fersen. Ellbogen unter den Schultern, Bauch und Po anspannen, ruhig atmen. Wenn du es nicht so lange hältst, verkürze lieber die Zeit, statt ins Kreuz zu gehen."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "pompe",
+    "pompes"
+   ],
+   "en": [
+    "push-up",
+    "push up",
+    "pushup",
+    "push-ups"
+   ],
+   "de": [
+    "liegestütz",
+    "liegestuetz",
+    "liegestütze",
+    "liegestuetze"
+   ]
+  },
+  "a": {
+   "fr": "Pour les pompes, mains un peu plus larges que les épaules, corps bien droit, et tu descends jusqu'à ce que la poitrine approche du sol. Si c'est trop dur, pose les mains sur une surface haute.",
+   "en": "For push-ups, hands a little wider than your shoulders, body straight, and go down until your chest nearly touches the floor. If it's too hard, put your hands on something high.",
+   "de": "Bei Liegestützen Hände etwas breiter als die Schultern, Körper gerade, und runter, bis die Brust fast den Boden berührt. Wenn es zu schwer ist, stell die Hände auf eine erhöhte Fläche."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "squat",
+    "squats",
+    "accroupi"
+   ],
+   "en": [
+    "squat",
+    "squats"
+   ],
+   "de": [
+    "kniebeuge",
+    "kniebeugen",
+    "squat"
+   ]
+  },
+  "a": {
+   "fr": "Pour le squat, pieds à la largeur des épaules, pointes un peu ouvertes. Tu envoies les fesses vers l'arrière, dos droit, talons bien au sol. Regarde devant toi.",
+   "en": "For squats, feet shoulder-width apart, toes slightly out. Send your hips back, back straight, heels on the floor. Look ahead.",
+   "de": "Bei Kniebeugen die Füße schulterbreit, Zehen leicht nach außen. Schiebe das Gesäß nach hinten, Rücken gerade, Fersen am Boden. Schau nach vorne."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "fente",
+    "fentes"
+   ],
+   "en": [
+    "lunge",
+    "lunges"
+   ],
+   "de": [
+    "ausfallschritt",
+    "ausfallschritte",
+    "lunge"
+   ]
+  },
+  "a": {
+   "fr": "Pour la fente, grand pas en avant, buste droit, genou avant au-dessus de la cheville. Le genou arrière descend vers le sol. Tiens-toi à un appui si tu perds l'équilibre.",
+   "en": "For lunges, a big step forward, chest up, front knee over the ankle. The back knee drops toward the floor. Hold onto something if you lose balance.",
+   "de": "Beim Ausfallschritt ein großer Schritt nach vorne, Brust hoch, vorderes Knie über dem Knöchel. Das hintere Knie geht Richtung Boden. Halt dich fest, wenn du das Gleichgewicht verlierst."
+  }
+ },
+ {
+  "k": {
+   "fr": [
+    "respir",
+    "souffle",
+    "souffler"
+   ],
+   "en": [
+    "breath",
+    "breathe",
+    "breathing"
+   ],
+   "de": [
+    "atem",
+    "atmen",
+    "atmung"
+   ]
+  },
+  "a": {
+   "fr": "Expire pendant l'effort, inspire pendant le retour. Surtout en gainage, ne bloque pas ta respiration : on tient mieux quand on respire.",
+   "en": "Breathe out during the effort, in during the return. Especially in a plank, don't hold your breath: you last longer when you breathe.",
+   "de": "Beim Anstrengen ausatmen, beim Zurückkommen einatmen. Besonders beim Unterarmstütz nicht die Luft anhalten: Du hältst länger durch, wenn du atmest."
+  }
+ }
 ];
-const COACH_DEFAULT="Hmm, je ne suis pas sûr de bien comprendre. Je peux t'aider sur l'échauffement, la récupération, la respiration, la planche, les pompes, le squat, la fente, la progression, l'eau ou l'alimentation générale. Pour une douleur, vois un médecin.";
+const COACH_DEFAULT={"fr": "Hmm, je ne suis pas sûr de bien comprendre. Demande-moi de l'aide pour savoir ce que je peux faire.", "en": "Hmm, I'm not sure I got that. Ask me for help to see what I can do.", "de": "Hmm, da bin ich mir nicht ganz sicher. Frag mich nach Hilfe, dann sage ich dir, was ich alles kann."};
+const COACH_UI={
+ "fr": {
+  "sub": "Ton coach. Pose-lui une question.",
+  "intro": "Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, comment marche l'app, ou récupérer ? Demande-moi.",
+  "ph": "Écris ta question à Allan",
+  "send": "Envoyer",
+  "writing": "Allan écrit…",
+  "empty": "Pose-moi une question, je t'écoute."
+ },
+ "en": {
+  "sub": "Your coach. Ask him anything.",
+  "intro": "Hi, I'm Allan. Want to know how to do an exercise, how the app works, or how to recover? Ask me.",
+  "ph": "Type your question for Allan",
+  "send": "Send",
+  "writing": "Allan is typing…",
+  "empty": "Ask me a question, I'm listening."
+ },
+ "de": {
+  "sub": "Dein Coach. Stell ihm eine Frage.",
+  "intro": "Hey, ich bin Allan. Willst du wissen, wie eine Übung geht, wie die App funktioniert oder wie du dich erholst? Frag mich.",
+  "ph": "Schreib deine Frage an Allan",
+  "send": "Senden",
+  "writing": "Allan schreibt…",
+  "empty": "Stell mir eine Frage, ich höre zu."
+ }
+};
+
+function coachLang(){const l=(document.documentElement.lang||'fr').slice(0,2);return COACH_UI[l]?l:'fr'}
+function coachTokens(t){return t.split(/[^a-z0-9]+/).filter(Boolean)}
+function coachHit(tokens,t,k){
+  const kw=nz(k);
+  if(kw.includes(' ')) return t.includes(kw);
+  return tokens.some(w=>w===kw||(kw.length>=5&&w.startsWith(kw)));
+}
 function coachAnswer(q){
-  const t=nz(q);
+  const t=nz(q), tokens=coachTokens(t);
   let best=null,score=0;
-  COACH.forEach(c=>{const n=c.k.filter(k=>t.includes(nz(k))).length;if(n>score){score=n;best=c}});
-  return best?best.a:COACH_DEFAULT;
+  COACH.forEach(c=>{
+    const kws=[].concat(c.k.fr,c.k.en,c.k.de);
+    const sc=kws.reduce((a,k)=>a+(coachHit(tokens,t,k)?nz(k).length:0),0);
+    if(sc>score){score=sc;best=c}
+  });
+  const L=coachLang();
+  return best?(best.a[L]||best.a.fr):COACH_DEFAULT[L];
+}
+function coachUI(){
+  const L=coachLang(), u=COACH_UI[L];
+  const sub=document.getElementById('coachSub'); if(sub) sub.textContent=u.sub;
+  const q=document.getElementById('aiQ'); if(q) q.placeholder=u.ph;
+  const btn=document.getElementById('coachSend'); if(btn) btn.textContent=u.send;
+  const out=document.getElementById('aiA'); if(out && out.dataset.intro!=='0') out.textContent=u.intro;
 }
 let coachTimer=null;
 function aiAsk(){
+  const L=coachLang(), u=COACH_UI[L];
   const q=$('aiQ').value.trim(), out=$('aiA'), face=$('coachFace');
-  if(!q){out.textContent='Pose-moi une question, je t\'écoute.';return}
-  out.textContent='Allan écrit…';
+  if(!q){out.textContent=u.empty;return}
+  out.dataset.intro='0';
+  out.textContent=u.writing;
   face.classList.add('talk');
   clearTimeout(coachTimer);
   const ans=coachAnswer(q);
@@ -963,6 +1917,9 @@ function aiAsk(){
     coachTimer=setTimeout(()=>face.classList.remove('talk'),Math.min(4000,ans.length*35));
   },700+Math.min(900,ans.length*4));
 }
+document.addEventListener('DOMContentLoaded',coachUI);
+const _langSel=document.getElementById('lang');
+if(_langSel) _langSel.addEventListener('change',()=>setTimeout(coachUI,0));
 function delMeal(id){D.meals=D.meals.filter(m=>m.id!==id);D.del.push(id);save();renderMeals()}
 function saveGoals(){D.goals={k:parseInt($('gk').value)||0,p:parseInt($('gp').value)||0};D.goalsT=Date.now();save();renderMeals()}
 function renderMeals(){
