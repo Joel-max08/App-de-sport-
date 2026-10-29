@@ -435,6 +435,13 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <div id="recDetail" class="hide"></div>
   </div>
   <div class="card">
+    <h3>Pose une question au coach</h3>
+    <p class="mut" style="font-size:14px;margin:0 0 8px">Réponses rapides sur la technique, la récupération et l'alimentation générale. Pour une douleur ou un problème de santé, vois un médecin.</p>
+    <input id="aiQ" placeholder="Ta question" autocomplete="off" aria-label="Question au coach">
+    <button class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Demander</button>
+    <div id="aiA" class="mut" style="margin-top:10px;white-space:pre-wrap"></div>
+  </div>
+  <div class="card">
     <h3>Aujourd'hui</h3>
     <div id="mealStats"></div>
     <div id="meals"></div>
@@ -876,6 +883,49 @@ function addMeal(){
   const n=$('mn').value.trim(),k=parseInt($('mk').value)||0,p=parseInt($('mp').value)||0;
   if(!n){return}D.meals.push({id:Date.now(),d:day(),n,k,p});save();
   ['mn','mk','mp','mq','mcat'].forEach(i=>$(i).value='');$('mres').innerHTML='';$('mpick').classList.add('hide');renderMeals();
+}
+
+// IA : saisie libre des repas et questions au coach (passent par la fonction serveur)
+// Coach local : réponses prévues à l'avance, choisies par mots-clés (aucun réseau, aucun coût)
+const COACH=[
+ {k:['douleur','mal ','blessure','blesse','articulation','genou','dos','tendon','vertige','malaise'],
+  a:"Une douleur qui persiste, une blessure ou un malaise demande l'avis d'un médecin ou d'un kiné. Arrête l'exercice qui fait mal et ne force pas."},
+ {k:['echauff','échauff','avant la seance','avant la séance','avant l\'entrainement','avant l\'entraînement'],
+  a:"Commence par 5 à 10 minutes de mouvement léger (marche rapide, rotations des épaules et des hanches), puis fais 1 ou 2 séries légères de l'exercice principal."},
+ {k:['courbature','récup','recup','repos','jour off','lendemain'],
+  a:"Laisse au moins un jour de repos entre deux séances sur le même groupe musculaire. Un bon sommeil et un peu de marche facilitent la récupération."},
+ {k:['sommeil','dormir','fatigue'],
+  a:"Le sommeil est l'un des meilleurs leviers de progression : vise des nuits régulières, et évite les grosses séances quand tu manques vraiment de sommeil."},
+ {k:['eau','boire','hydrat','soif'],
+  a:"Bois régulièrement dans la journée, et un peu plus les jours d'entraînement. Si tu transpires beaucoup, pense à reboire pendant la séance."},
+ {k:['protéine','proteine','manger','alimentation','nutrition','repas'],
+  a:"Pour l'alimentation générale : mange assez pour t'entraîner, prends une source de protéines à chaque repas, et privilégie les aliments peu transformés. Pour un plan précis, un diététicien peut t'aider."},
+ {k:['regime','régime','perdre du poids','maigrir','perte de poids'],
+  a:"Une perte de poids durable passe par une alimentation équilibrée et de l'activité régulière, pas par des restrictions fortes. Si tu veux un plan personnalisé, parles-en à un diététicien."},
+ {k:['progresser','progres','progrès','résultat','resultat','motivation','motivé','motive'],
+  a:"Pour progresser, reste régulier : 3 séances par semaine valent mieux qu'une grosse séance par mois. Augmente une seule variable à la fois (répétitions, durée, ou difficulté)."},
+ {k:['planche','gainage'],
+  a:"En planche : coudes sous les épaules, corps droit de la tête aux talons, abdos et fessiers serrés, respiration calme. Si tu tiens moins longtemps, raccourcis le temps plutôt que de cambrer le dos."},
+ {k:['pompe'],
+  a:"Pour les pompes : mains un peu plus larges que les épaules, corps droit, descends jusqu'à ce que la poitrine approche du sol. Si c'est trop dur, pose les mains sur une surface haute."},
+ {k:['squat'],
+  a:"Pour le squat : pieds écartés à la largeur des épaules, pointes légèrement ouvertes, dos droit, descends en poussant les fesses vers l'arrière, talons au sol."},
+ {k:['fente'],
+  a:"Pour la fente : grand pas en avant, buste droit, genou avant au-dessus de la cheville, genou arrière qui descend vers le sol. Tiens-toi à un appui si tu perds l'équilibre."},
+ {k:['respir','souffle'],
+  a:"Expire pendant l'effort (la phase de poussée), inspire pendant le retour. Ne bloque pas ta respiration, surtout sur les exercices de gainage."}
+];
+const COACH_DEFAULT="Je peux répondre sur : l'échauffement, la récupération, la respiration, la planche, les pompes, le squat, la fente, la progression, l'eau, l'alimentation générale. Pour une douleur ou un problème de santé, vois un médecin.";
+function coachAnswer(q){
+  const t=nz(q);
+  let best=null,score=0;
+  COACH.forEach(c=>{const n=c.k.filter(k=>t.includes(nz(k))).length;if(n>score){score=n;best=c}});
+  return best?best.a:COACH_DEFAULT;
+}
+function aiAsk(){
+  const q=$('aiQ').value.trim(), out=$('aiA');
+  if(!q){out.textContent='Pose une question.';return}
+  out.textContent=coachAnswer(q);
 }
 function delMeal(id){D.meals=D.meals.filter(m=>m.id!==id);D.del.push(id);save();renderMeals()}
 function saveGoals(){D.goals={k:parseInt($('gk').value)||0,p:parseInt($('gp').value)||0};D.goalsT=Date.now();save();renderMeals()}
