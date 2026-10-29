@@ -274,6 +274,13 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
 @keyframes ldBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 #sessLoad .ld-logo{animation:ldBeat 1s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.ld-logo,.ld-logo path,.ld-name,.ld-sub,.ld-bar span,.ld-dots i,#sessLoad .ld-logo{animation:none!important;stroke-dashoffset:0!important}.ld-logo path{stroke-dashoffset:0}.ld-bar span{width:100%}}
+
+.coach-head{display:flex;gap:12px;align-items:center}
+.coach-face{width:64px;height:64px;flex:none;border-radius:50%}
+.coach-face.talk #coachMouth{animation:talkm .28s steps(1) infinite}
+@keyframes talkm{0%{d:path("M50 78 Q60 84 70 78")}50%{d:path("M50 79 Q60 91 70 79")}}
+.coach-chat{margin:12px 0 8px}
+.coach-bubble{background:rgba(0,169,157,.10);border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.45;color:var(--ink,#0F2B3D);white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -434,12 +441,29 @@ body.inrun #v-seance{padding-top:calc(12px + env(safe-area-inset-top))}
     <div id="recList"></div>
     <div id="recDetail" class="hide"></div>
   </div>
-  <div class="card">
-    <h3>Pose une question au coach</h3>
-    <p class="mut" style="font-size:14px;margin:0 0 8px">Réponses rapides sur la technique, la récupération et l'alimentation générale. Pour une douleur ou un problème de santé, vois un médecin.</p>
-    <input id="aiQ" placeholder="Ta question" autocomplete="off" aria-label="Question au coach">
-    <button class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Demander</button>
-    <div id="aiA" class="mut" style="margin-top:10px;white-space:pre-wrap"></div>
+  <div class="card coach-card">
+    <div class="coach-head">
+      <svg class="coach-face" id="coachFace" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="58" fill="#0F2B3D"/>
+        <path d="M30 52 Q30 22 60 22 Q90 22 90 52 Q84 38 60 38 Q36 38 30 52Z" fill="#3B2A1E"/>
+        <ellipse cx="60" cy="58" rx="27" ry="31" fill="#F4B08C"/>
+        <ellipse cx="50" cy="56" rx="3.4" ry="4" fill="#2A1D14"/>
+        <ellipse cx="70" cy="56" rx="3.4" ry="4" fill="#2A1D14"/>
+        <path d="M46 47 Q50 44 54 46" stroke="#3B2A1E" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M66 46 Q70 44 74 47" stroke="#3B2A1E" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M60 60 Q58 68 62 69" stroke="#C4836A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path id="coachMouth" d="M50 78 Q60 84 70 78" stroke="#8A3B2E" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h3 style="margin:0">Allan</h3>
+        <div class="mut" style="font-size:14px">Ton coach. Pose-lui une question.</div>
+      </div>
+    </div>
+    <div class="coach-chat">
+      <div id="aiA" class="coach-bubble mut">Salut, moi c'est Allan. Tu veux savoir comment faire un exercice, récupérer, ou manger ? Demande-moi.</div>
+    </div>
+    <input id="aiQ" placeholder="Écris ta question à Allan" autocomplete="off" aria-label="Question à Allan">
+    <button class="sec" type="button" onclick="aiAsk()" style="margin-top:8px">Envoyer</button>
   </div>
   <div class="card">
     <h3>Aujourd'hui</h3>
@@ -889,43 +913,53 @@ function addMeal(){
 // Coach local : réponses prévues à l'avance, choisies par mots-clés (aucun réseau, aucun coût)
 const COACH=[
  {k:['douleur','mal ','blessure','blesse','articulation','genou','dos','tendon','vertige','malaise'],
-  a:"Une douleur qui persiste, une blessure ou un malaise demande l'avis d'un médecin ou d'un kiné. Arrête l'exercice qui fait mal et ne force pas."},
+  a:"Oula, si ça fait mal, on ne force pas. Une douleur qui dure, une blessure ou un malaise, va voir un médecin ou un kiné. Et arrête l'exercice qui te fait mal, tout de suite."},
  {k:['echauff','échauff','avant la seance','avant la séance','avant l\'entrainement','avant l\'entraînement'],
-  a:"Commence par 5 à 10 minutes de mouvement léger (marche rapide, rotations des épaules et des hanches), puis fais 1 ou 2 séries légères de l'exercice principal."},
+  a:"Je fais toujours 5 à 10 minutes de mouvement léger avant : un peu de marche rapide, des rotations d'épaules et de hanches. Ensuite une ou deux séries légères de l'exo principal, et c'est parti."},
  {k:['courbature','récup','recup','repos','jour off','lendemain'],
-  a:"Laisse au moins un jour de repos entre deux séances sur le même groupe musculaire. Un bon sommeil et un peu de marche facilitent la récupération."},
+  a:"Le repos, c'est là que ton corps progresse. Laisse au moins un jour entre deux séances sur le même muscle. Un bon sommeil et une petite marche, ça aide beaucoup."},
  {k:['sommeil','dormir','fatigue'],
-  a:"Le sommeil est l'un des meilleurs leviers de progression : vise des nuits régulières, et évite les grosses séances quand tu manques vraiment de sommeil."},
+  a:"Franchement, le sommeil, c'est sous-estimé. Si tu dors mal, évite les grosses séances et fais plutôt une séance plus légère. Tu progresseras mieux en étant reposé."},
  {k:['eau','boire','hydrat','soif'],
-  a:"Bois régulièrement dans la journée, et un peu plus les jours d'entraînement. Si tu transpires beaucoup, pense à reboire pendant la séance."},
+  a:"Bois régulièrement dans la journée, et un peu plus les jours où tu t'entraînes. Si tu transpires beaucoup, pense à boire pendant la séance aussi."},
  {k:['protéine','proteine','manger','alimentation','nutrition','repas'],
-  a:"Pour l'alimentation générale : mange assez pour t'entraîner, prends une source de protéines à chaque repas, et privilégie les aliments peu transformés. Pour un plan précis, un diététicien peut t'aider."},
+  a:"Sur l'alimentation, mon conseil simple : mange assez pour t'entraîner, mets une source de protéines à chaque repas, et privilégie ce qui est peu transformé. Pour un plan précis, un diététicien sera plus utile que moi."},
  {k:['regime','régime','perdre du poids','maigrir','perte de poids'],
-  a:"Une perte de poids durable passe par une alimentation équilibrée et de l'activité régulière, pas par des restrictions fortes. Si tu veux un plan personnalisé, parles-en à un diététicien."},
+  a:"Je ne te donne pas de régime strict, ce n'est pas bon sur la durée. Mange équilibré, bouge régulièrement, et si tu veux un plan qui te correspond, parles-en à un diététicien."},
  {k:['progresser','progres','progrès','résultat','resultat','motivation','motivé','motive'],
-  a:"Pour progresser, reste régulier : 3 séances par semaine valent mieux qu'une grosse séance par mois. Augmente une seule variable à la fois (répétitions, durée, ou difficulté)."},
+  a:"Pour progresser, la régularité bat tout. Trois séances par semaine, c'est mieux qu'une grosse séance par mois. Et change une seule chose à la fois : plus de répétitions, ou plus de temps, pas les deux."},
  {k:['planche','gainage'],
-  a:"En planche : coudes sous les épaules, corps droit de la tête aux talons, abdos et fessiers serrés, respiration calme. Si tu tiens moins longtemps, raccourcis le temps plutôt que de cambrer le dos."},
+  a:"En planche, pense à une ligne droite de la tête aux talons. Coudes sous les épaules, abdos et fessiers serrés, et respire calmement. Si tu tiens moins longtemps, c'est normal : raccourcis le temps plutôt que de cambrer le dos."},
  {k:['pompe'],
-  a:"Pour les pompes : mains un peu plus larges que les épaules, corps droit, descends jusqu'à ce que la poitrine approche du sol. Si c'est trop dur, pose les mains sur une surface haute."},
+  a:"Pour les pompes, mains un peu plus larges que les épaules, corps bien droit, et tu descends jusqu'à ce que la poitrine approche du sol. Si c'est trop dur, pose les mains sur une surface haute, ça marche très bien."},
  {k:['squat'],
-  a:"Pour le squat : pieds écartés à la largeur des épaules, pointes légèrement ouvertes, dos droit, descends en poussant les fesses vers l'arrière, talons au sol."},
+  a:"Pour le squat, pieds à la largeur des épaules, pointes un peu ouvertes. Tu envoies les fesses vers l'arrière, dos droit, talons bien au sol. Regarde devant toi, pas tes pieds."},
  {k:['fente'],
-  a:"Pour la fente : grand pas en avant, buste droit, genou avant au-dessus de la cheville, genou arrière qui descend vers le sol. Tiens-toi à un appui si tu perds l'équilibre."},
+  a:"Pour la fente, grand pas en avant, buste droit, genou avant au-dessus de la cheville. Le genou arrière descend vers le sol. Si tu perds l'équilibre, tiens-toi à un appui, aucun souci."},
  {k:['respir','souffle'],
-  a:"Expire pendant l'effort (la phase de poussée), inspire pendant le retour. Ne bloque pas ta respiration, surtout sur les exercices de gainage."}
+  a:"Expire pendant l'effort, inspire pendant le retour. Surtout en gainage, ne bloque pas ta respiration : on tient mieux quand on respire."}
 ];
-const COACH_DEFAULT="Je peux répondre sur : l'échauffement, la récupération, la respiration, la planche, les pompes, le squat, la fente, la progression, l'eau, l'alimentation générale. Pour une douleur ou un problème de santé, vois un médecin.";
+const COACH_DEFAULT="Hmm, je ne suis pas sûr de bien comprendre. Je peux t'aider sur l'échauffement, la récupération, la respiration, la planche, les pompes, le squat, la fente, la progression, l'eau ou l'alimentation générale. Pour une douleur, vois un médecin.";
 function coachAnswer(q){
   const t=nz(q);
   let best=null,score=0;
   COACH.forEach(c=>{const n=c.k.filter(k=>t.includes(nz(k))).length;if(n>score){score=n;best=c}});
   return best?best.a:COACH_DEFAULT;
 }
+let coachTimer=null;
 function aiAsk(){
-  const q=$('aiQ').value.trim(), out=$('aiA');
-  if(!q){out.textContent='Pose une question.';return}
-  out.textContent=coachAnswer(q);
+  const q=$('aiQ').value.trim(), out=$('aiA'), face=$('coachFace');
+  if(!q){out.textContent='Pose-moi une question, je t\'écoute.';return}
+  out.textContent='Allan écrit…';
+  face.classList.add('talk');
+  clearTimeout(coachTimer);
+  const ans=coachAnswer(q);
+  coachTimer=setTimeout(()=>{
+    out.textContent=ans;
+    $('aiQ').value='';
+    clearTimeout(coachTimer);
+    coachTimer=setTimeout(()=>face.classList.remove('talk'),Math.min(4000,ans.length*35));
+  },700+Math.min(900,ans.length*4));
 }
 function delMeal(id){D.meals=D.meals.filter(m=>m.id!==id);D.del.push(id);save();renderMeals()}
 function saveGoals(){D.goals={k:parseInt($('gk').value)||0,p:parseInt($('gp').value)||0};D.goalsT=Date.now();save();renderMeals()}
